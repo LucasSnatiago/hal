@@ -195,6 +195,27 @@
 	EXTERN unsigned char __DATA_END;   /**< Data End   */
 	EXTERN unsigned char __BSS_START;  /**< BSS Start  */
 	EXTERN unsigned char __BSS_END;    /**< BSS End    */
+
+	EXTERN unsigned char __USER_START;         /**< 0x77000    */
+	EXTERN unsigned char __USER_END;           /**< 0xaa0a8    */
+	EXTERN unsigned char __USER_TEXT_START;    /**< 0x77048    */
+	EXTERN unsigned char __USER_TEXT_END;      /**< 0x988a4    */
+	EXTERN unsigned char __USER_RODATA_START;  /**< 0x99000   */
+	EXTERN unsigned char __USER_RODATA_END;    /**< 0x9b89b    */
+	EXTERN unsigned char __USER_DATA_START;    /**< 0x9b8a0    */
+	EXTERN unsigned char __USER_DATA_END;      /**< 0x9daac    */
+	EXTERN unsigned char __USER_BSS_START;     /**< 0x9dac0    */
+	EXTERN unsigned char __USER_BSS_END;       /**< 0xaa0a4    */
+
+	EXTERN unsigned char __KERNEL_TEXT_START;   // 0xf2d8
+	EXTERN unsigned char __KERNEL_TEXT_END;     // 0x32b7c
+	EXTERN unsigned char __KERNEL_RODATA_START; // 0x32b7c
+	EXTERN unsigned char __KERNEL_RODATA_END;   // 0x3e000
+	EXTERN unsigned char __KERNEL_DATA_START;   // 0x55100
+	EXTERN unsigned char __KERNEL_DATA_END;     // 0x5b9d0
+	EXTERN unsigned char __KERNEL_BSS_START;    // 0x5b9e0
+	EXTERN unsigned char __KERNEL_BSS_END;      // 0x77000
+
 	/**@}*/
 
 	/**
