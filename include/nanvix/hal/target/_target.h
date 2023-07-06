@@ -29,7 +29,7 @@
 	 * @defgroup targets Targets
 	 */
 
-	if (defined(__qemu_x86__))
+	#if (defined(__qemu_x86__))
 
 		#undef  __NEED_TARGET_QEMU_I486_PC
 		#define __NEED_TARGET_QEMU_I486_PC

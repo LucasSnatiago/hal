@@ -32,7 +32,6 @@
 	#define NODES_AMOUNT   2
 	#define NODENUM_MASTER PROCESSOR_NODENUM_MASTER
 		#define NODENUM_SLAVE  (PROCESSOR_NODENUM_MASTER + 1)
-	#endif
 	/**@}*/
 	#if (PROCESSOR_IS_MULTICLUSTER)
 		#define CLUSTER_KPRINTF(...)                              \

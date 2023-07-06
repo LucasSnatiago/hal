@@ -81,7 +81,6 @@ PRIVATE void test_interrupt_enable_disable(void)
 {
 #ifndef __unix64__
 	const int ntrials = 1000000;
-#endif
 
 	ncalls = 0;
 	dcache_invalidate();

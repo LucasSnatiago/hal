@@ -29,13 +29,7 @@
 	 * @defgroup processors Processors
 	 */
 
-	#if (defined(__bostan__))
-
-		#undef  __NEED_PROCESSOR_BOSTAN
-		#define __NEED_PROCESSOR_BOSTAN
-		#include <arch/processor/bostan.h>
-
-	#elif (defined(__x86__))
+	#if (defined(__x86__))
 
 		#undef  __NEED_PROCESSOR_I486_QEMU
 		#define __NEED_PROCESSOR_I486_QEMU
