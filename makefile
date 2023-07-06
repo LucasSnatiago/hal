@@ -78,7 +78,7 @@ export EXEC := test-driver.$(TARGET)
 # Target-Specific Make Rules
 #===============================================================================
 
-include $(MAKEDIR)/makefile.hal
+include $(MAKEDIR)/makefile
 
 #===============================================================================
 # Toolchain Configuration
@@ -90,11 +90,14 @@ export CFLAGS += -Wall -Wextra -Werror -Wa,--warn
 export CFLAGS += -Winit-self -Wswitch-default -Wfloat-equal
 export CFLAGS += -Wundef -Wshadow -Wuninitialized -Wlogical-op
 export CFLAGS += -Wvla # -Wredundant-decls
-export CFLAGS += -Wno-missing-profile
 export CFLAGS += -fno-stack-protector
 export CFLAGS += -Wno-unused-function
 export CFLAGS += -I $(INCDIR)
 export CFLAGS += -D__NANVIX_HAL
+export CFLAGS += -D __INTERFACE_CHECK_CORE_AL
+export CFLAGS += -D __INTERFACE_CHECK_CLUSTER_AL
+export CFLAGS += -D __INTERFACE_CHECK_PROCESSOR_AL
+export CFLAGS += -D __INTERFACE_CHECK_TARGET_AL
 
 # Enable sync and portal implementation that uses mailboxes
 export CFLAGS += -D__NANVIX_IKC_USES_ONLY_MAILBOX=0
@@ -114,7 +117,7 @@ export IMGSRC = $(IMGDIR)/$(TARGET).img
 export IMAGE = hal-debug.img
 
 # Builds everything.
-all: | make-dirs image
+all: image
 
 # Make directories
 make-dirs:
@@ -122,14 +125,13 @@ make-dirs:
 	@mkdir -p $(LIBDIR)
 
 # Builds image.
-image: all-target
+image: make-dirs
+	$(MAKE) -C $(SRCDIR) all
 	@bash $(TOOLSDIR)/nanvix-build-image.sh $(IMAGE) $(BINDIR) $(IMGSRC)
 
-# Cleans build.
-clean: clean-target
-
 # Cleans everything.
-distclean: distclean-target
+clean:
+	$(MAKE) -C $(SRCDIR) clean
 	@rm -rf $(IMAGE) $(BINDIR)/$(EXECBIN) $(LIBDIR)/$(LIBHAL)
 
 # Builds documentation.
@@ -141,16 +143,30 @@ documentation:
 # Contrib Install and Uninstall Rules
 #===============================================================================
 
-include $(BUILDDIR)/makefile.hal
+# Builds Kernel Library.
+contrib: make-dirs
+	$(MAKE) -C $(CONTRIBDIR)/barelib install LIBHAL="" PREFIX=$(ROOTDIR) RELEASE=$(RELEASE)
+
+# Builds Kernel Library headers.
+contrib-headers: make-dirs
+	$(MAKE) -C $(CONTRIBDIR)/barelib install-headers LIBHAL="" PREFIX=$(ROOTDIR) RELEASE=$(RELEASE)
+
+# Cleans Kernel Library.
+contrib-uninstall:
+	$(MAKE) -C $(CONTRIBDIR)/barelib uninstall LIBHAL="" PREFIX=$(ROOTDIR) RELEASE=$(RELEASE)
+
+# Cleans Kernel Library headers.
+contrib-uninstall-headers:
+	$(MAKE) -C $(CONTRIBDIR)/barelib uninstall-headers LIBHAL="" PREFIX=$(ROOTDIR) RELEASE=$(RELEASE)
 
 #===============================================================================
 # Install and Uninstall Rules
 #===============================================================================
 
-include $(BUILDDIR)/makefile.install
+include $(BUILDDIR)/install.mk
 
 #===============================================================================
 # Debug and Run Rules
 #===============================================================================
 
-include $(BUILDDIR)/makefile.run
+include $(BUILDDIR)/run.mk

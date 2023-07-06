@@ -22,7 +22,7 @@
 # SOFTWARE.
 #
 
-include $(BUILDDIR)/makefile.config
+include $(BUILDDIR)/config.mk
 
 #===============================================================================
 # Binaries Sources and Objects
@@ -80,4 +80,4 @@ OBJ = $(ASM_SRC:.S=.$(OBJ_SUFFIX).o) \
 
 #===============================================================================
 
-include $(BUILDDIR)/makefile.executable
+include $(BUILDDIR)/makefile

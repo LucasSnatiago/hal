@@ -23,13 +23,6 @@
 #
 
 #===============================================================================
-# Conflicts
-#===============================================================================
-
-.PHONY: hal
-.PHONY: test
-
-#===============================================================================
 
 # Builds Everything
 all: all-hal all-test
@@ -37,24 +30,17 @@ all: all-hal all-test
 # Cleans Build Objects
 clean: clean-hal clean-test
 
-# Cleans Everything
-distclean: distclean-hal distclean-test
-
 #===============================================================================
-# test 
+# test
 #===============================================================================
 
 # Builds The Test Driver
 all-test: all-hal
-	$(MAKE) -C test all
+	$(MAKE) -C test all-binary
 
 # Cleans Test Driver Build Objects
 clean-test:
-	$(MAKE) -C test clean
-
-# Cleans Test Driver Build
-distclean-test:
-	$(MAKE) -C test distclean
+	$(MAKE) -C test clean-binary
 
 #===============================================================================
 # hal
@@ -62,12 +48,8 @@ distclean-test:
 
 # Builds the Kernel
 all-hal:
-	$(MAKE) -C hal all
+	$(MAKE) -C hal all-library
 
 # Cleans Kernel Build Objects
 clean-hal:
-	$(MAKE) -C hal clean
-
-# Cleans Kernel Build
-distclean-hal:
-	$(MAKE) -C hal distclean
+	$(MAKE) -C hal clean-library

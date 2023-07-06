@@ -71,4 +71,4 @@ OBJ = $(ASM_SRC:.S=.$(OBJ_SUFFIX).o) \
 
 #===============================================================================
 
-include $(BUILDDIR)/makefile.archive
+include $(BUILDDIR)/makefile
