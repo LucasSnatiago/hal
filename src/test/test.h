@@ -31,9 +31,6 @@
 	/**@{*/
 	#define NODES_AMOUNT   2
 	#define NODENUM_MASTER PROCESSOR_NODENUM_MASTER
-	#ifdef __mppa256__
-		#define NODENUM_SLAVE  (PROCESSOR_NODENUM_LEADER)
-	#else
 		#define NODENUM_SLAVE  (PROCESSOR_NODENUM_MASTER + 1)
 	#endif
 	/**@}*/

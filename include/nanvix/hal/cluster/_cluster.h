@@ -28,14 +28,7 @@
 	/**
 	 * @defgroup clusters Clusters
 	 */
-
-	#if (defined(__k1bdp__) || defined(__k1bio__))
-
-		#undef  __NEED_CLUSTER_K1B
-		#define __NEED_CLUSTER_K1B
-		#include <arch/cluster/k1b-cluster.h>
-
-	#elif (defined(__x86_cluster__))
+	#if (defined(__x86_cluster__))
 
 		#undef  __NEED_CLUSTER_X86
 		#define __NEED_CLUSTER_X86
@@ -46,12 +39,6 @@
 		#undef  __NEED_CLUSTER_OR1K
 		#define __NEED_CLUSTER_OR1K
 		#include <arch/cluster/or1k-cluster.h>
-
-	#elif (defined(__optimsoc_cluster__))
-
-		#undef  __NEED_CLUSTER_OPTIMSOC
-		#define __NEED_CLUSTER_OPTIMSOC
-		#include <arch/cluster/optimsoc-cluster.h>
 
 	#elif (defined(__riscv32_cluster__))
 

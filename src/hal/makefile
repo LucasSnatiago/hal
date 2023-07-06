@@ -46,17 +46,7 @@ ASM_SRC = $(wildcard arch/core/$(CORE)/*.S)         \
           $(wildcard arch/cluster/$(CLUSTER)/*.S)
 
 # Sources (Target Specific)
-ifeq ($(TARGET), mppa256)
-
-C_SRC += $(wildcard stdout/jtag.c)
-
-else ifeq ($(TARGET), optimsoc)
-
-C_SRC += $(wildcard arch/core/or1k/*.c)   \
-         $(wildcard stdout/systrace.c)
-ASM_SRC += $(wildcard arch/core/or1k/*.S)
-
-else ifeq ($(TARGET), qemu-openrisc)
+ifeq ($(TARGET), qemu-openrisc)
 
 C_SRC += $(wildcard stdout/8250.c)
 

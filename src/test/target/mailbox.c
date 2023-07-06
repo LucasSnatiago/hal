@@ -145,14 +145,7 @@ PRIVATE void test_mailbox_bad_create(void)
  */
 PRIVATE void test_mailbox_bad_open(void)
 {
-#ifdef __mppa256__
-	/**
-	 * This doesn't fail on MPPA-256 because the IOCluster is able to open
-	 * locally (multiples nodes inside the cluster).
-	 */
-	if (cluster_is_ccluster(cluster_get_num()))
-#endif
-		KASSERT(mailbox_open(NODENUM_MASTER) == -EINVAL);
+	KASSERT(mailbox_open(NODENUM_MASTER) == -EINVAL);
 }
 
 /**

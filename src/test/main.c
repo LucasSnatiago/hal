@@ -84,11 +84,6 @@ PRIVATE void test_cluster_al(void)
  */
 PRIVATE void test_processor_al(void)
 {
-#ifdef __mppa256__
-	test_cnoc();
-	test_dnoc();
-#endif
-
 #if (PROCESSOR_IS_MULTICLUSTER)
 	test_clusters();
 #endif

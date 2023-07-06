@@ -25,11 +25,7 @@
 /* Must come first. */
 #define _ASM_FILE_
 
-#if (defined(__or1k_cluster__))
-	#include <arch/cluster/or1k-cluster/cores.h>
-#elif (defined(__optimsoc_cluster__))
-	#include <arch/cluster/optimsoc-cluster/cores.h>
-#endif
+#include <arch/cluster/or1k-cluster/cores.h>
 
 /* Exported symbols. */
 .globl kstacks

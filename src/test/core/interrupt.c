@@ -80,9 +80,6 @@ PRIVATE void test_interrupt_register_unregister(void)
 PRIVATE void test_interrupt_enable_disable(void)
 {
 #ifndef __unix64__
-#ifdef __optimsoc__
-	const int ntrials = 1000;
-#else
 	const int ntrials = 1000000;
 #endif
 
@@ -226,4 +223,3 @@ PUBLIC void test_interrupt(void)
 		CLUSTER_KPRINTF("[test][fault][interrupt] %s [passed]", interrupt_tests_fault_injection[i].name);
 	}
 }
-

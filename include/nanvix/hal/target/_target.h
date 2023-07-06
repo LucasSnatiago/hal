@@ -29,19 +29,7 @@
 	 * @defgroup targets Targets
 	 */
 
-	#if defined(__mppa256__)
-
-		#undef  __NEED_TARGET_MPPA256
-		#define __NEED_TARGET_MPPA256
-		#include <arch/target/kalray/mppa256.h>
-
-	#elif (defined(__optimsoc__))
-
-		#undef  __NEED_TARGET_OPTIMSOC
-		#define __NEED_TARGET_OPTIMSOC
-		#include <arch/target/optimsoc/optimsoc.h>
-
-	#elif (defined(__qemu_x86__))
+	if (defined(__qemu_x86__))
 
 		#undef  __NEED_TARGET_QEMU_I486_PC
 		#define __NEED_TARGET_QEMU_I486_PC

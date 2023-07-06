@@ -22,11 +22,7 @@
  * SOFTWARE.
  */
 
-#if (defined(__qemu_openrisc__))
-	#include <arch/core/or1k/timer.h>
-#elif (defined(__optimsoc__))
-	#include <arch/core/mor1kx/timer.h>
-#endif
+#include <arch/core/or1k/timer.h>
 
 #define __NEED_OR1K_REGS
 #include <arch/core/or1k/regs.h>

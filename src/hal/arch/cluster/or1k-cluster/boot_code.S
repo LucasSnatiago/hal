@@ -27,11 +27,8 @@
 #define __NEED_OR1K_REGS
 #define __NEED_CORE_TYPES
 
-#if (defined(__or1k_cluster__))
-	#include <arch/cluster/or1k-cluster/cores.h>
-#elif (defined(__optimsoc_cluster__))
-	#include <arch/cluster/optimsoc-cluster/cores.h>
-#endif
+#include <arch/cluster/or1k-cluster/cores.h>
+
 
 /* Exported symbols. */
 .globl start
@@ -108,7 +105,7 @@ or1k_icache_setup:
 	l.and   r5, r6, r5
 	l.mtspr r0, r5, OR1K_SPR_SR
 
-	/* 
+	/*
 	 * Establish cache block size
 	 * If BS=0, 16;
 	 * If BS=1, 32;

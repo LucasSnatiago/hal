@@ -47,15 +47,7 @@ C_SRC = $(wildcard *.c)           \
         $(wildcard utils/*.c)
 
 # Sources (Target Specific)
-ifeq ($(TARGET), mppa256)
-
-ASM_SRC = $(wildcard core/arch/k1b.S)
-
-else ifeq ($(TARGET), optimsoc)
-
-ASM_SRC = $(wildcard core/arch/or1k.S)
-
-else ifeq ($(TARGET), qemu-openrisc)
+ifeq ($(TARGET), qemu-openrisc)
 
 ASM_SRC = $(wildcard core/arch/or1k.S)
 

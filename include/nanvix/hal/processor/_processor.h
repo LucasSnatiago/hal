@@ -41,12 +41,6 @@
 		#define __NEED_PROCESSOR_I486_QEMU
 		#include <arch/processor/i486-qemu.h>
 
-	#elif (defined(__optimsoc4__))
-
-		#undef  __NEED_PROCESSOR_OPTIMSOC
-		#define __NEED_PROCESSOR_OPTIMSOC
-		#include <arch/processor/optimsoc.h>
-
 	#elif (defined(__openrisc__))
 
 		#undef  __NEED_PROCESSOR_OR1K_QEMU

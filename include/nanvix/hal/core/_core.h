@@ -29,13 +29,7 @@
 	 * @defgroup cores Cores
 	 */
 
-	#if (defined(__k1b__))
-
-		#undef  __NEED_CORE_K1B
-		#define __NEED_CORE_K1B
-		#include <arch/core/k1b.h>
-
-	#elif (defined(__x86__))
+	#if (defined(__x86__))
 
 		#undef  __NEED_CORE_I486
 		#define __NEED_CORE_I486

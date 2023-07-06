@@ -22,14 +22,8 @@
  * SOFTWARE.
  */
 
-#if (defined(__or1k_cluster__))
-	#include <arch/cluster/or1k-cluster/memory.h>
-	#include <arch/cluster/or1k-cluster/cores.h>
-#elif (defined(__optimsoc_cluster__))
-	#include <arch/cluster/optimsoc-cluster/memory.h>
-	#include <arch/cluster/optimsoc-cluster/cores.h>
-#endif
-
+#include <arch/cluster/or1k-cluster/memory.h>
+#include <arch/cluster/or1k-cluster/cores.h>
 #include <nanvix/hal/cluster/memory.h>
 #include <nanvix/hal/core/exception.h>
 #include <nanvix/hlib.h>
