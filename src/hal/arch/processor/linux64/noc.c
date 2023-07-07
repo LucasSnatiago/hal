@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -24,15 +24,15 @@
 
 #define __NEED_HAL_PROCESSOR
 
-#include <nanvix/hal/processor.h>
+#include <fcntl.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/processor.h>
 #include <nanvix/hlib.h>
+#include <posix/sys/types.h>
+#include <semaphore.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
-#include <posix/sys/types.h>
 #include <unistd.h>
-#include <fcntl.h>
-#include <semaphore.h>
 
 /**
  * @brief Name for virtual NoC.
@@ -47,45 +47,48 @@
 /**
  * @brief NoC node.
  */
-struct noc_node
-{
-	/**
-	 * @brief Buffer.
-	 */
-	struct
-	{
-		int head; /* First element. */
-		int tail; /* Last element.  */
-	} buffer;
+struct noc_node {
+    /**
+     * @brief Buffer.
+     */
+    struct {
+        int head; /* First element. */
+        int tail; /* Last element.  */
+    } buffer;
 };
 
 /**
  * @brief NoC.
  */
-struct
-{
-	/**
-	 * @brief Virtual NoC file descriptor.
-	 */
-	int shm;
+struct {
+    /**
+     * @brief Virtual NoC file descriptor.
+     */
+    int shm;
 
-	sem_t *lock;                               /* Lock          */
-	struct noc_node *nodes;                    /* Nodes         */
-	int configuration[PROCESSOR_CLUSTERS_NUM]; /* Configuration */
-} noc = {
-	.shm = -1,
-	.lock = NULL,
-	.nodes = NULL,
+    sem_t *lock;                               /* Lock          */
+    struct noc_node *nodes;                    /* Nodes         */
+    int configuration[PROCESSOR_CLUSTERS_NUM]; /* Configuration */
+} noc = {.shm = -1,
+         .lock = NULL,
+         .nodes = NULL,
 
-	/* TODO check if sums up number of nodes */
-	.configuration = {
-		/* IO clusters. */
-		1, 1, 1, 1,
+         /* TODO check if sums up number of nodes */
+         .configuration = {/* IO clusters. */
+                           1,
+                           1,
+                           1,
+                           1,
 
-		/* Compute clusters. */
-		1, 1, 1, 1, 1, 1, 1, 1
-	}
-};
+                           /* Compute clusters. */
+                           1,
+                           1,
+                           1,
+                           1,
+                           1,
+                           1,
+                           1,
+                           1}};
 
 /*============================================================================*
  * linux64_processor_noc_lock()                                               *
@@ -96,7 +99,7 @@ struct
  */
 PRIVATE void linux64_processor_noc_lock(void)
 {
-	KASSERT(sem_wait(noc.lock) != -1);
+    KASSERT(sem_wait(noc.lock) != -1);
 }
 
 /*============================================================================*
@@ -108,7 +111,7 @@ PRIVATE void linux64_processor_noc_lock(void)
  */
 PRIVATE void linux64_processor_noc_unlock(void)
 {
-	KASSERT(sem_post(noc.lock) != -1);
+    KASSERT(sem_post(noc.lock) != -1);
 }
 
 /*============================================================================*
@@ -125,19 +128,18 @@ PRIVATE void linux64_processor_noc_unlock(void)
  */
 PRIVATE int linux64_processor_noc_node_to_cluster_num(int nodenum)
 {
-	KASSERT((nodenum >= 0) && (nodenum <= PROCESSOR_NOC_NODES_NUM));
+    KASSERT((nodenum >= 0) && (nodenum <= PROCESSOR_NOC_NODES_NUM));
 
-	/* Search for node number. */
-	for (int i = 0, j = 0; i < PROCESSOR_CLUSTERS_NUM; i++)
-	{
-		/* Found. */
-		if ((nodenum >= j) && (nodenum < (j + noc.configuration[i])))
-			return (i);
+    /* Search for node number. */
+    for (int i = 0, j = 0; i < PROCESSOR_CLUSTERS_NUM; i++) {
+        /* Found. */
+        if ((nodenum >= j) && (nodenum < (j + noc.configuration[i])))
+            return (i);
 
-		j += noc.configuration[i];
-	}
+        j += noc.configuration[i];
+    }
 
-	return (0);
+    return (0);
 }
 
 /*============================================================================*
@@ -149,11 +151,11 @@ PRIVATE int linux64_processor_noc_node_to_cluster_num(int nodenum)
  */
 PUBLIC int linux64_processor_noc_is_ionode(int nodenum)
 {
-	int clusternum;
+    int clusternum;
 
-	clusternum = linux64_processor_noc_node_to_cluster_num(nodenum);
+    clusternum = linux64_processor_noc_node_to_cluster_num(nodenum);
 
-	return (linux64_cluster_is_io(clusternum));
+    return (linux64_cluster_is_io(clusternum));
 }
 
 /*============================================================================*
@@ -165,11 +167,11 @@ PUBLIC int linux64_processor_noc_is_ionode(int nodenum)
  */
 PUBLIC int linux64_processor_noc_is_cnode(int nodenum)
 {
-	int clusternum;
+    int clusternum;
 
-	clusternum = linux64_processor_noc_node_to_cluster_num(nodenum);
+    clusternum = linux64_processor_noc_node_to_cluster_num(nodenum);
 
-	return (linux64_cluster_is_compute(clusternum));
+    return (linux64_cluster_is_compute(clusternum));
 }
 
 /*============================================================================*
@@ -181,67 +183,52 @@ PUBLIC int linux64_processor_noc_is_cnode(int nodenum)
  */
 PUBLIC void linux64_processor_noc_boot(void)
 {
-	void *p;
-	int nnodes;
-	struct stat st;
-	int initialize = 0;
-	size_t nodes_sz = PROCESSOR_NOC_NODES_NUM*sizeof(struct noc_node);
+    void *p;
+    int nnodes;
+    struct stat st;
+    int initialize = 0;
+    size_t nodes_sz = PROCESSOR_NOC_NODES_NUM * sizeof(struct noc_node);
 
-	/* Check NoC configuration. */
-	nnodes = 0;
-	for (int i = 0 ; i < PROCESSOR_CLUSTERS_NUM; i++)
-		nnodes += noc.configuration[i];
-	KASSERT(nnodes == PROCESSOR_NOC_NODES_NUM);
+    /* Check NoC configuration. */
+    nnodes = 0;
+    for (int i = 0; i < PROCESSOR_CLUSTERS_NUM; i++)
+        nnodes += noc.configuration[i];
+    KASSERT(nnodes == PROCESSOR_NOC_NODES_NUM);
 
-	KASSERT((noc.lock =
-		sem_open(UNIX64_NOC_LOCK_NAME,
-			O_RDWR | O_CREAT,
-			S_IRUSR | S_IWUSR,
-			1)
-		) != NULL
-	);
+    KASSERT(
+        (noc.lock = sem_open(
+             UNIX64_NOC_LOCK_NAME, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR, 1)) !=
+        NULL);
 
-	/* Open virtual NoC. */
-	KASSERT((noc.shm =
-		shm_open(UNIX64_NOC_NAME,
-			O_RDWR | O_CREAT,
-			S_IRUSR | S_IWUSR)
-		) != -1
-	);
+    /* Open virtual NoC. */
+    KASSERT((noc.shm = shm_open(
+                 UNIX64_NOC_NAME, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR)) != -1);
 
-	linux64_processor_noc_lock();
+    linux64_processor_noc_lock();
 
-		/* Allocate virtual NoC. */
-		KASSERT(fstat(noc.shm, &st) != -1);
-		if (st.st_size == 0)
-		{
-			kprintf("[hal][processor] allocating virtual network-on-chip...");
-			initialize = 1;
-			KASSERT(ftruncate(noc.shm, nodes_sz) != -1);
-		}
+    /* Allocate virtual NoC. */
+    KASSERT(fstat(noc.shm, &st) != -1);
+    if (st.st_size == 0) {
+        kprintf("[hal][processor] allocating virtual network-on-chip...");
+        initialize = 1;
+        KASSERT(ftruncate(noc.shm, nodes_sz) != -1);
+    }
 
-		KASSERT((p =
-			mmap(NULL,
-				nodes_sz,
-				PROT_READ | PROT_WRITE,
-				MAP_SHARED,
-				noc.shm,
-				0)
-			) != NULL
-		);
-		noc.nodes = p;
+    KASSERT(
+        (p = mmap(
+             NULL, nodes_sz, PROT_READ | PROT_WRITE, MAP_SHARED, noc.shm, 0)) !=
+        NULL);
+    noc.nodes = p;
 
-		/* Initialize nodes. */
-		if (initialize)
-		{
-			for (int i = 0; i < PROCESSOR_NOC_NODES_NUM; i++)
-			{
-				noc.nodes[i].buffer.head = 0;
-				noc.nodes[i].buffer.tail = 0;
-			}
-		}
+    /* Initialize nodes. */
+    if (initialize) {
+        for (int i = 0; i < PROCESSOR_NOC_NODES_NUM; i++) {
+            noc.nodes[i].buffer.head = 0;
+            noc.nodes[i].buffer.tail = 0;
+        }
+    }
 
-	linux64_processor_noc_unlock();
+    linux64_processor_noc_unlock();
 }
 
 /*============================================================================*
@@ -253,16 +240,15 @@ PUBLIC void linux64_processor_noc_boot(void)
  */
 PUBLIC void linux64_processor_noc_shutdown(void)
 {
-	size_t nodes_sz = PROCESSOR_NOC_NODES_NUM*sizeof(struct noc_node);
+    size_t nodes_sz = PROCESSOR_NOC_NODES_NUM * sizeof(struct noc_node);
 
-	KASSERT(munmap(noc.nodes, nodes_sz) != -1);
-	KASSERT(close(noc.shm) != -1);
-	KASSERT(sem_close(noc.lock) != -1);
+    KASSERT(munmap(noc.nodes, nodes_sz) != -1);
+    KASSERT(close(noc.shm) != -1);
+    KASSERT(sem_close(noc.lock) != -1);
 
-	/* Unlink virtual NoC. */
-	if (cluster_get_num() == PROCESSOR_CLUSTERNUM_MASTER)
-	{
-		KASSERT(shm_unlink(UNIX64_NOC_NAME) != -1);
-		KASSERT(sem_unlink(UNIX64_NOC_LOCK_NAME) != -1);
-	}
+    /* Unlink virtual NoC. */
+    if (cluster_get_num() == PROCESSOR_CLUSTERNUM_MASTER) {
+        KASSERT(shm_unlink(UNIX64_NOC_NAME) != -1);
+        KASSERT(sem_unlink(UNIX64_NOC_LOCK_NAME) != -1);
+    }
 }

@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,42 +25,42 @@
 #ifndef _NANVIX_HAL_PROCESSOR_PROCESSOR_H_
 #define _NANVIX_HAL_PROCESSOR_PROCESSOR_H_
 
-	/**
-	 * @defgroup processors Processors
-	 */
+/**
+ * @defgroup processors Processors
+ */
 
-	#if (defined(__x86__))
+#if (defined(__x86__))
 
-		#undef  __NEED_PROCESSOR_I486_QEMU
-		#define __NEED_PROCESSOR_I486_QEMU
-		#include <arch/processor/i486-qemu.h>
+#undef __NEED_PROCESSOR_I486_QEMU
+#define __NEED_PROCESSOR_I486_QEMU
+#include <arch/processor/i486-qemu.h>
 
-	#elif (defined(__openrisc__))
+#elif (defined(__openrisc__))
 
-		#undef  __NEED_PROCESSOR_OR1K_QEMU
-		#define __NEED_PROCESSOR_OR1K_QEMU
-		#include <arch/processor/or1k-qemu.h>
+#undef __NEED_PROCESSOR_OR1K_QEMU
+#define __NEED_PROCESSOR_OR1K_QEMU
+#include <arch/processor/or1k-qemu.h>
 
-	#elif (defined(__riscv32__))
+#elif (defined(__riscv32__))
 
-		#undef  __NEED_PROCESSOR_RISCV32
-		#define __NEED_PROCESSOR_RISCV32
-		#include <arch/processor/riscv32.h>
+#undef __NEED_PROCESSOR_RISCV32
+#define __NEED_PROCESSOR_RISCV32
+#include <arch/processor/riscv32.h>
 
-	#elif (defined(__linux64_processor__))
+#elif (defined(__linux64_processor__))
 
-		#undef  __NEED_PROCESSOR_LINUX64
-		#define __NEED_PROCESSOR_LINUX64
-		#include <arch/processor/linux64.h>
+#undef __NEED_PROCESSOR_LINUX64
+#define __NEED_PROCESSOR_LINUX64
+#include <arch/processor/linux64.h>
 
-	#else
+#else
 
-		#error "unkonwn processor"
+#error "unkonwn processor"
 
-	#endif
+#endif
 
-	#undef  __NEED_HAL_CLUSTER
-	#define __NEED_HAL_CLUSTER
-	#include <nanvix/hal/cluster.h>
+#undef __NEED_HAL_CLUSTER
+#define __NEED_HAL_CLUSTER
+#include <nanvix/hal/cluster.h>
 
 #endif /* _NANVIX_HAL_PROCESSOR_PROCESSOR_H_ */

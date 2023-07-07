@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,32 +25,33 @@
 #ifndef _STRESS_H_
 #define _STRESS_H_
 
-	#include "vsyscall.h"
+#include "vsyscall.h"
 
-	/**
-	 * @name Auxiliar functions of Stress Tests
-	 */
-	/**@{*/
-	EXTERN void test_stress_interrupt_setup(void);
-	EXTERN void test_stress_interrupt_cleanup(void);
-	EXTERN void test_stress_setup(void);
-	EXTERN void test_stress_cleanup(void);
-	EXTERN void test_stress_barrier(void);
-	/**@}*/
+/**
+ * @name Auxiliar functions of Stress Tests
+ */
+/**@{*/
+EXTERN void test_stress_interrupt_setup(void);
+EXTERN void test_stress_interrupt_cleanup(void);
+EXTERN void test_stress_setup(void);
+EXTERN void test_stress_cleanup(void);
+EXTERN void test_stress_barrier(void);
+/**@}*/
 
-	/**
-	 * @brief Stress test driver for the Mailbox Interface
-	 */
-	EXTERN void test_stress_mailbox(void);
+/**
+ * @brief Stress test driver for the Mailbox Interface
+ */
+EXTERN void test_stress_mailbox(void);
 
-	/**
-	 * @brief Stress test driver for the Portal Interface
-	 */
-	EXTERN void test_stress_portal(void);
+/**
+ * @brief Stress test driver for the Portal Interface
+ */
+EXTERN void test_stress_portal(void);
 
-	/**
-	 * @brief Stress test driver for the combination of Mailbox and Portal Interfaces
-	 */
-	EXTERN void test_stress_combination(void);
+/**
+ * @brief Stress test driver for the combination of Mailbox and Portal
+ * Interfaces
+ */
+EXTERN void test_stress_combination(void);
 
 #endif /* _STRESS_H_ */

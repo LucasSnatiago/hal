@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -31,20 +31,20 @@
  */
 /**@{*/
 
-	#include <posix/stddef.h>
+#include <posix/stddef.h>
 
-	/**
-	 * @brief Initializes the virtual tty device.
-	 */
-	extern void tty_virt_init(void);
+/**
+ * @brief Initializes the virtual tty device.
+ */
+extern void tty_virt_init(void);
 
-	/**
-	 * @brief Writes a buffer on the virtual tty device.
-	 *
-	 * @param buf Target buffer.
-	 * @param n   Number of bytes to write.
-	 */
-	extern void tty_virt_write(const char *buf, size_t n);
+/**
+ * @brief Writes a buffer on the virtual tty device.
+ *
+ * @param buf Target buffer.
+ * @param n   Number of bytes to write.
+ */
+extern void tty_virt_write(const char *buf, size_t n);
 
 /**@}*/
 

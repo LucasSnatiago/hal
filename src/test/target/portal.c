@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
+#include "../test.h"
 #include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
 #include <nanvix/hlib.h>
 #include <posix/errno.h>
-#include "../test.h"
 
 #if (__TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
@@ -44,10 +44,10 @@
  */
 PRIVATE void test_portal_create_unlink(void)
 {
-	int portalid;
+    int portalid;
 
-	KASSERT((portalid = portal_create(NODENUM_MASTER)) >= 0);
-	KASSERT(portal_unlink(portalid) == 0);
+    KASSERT((portalid = portal_create(NODENUM_MASTER)) >= 0);
+    KASSERT(portal_unlink(portalid) == 0);
 }
 
 /**
@@ -55,10 +55,10 @@ PRIVATE void test_portal_create_unlink(void)
  */
 PRIVATE void test_portal_open_close(void)
 {
-	int portalid;
+    int portalid;
 
-	KASSERT((portalid = portal_open(NODENUM_MASTER, NODENUM_SLAVE)) >= 0);
-	KASSERT(portal_close(portalid) == 0);
+    KASSERT((portalid = portal_open(NODENUM_MASTER, NODENUM_SLAVE)) >= 0);
+    KASSERT(portal_close(portalid) == 0);
 }
 
 /**
@@ -66,13 +66,13 @@ PRIVATE void test_portal_open_close(void)
  */
 PRIVATE void test_portal_allow(void)
 {
-	int portalid;
+    int portalid;
 
-	KASSERT((portalid = portal_create(NODENUM_MASTER)) >= 0);
+    KASSERT((portalid = portal_create(NODENUM_MASTER)) >= 0);
 
-		KASSERT(portal_allow(portalid, NODENUM_SLAVE) == 0);
+    KASSERT(portal_allow(portalid, NODENUM_SLAVE) == 0);
 
-	KASSERT(portal_unlink(portalid) == 0);
+    KASSERT(portal_unlink(portalid) == 0);
 }
 
 /*============================================================================*
@@ -84,9 +84,9 @@ PRIVATE void test_portal_allow(void)
  */
 PRIVATE void test_portal_invalid_create(void)
 {
-	/* Invalid local NoC node. */
-	KASSERT(portal_create(-1) == -EINVAL);
-	KASSERT(portal_create(PROCESSOR_NOC_NODES_NUM) == -EINVAL);
+    /* Invalid local NoC node. */
+    KASSERT(portal_create(-1) == -EINVAL);
+    KASSERT(portal_create(PROCESSOR_NOC_NODES_NUM) == -EINVAL);
 }
 
 /**
@@ -94,13 +94,13 @@ PRIVATE void test_portal_invalid_create(void)
  */
 PRIVATE void test_portal_invalid_open(void)
 {
-	/* Invalid local NoC node. */
-	KASSERT(portal_open(-1, NODENUM_SLAVE) == -EINVAL);
-	KASSERT(portal_open(PROCESSOR_NOC_NODES_NUM, NODENUM_SLAVE) == -EINVAL);
+    /* Invalid local NoC node. */
+    KASSERT(portal_open(-1, NODENUM_SLAVE) == -EINVAL);
+    KASSERT(portal_open(PROCESSOR_NOC_NODES_NUM, NODENUM_SLAVE) == -EINVAL);
 
-	/* Invalid remote NoC node. */
-	KASSERT(portal_open(NODENUM_MASTER, -1) == -EINVAL);
-	KASSERT(portal_open(NODENUM_MASTER, PROCESSOR_NOC_NODES_NUM) == -EINVAL);
+    /* Invalid remote NoC node. */
+    KASSERT(portal_open(NODENUM_MASTER, -1) == -EINVAL);
+    KASSERT(portal_open(NODENUM_MASTER, PROCESSOR_NOC_NODES_NUM) == -EINVAL);
 }
 
 /**
@@ -108,19 +108,19 @@ PRIVATE void test_portal_invalid_open(void)
  */
 PRIVATE void test_portal_invalid_allow(void)
 {
-	int portalid;
+    int portalid;
 
-	/* Invalid portal ID. */
-	KASSERT(portal_allow(-1, NODENUM_SLAVE) == -EBADF);
-	KASSERT(portal_allow(HAL_PORTAL_CREATE_MAX, NODENUM_SLAVE) == -EBADF);
+    /* Invalid portal ID. */
+    KASSERT(portal_allow(-1, NODENUM_SLAVE) == -EBADF);
+    KASSERT(portal_allow(HAL_PORTAL_CREATE_MAX, NODENUM_SLAVE) == -EBADF);
 
-	KASSERT((portalid = portal_create(NODENUM_MASTER)) >= 0);
+    KASSERT((portalid = portal_create(NODENUM_MASTER)) >= 0);
 
-		/* Invalid remote node. */
-		KASSERT(portal_allow(portalid, -1) == -EINVAL);
-		KASSERT(portal_allow(portalid, PROCESSOR_NOC_NODES_NUM) == -EINVAL);
+    /* Invalid remote node. */
+    KASSERT(portal_allow(portalid, -1) == -EINVAL);
+    KASSERT(portal_allow(portalid, PROCESSOR_NOC_NODES_NUM) == -EINVAL);
 
-	KASSERT(portal_unlink(portalid) == 0);
+    KASSERT(portal_unlink(portalid) == 0);
 }
 
 /**
@@ -128,9 +128,9 @@ PRIVATE void test_portal_invalid_allow(void)
  */
 PRIVATE void test_portal_invalid_unlink(void)
 {
-	/* Invalid portal ID. */
-	KASSERT(portal_unlink(-1) == -EBADF);
-	KASSERT(portal_unlink(HAL_PORTAL_CREATE_MAX) == -EBADF);
+    /* Invalid portal ID. */
+    KASSERT(portal_unlink(-1) == -EBADF);
+    KASSERT(portal_unlink(HAL_PORTAL_CREATE_MAX) == -EBADF);
 }
 
 /**
@@ -138,9 +138,9 @@ PRIVATE void test_portal_invalid_unlink(void)
  */
 PRIVATE void test_portal_invalid_close(void)
 {
-	/* Invalid portal ID. */
-	KASSERT(portal_close(-1) == -EBADF);
-	KASSERT(portal_close(HAL_PORTAL_OPEN_MAX) == -EBADF);
+    /* Invalid portal ID. */
+    KASSERT(portal_close(-1) == -EBADF);
+    KASSERT(portal_close(HAL_PORTAL_OPEN_MAX) == -EBADF);
 }
 
 /**
@@ -150,23 +150,22 @@ PRIVATE void test_portal_invalid_close(void)
  */
 PRIVATE void test_portal_invalid_read(void)
 {
-	int portalid;
-	char buf[PORTAL_SIZE];
+    int portalid;
+    char buf[PORTAL_SIZE];
 
-	/* Invalid portal ID */
-	KASSERT(portal_aread(-1, buf, PORTAL_SIZE) == -EBADF);
-	KASSERT(portal_aread(HAL_PORTAL_CREATE_MAX, buf, PORTAL_SIZE) == -EBADF);
+    /* Invalid portal ID */
+    KASSERT(portal_aread(-1, buf, PORTAL_SIZE) == -EBADF);
+    KASSERT(portal_aread(HAL_PORTAL_CREATE_MAX, buf, PORTAL_SIZE) == -EBADF);
 
-	KASSERT((portalid = portal_create(NODENUM_MASTER)) >= 0);
+    KASSERT((portalid = portal_create(NODENUM_MASTER)) >= 0);
 
-		/* Invalid buffer. */
-		KASSERT(portal_aread(portalid, NULL, PORTAL_SIZE) == -EINVAL);
+    /* Invalid buffer. */
+    KASSERT(portal_aread(portalid, NULL, PORTAL_SIZE) == -EINVAL);
 
-		/* Invalid buffer size. */
-		KASSERT(portal_aread(portalid, buf, 0) == -EINVAL);
+    /* Invalid buffer size. */
+    KASSERT(portal_aread(portalid, buf, 0) == -EINVAL);
 
-	KASSERT(portal_unlink(portalid) == 0);
-
+    KASSERT(portal_unlink(portalid) == 0);
 }
 
 /**
@@ -176,22 +175,22 @@ PRIVATE void test_portal_invalid_read(void)
  */
 PRIVATE void test_portal_invalid_write(void)
 {
-	int portalid;
-	char buf[PORTAL_SIZE];
+    int portalid;
+    char buf[PORTAL_SIZE];
 
-	/* Invalid portal ID */
-	KASSERT(portal_awrite(-1, buf, PORTAL_SIZE) == -EBADF);
-	KASSERT(portal_awrite(HAL_PORTAL_OPEN_MAX, buf, PORTAL_SIZE) == -EBADF);
+    /* Invalid portal ID */
+    KASSERT(portal_awrite(-1, buf, PORTAL_SIZE) == -EBADF);
+    KASSERT(portal_awrite(HAL_PORTAL_OPEN_MAX, buf, PORTAL_SIZE) == -EBADF);
 
-	KASSERT((portalid = portal_open(NODENUM_MASTER, NODENUM_SLAVE)) >= 0);
+    KASSERT((portalid = portal_open(NODENUM_MASTER, NODENUM_SLAVE)) >= 0);
 
-		/* Invalid buffer. */
-		KASSERT(portal_awrite(portalid, NULL, PORTAL_SIZE) == -EINVAL);
+    /* Invalid buffer. */
+    KASSERT(portal_awrite(portalid, NULL, PORTAL_SIZE) == -EINVAL);
 
-		/* Invalid buffer size. */
-		KASSERT(portal_awrite(portalid, buf, 0) == -EINVAL);
+    /* Invalid buffer size. */
+    KASSERT(portal_awrite(portalid, buf, 0) == -EINVAL);
 
-	KASSERT(portal_close(portalid) == 0);
+    KASSERT(portal_close(portalid) == 0);
 }
 
 /**
@@ -199,8 +198,8 @@ PRIVATE void test_portal_invalid_write(void)
  */
 PRIVATE void test_portal_bad_create(void)
 {
-	/* Bad local NoC node. */
-	KASSERT(portal_create(NODENUM_SLAVE) == -EINVAL);
+    /* Bad local NoC node. */
+    KASSERT(portal_create(NODENUM_SLAVE) == -EINVAL);
 }
 
 /**
@@ -208,11 +207,11 @@ PRIVATE void test_portal_bad_create(void)
  */
 PRIVATE void test_portal_bad_open(void)
 {
-	/* Bad local NoC node. */
-	KASSERT(portal_open(NODENUM_SLAVE, NODENUM_SLAVE) == -EINVAL);
+    /* Bad local NoC node. */
+    KASSERT(portal_open(NODENUM_SLAVE, NODENUM_SLAVE) == -EINVAL);
 
-	/* Bad remote NoC node. */
-	KASSERT(portal_open(NODENUM_MASTER, NODENUM_MASTER) == -EINVAL);
+    /* Bad remote NoC node. */
+    KASSERT(portal_open(NODENUM_MASTER, NODENUM_MASTER) == -EINVAL);
 }
 
 /**
@@ -220,18 +219,18 @@ PRIVATE void test_portal_bad_open(void)
  */
 PRIVATE void test_portal_bad_allow(void)
 {
-	int portalid;
+    int portalid;
 
-	/* Bad portal ID. */
-	KASSERT(portal_allow(0, NODENUM_SLAVE) == -EBADF);
-	KASSERT(portal_allow(HAL_PORTAL_CREATE_MAX - 1, NODENUM_SLAVE) == -EBADF);
+    /* Bad portal ID. */
+    KASSERT(portal_allow(0, NODENUM_SLAVE) == -EBADF);
+    KASSERT(portal_allow(HAL_PORTAL_CREATE_MAX - 1, NODENUM_SLAVE) == -EBADF);
 
-	KASSERT((portalid = portal_create(NODENUM_MASTER)) >= 0);
+    KASSERT((portalid = portal_create(NODENUM_MASTER)) >= 0);
 
-		/* Bad remote NoC node. */
-		KASSERT(portal_allow(portalid, NODENUM_MASTER) == -EINVAL);
+    /* Bad remote NoC node. */
+    KASSERT(portal_allow(portalid, NODENUM_MASTER) == -EINVAL);
 
-	KASSERT(portal_unlink(portalid) == 0);
+    KASSERT(portal_unlink(portalid) == 0);
 }
 
 /**
@@ -239,9 +238,9 @@ PRIVATE void test_portal_bad_allow(void)
  */
 PRIVATE void test_portal_bad_unlink(void)
 {
-	/* Bad portal ID. */
-	KASSERT(portal_unlink(0) == -EBADF);
-	KASSERT(portal_unlink(HAL_PORTAL_CREATE_MAX - 1) == -EBADF);
+    /* Bad portal ID. */
+    KASSERT(portal_unlink(0) == -EBADF);
+    KASSERT(portal_unlink(HAL_PORTAL_CREATE_MAX - 1) == -EBADF);
 }
 
 /**
@@ -249,9 +248,9 @@ PRIVATE void test_portal_bad_unlink(void)
  */
 PRIVATE void test_portal_bad_close(void)
 {
-	/* Bad portal ID. */
-	KASSERT(portal_close(0) == -EBADF);
-	KASSERT(portal_close(HAL_PORTAL_OPEN_MAX - 1) == -EBADF);
+    /* Bad portal ID. */
+    KASSERT(portal_close(0) == -EBADF);
+    KASSERT(portal_close(HAL_PORTAL_OPEN_MAX - 1) == -EBADF);
 }
 
 /**
@@ -259,11 +258,11 @@ PRIVATE void test_portal_bad_close(void)
  */
 PRIVATE void test_portal_double_unlink(void)
 {
-	int portalid;
+    int portalid;
 
-	KASSERT((portalid = portal_create(NODENUM_MASTER)) >= 0);
-	KASSERT(portal_unlink(portalid) == 0);
-	KASSERT(portal_unlink(portalid) == -EBADF);
+    KASSERT((portalid = portal_create(NODENUM_MASTER)) >= 0);
+    KASSERT(portal_unlink(portalid) == 0);
+    KASSERT(portal_unlink(portalid) == -EBADF);
 }
 
 /**
@@ -271,11 +270,11 @@ PRIVATE void test_portal_double_unlink(void)
  */
 PRIVATE void test_portal_double_close(void)
 {
-	int portalid;
+    int portalid;
 
-	KASSERT((portalid = portal_open(NODENUM_MASTER, NODENUM_SLAVE)) >= 0);
-	KASSERT(portal_close(portalid) == 0);
-	KASSERT(portal_close(portalid) == -EBADF);
+    KASSERT((portalid = portal_open(NODENUM_MASTER, NODENUM_SLAVE)) >= 0);
+    KASSERT(portal_close(portalid) == 0);
+    KASSERT(portal_close(portalid) == -EBADF);
 }
 
 /**
@@ -283,14 +282,14 @@ PRIVATE void test_portal_double_close(void)
  */
 PRIVATE void test_portal_double_allow(void)
 {
-	int portalid;
+    int portalid;
 
-	KASSERT((portalid = portal_create(NODENUM_MASTER)) >= 0);
+    KASSERT((portalid = portal_create(NODENUM_MASTER)) >= 0);
 
-		KASSERT(portal_allow(portalid, NODENUM_SLAVE) == 0);
-		KASSERT(portal_allow(portalid, NODENUM_SLAVE) == -EBUSY);
+    KASSERT(portal_allow(portalid, NODENUM_SLAVE) == 0);
+    KASSERT(portal_allow(portalid, NODENUM_SLAVE) == -EBUSY);
 
-	KASSERT(portal_unlink(portalid) == 0);
+    KASSERT(portal_unlink(portalid) == 0);
 }
 
 #endif /* __TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX */
@@ -305,32 +304,32 @@ PRIVATE void test_portal_double_allow(void)
  * @brief API unit tests.
  */
 PRIVATE struct test portal_tests_api[] = {
-	{ test_portal_create_unlink, "create unlink" },
-	{ test_portal_open_close,    "open close   " },
-	{ test_portal_allow,         "open allow   " },
-	{ NULL,                       NULL           },
+    {test_portal_create_unlink, "create unlink"},
+    {test_portal_open_close, "open close   "},
+    {test_portal_allow, "open allow   "},
+    {NULL, NULL},
 };
 
 /**
  * @brief Unit tests.
  */
 PRIVATE struct test portal_tests_fault[] = {
-	{ test_portal_invalid_create, "invalid create" },
-	{ test_portal_invalid_open,   "invalid open  " },
-	{ test_portal_invalid_allow,  "invalid allow " },
-	{ test_portal_invalid_unlink, "invalid unlink" },
-	{ test_portal_invalid_close,  "invalid close " },
-	{ test_portal_invalid_read,   "invalid read  " },
-	{ test_portal_invalid_write,  "invalid write " },
-	{ test_portal_bad_create,     "bad create    " },
-	{ test_portal_bad_open,       "bad open      " },
-	{ test_portal_bad_allow,      "bad allow     " },
-	{ test_portal_bad_unlink,     "bad unlink    " },
-	{ test_portal_bad_close,      "bad close     " },
-	{ test_portal_double_unlink,  "double unlink " },
-	{ test_portal_double_close,   "double close  " },
-	{ test_portal_double_allow,   "double allow  " },
-	{ NULL,                        NULL            },
+    {test_portal_invalid_create, "invalid create"},
+    {test_portal_invalid_open, "invalid open  "},
+    {test_portal_invalid_allow, "invalid allow "},
+    {test_portal_invalid_unlink, "invalid unlink"},
+    {test_portal_invalid_close, "invalid close "},
+    {test_portal_invalid_read, "invalid read  "},
+    {test_portal_invalid_write, "invalid write "},
+    {test_portal_bad_create, "bad create    "},
+    {test_portal_bad_open, "bad open      "},
+    {test_portal_bad_allow, "bad allow     "},
+    {test_portal_bad_unlink, "bad unlink    "},
+    {test_portal_bad_close, "bad close     "},
+    {test_portal_double_unlink, "double unlink "},
+    {test_portal_double_close, "double close  "},
+    {test_portal_double_allow, "double allow  "},
+    {NULL, NULL},
 };
 
 #endif /* __TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX */
@@ -345,21 +344,20 @@ PUBLIC void test_portal(void)
 {
 #if (__TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
-	/* API Tests */
-	kprintf(HLINE);
-	for (int i = 0; portal_tests_api[i].test_fn != NULL; i++)
-	{
-		portal_tests_api[i].test_fn();
-		kprintf("[test][api][portal] %s [passed]", portal_tests_api[i].name);
-	}
+    /* API Tests */
+    kprintf(HLINE);
+    for (int i = 0; portal_tests_api[i].test_fn != NULL; i++) {
+        portal_tests_api[i].test_fn();
+        kprintf("[test][api][portal] %s [passed]", portal_tests_api[i].name);
+    }
 
-	/* FAULT Tests */
-	kprintf(HLINE);
-	for (int i = 0; portal_tests_fault[i].test_fn != NULL; i++)
-	{
-		portal_tests_fault[i].test_fn();
-		kprintf("[test][fault][portal] %s [passed]", portal_tests_fault[i].name);
-	}
+    /* FAULT Tests */
+    kprintf(HLINE);
+    for (int i = 0; portal_tests_fault[i].test_fn != NULL; i++) {
+        portal_tests_fault[i].test_fn();
+        kprintf("[test][fault][portal] %s [passed]",
+                portal_tests_fault[i].name);
+    }
 
 #endif /* __TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX */
 }

@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -28,50 +28,50 @@
 #define TYPES_H_
 #ifndef _ASM_FILE_
 
-	#include <posix/stdint.h>
+#include <posix/stdint.h>
 
-	/* Used for system times in timer ticks. */
-	typedef int timer_t;
+/* Used for system times in timer ticks. */
+typedef int timer_t;
 
-	/* Used for device IDs. */
-	typedef unsigned dev_t;
+/* Used for device IDs. */
+typedef unsigned dev_t;
 
-	/* Used for disk addresses. */
-	typedef unsigned daddr_t;
+/* Used for disk addresses. */
+typedef unsigned daddr_t;
 
-	/* Used as a general identifier. */
-	typedef int id_t;
+/* Used as a general identifier. */
+typedef int id_t;
 
-	/* Used for some file attributes. */
-	typedef int gid_t;
+/* Used for some file attributes. */
+typedef int gid_t;
 
-	/* Used for some file attributes. */
-	typedef int mode_t;
+/* Used for some file attributes. */
+typedef int mode_t;
 
-	/* Used for file sizes. */
-	typedef signed off_t;
+/* Used for file sizes. */
+typedef signed off_t;
 
-	/* Used for process IDs and process group IDs. */
-	typedef signed pid_t;
+/* Used for process IDs and process group IDs. */
+typedef signed pid_t;
 
-	/* Used for time in seconds. */
-	typedef signed time_t;
+/* Used for time in seconds. */
+typedef signed time_t;
 
-	/* Used for file serial numbers. */
-	typedef uint16_t ino_t;
+/* Used for file serial numbers. */
+typedef uint16_t ino_t;
 
-	/* Used for link counts. */
-	typedef int nlink_t;
+/* Used for link counts. */
+typedef int nlink_t;
 
-	/* Used for interprocess communication. */
-	typedef int key_t;
+/* Used for interprocess communication. */
+typedef int key_t;
 
-	#define __need_size_t
-	#define __need_ssize_t
-	#include <posix/decl.h>
+#define __need_size_t
+#define __need_ssize_t
+#include <posix/decl.h>
 
-	/* Used for user IDs. */
-	typedef int uid_t;
+/* Used for user IDs. */
+typedef int uid_t;
 
 #endif /* _ASM_FILE */
 #endif /* TYPES_H_ */

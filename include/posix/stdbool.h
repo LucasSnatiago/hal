@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -50,30 +50,30 @@
 #ifndef _STDBOOL_H
 #define _STDBOOL_H
 
-	#ifndef __cplusplus
+#ifndef __cplusplus
 
-		#define bool  _Bool
-		#define true  1
-		#define false 0
+#define bool _Bool
+#define true 1
+#define false 0
 
-	#else /* !__cplusplus */
+#else /* !__cplusplus */
 
-	/* Supporting _Bool in C++ is a GCC extension. */
-	#define _Bool	bool
+/* Supporting _Bool in C++ is a GCC extension. */
+#define _Bool bool
 
-	/* Defining these macros in C++98 is a GCC extension. */
-	#if __cplusplus < 201103L
-		#define bool  bool
-		#define false false
-		#define true  true
-	#endif
+/* Defining these macros in C++98 is a GCC extension. */
+#if __cplusplus < 201103L
+#define bool bool
+#define false false
+#define true true
+#endif
 
-	#endif /* __cplusplus */
+#endif /* __cplusplus */
 
-	/* Signal that all the definitions are present. */
-	#define __bool_true_false_are_defined 1
+/* Signal that all the definitions are present. */
+#define __bool_true_false_are_defined 1
 
-#endif	/* STDBOOL_H_ */
+#endif /* STDBOOL_H_ */
 
 #else
 

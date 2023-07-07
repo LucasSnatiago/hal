@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,22 +22,25 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/target/stdout.h>
-#include <nanvix/hal/log.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/log.h>
+#include <nanvix/hal/target/stdout.h>
 #include <nanvix/hlib.h>
-#include <posix/sys/types.h>
 #include <posix/stdint.h>
+#include <posix/sys/types.h>
 
 /**
  * @brief HAL log.
  */
-PRIVATE struct
-{
-	size_t head;           /**< First element in the buffer.   */
-	size_t tail;            /**< Next free slot in the buffer. */
-	char buf[HAL_LOG_SIZE]; /**< Ring buffer.                  */
-} logdev = { 0, 0, {0, }};
+PRIVATE struct {
+    size_t head;            /**< First element in the buffer.   */
+    size_t tail;            /**< Next free slot in the buffer. */
+    char buf[HAL_LOG_SIZE]; /**< Ring buffer.                  */
+} logdev = {0,
+            0,
+            {
+                0,
+            }};
 
 /*============================================================================*
  * hal_log_flush()                                                            *
@@ -50,27 +53,26 @@ PRIVATE struct
  */
 PRIVATE void hal_log_flush(void)
 {
-	ssize_t i;              /* Number of bytes to flush. */
-	char buf[KBUFFER_SIZE]; /* Temporary buffer.         */
+    ssize_t i;              /* Number of bytes to flush. */
+    char buf[KBUFFER_SIZE]; /* Temporary buffer.         */
 
-	/* No data, so nothing to do. */
-	if (logdev.head == logdev.tail)
-		return;
+    /* No data, so nothing to do. */
+    if (logdev.head == logdev.tail)
+        return;
 
-	/* Copy data from ring buffer. */
-	for (i = 0; i < KBUFFER_SIZE; /* noop */ )
-	{
-		buf[i] = logdev.buf[logdev.head];
+    /* Copy data from ring buffer. */
+    for (i = 0; i < KBUFFER_SIZE; /* noop */) {
+        buf[i] = logdev.buf[logdev.head];
 
-		i++;
-		logdev.head = (logdev.head + 1)%HAL_LOG_SIZE;
-		dcache_invalidate();
+        i++;
+        logdev.head = (logdev.head + 1) % HAL_LOG_SIZE;
+        dcache_invalidate();
 
-		if (logdev.head == logdev.tail)
-			break;
-	}
+        if (logdev.head == logdev.tail)
+            break;
+    }
 
-	stdout_write(buf, i);
+    stdout_write(buf, i);
 }
 
 /*============================================================================*
@@ -88,19 +90,17 @@ PRIVATE void hal_log_flush(void)
  */
 PUBLIC void hal_log_write(const char *buf, size_t n)
 {
-	/* Avoid race conditions. */
-	if (core_get_id() == COREID_MASTER)
-	{
-		/* Copy data to ring buffer. */
-		for (size_t i = 0; i < n; i++)
-		{
-			logdev.buf[logdev.tail] = buf[i];
-			logdev.tail = (logdev.tail + 1)%HAL_LOG_SIZE;
-			dcache_invalidate();
-		}
-	}
+    /* Avoid race conditions. */
+    if (core_get_id() == COREID_MASTER) {
+        /* Copy data to ring buffer. */
+        for (size_t i = 0; i < n; i++) {
+            logdev.buf[logdev.tail] = buf[i];
+            logdev.tail = (logdev.tail + 1) % HAL_LOG_SIZE;
+            dcache_invalidate();
+        }
+    }
 
-	stdout_write(buf, n);
+    stdout_write(buf, n);
 }
 
 /*============================================================================*
@@ -116,5 +116,5 @@ PUBLIC void hal_log_write(const char *buf, size_t n)
  */
 PUBLIC void hal_log_setup(void)
 {
-	stdout_init();
+    stdout_init();
 }

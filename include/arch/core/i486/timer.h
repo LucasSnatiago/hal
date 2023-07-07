@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -33,34 +33,34 @@
  */
 /**@{*/
 
-	#include <nanvix/const.h>
+#include <nanvix/const.h>
 
 #ifndef _ASM_FILE_
 
-	/**
-	 * @brief Oscillator frequency (in Hz)
-	 */
-	#define PIT_FREQUENCY 1193182
+/**
+ * @brief Oscillator frequency (in Hz)
+ */
+#define PIT_FREQUENCY 1193182
 
-	/**
-	 * @name Registers
-	 */
-	/**@{*/
-	#define PIT_CTRL 0x43 /**< Control */
-	#define PIT_DATA 0x40 /**< Data    */
-	/**@}*/
+/**
+ * @name Registers
+ */
+/**@{*/
+#define PIT_CTRL 0x43 /**< Control */
+#define PIT_DATA 0x40 /**< Data    */
+/**@}*/
 
-	/**
-	 * @brief Initializes the timer device.
-	 *
-	 * @param freq Target frequency for the timer device.
-	 */
-	EXTERN void i486_timer_init(unsigned freq);
+/**
+ * @brief Initializes the timer device.
+ *
+ * @param freq Target frequency for the timer device.
+ */
+EXTERN void i486_timer_init(unsigned freq);
 
-	/**
-	 * @brief Resets the timer device.
-	 */
-	EXTERN void i486_timer_reset(void);
+/**
+ * @brief Resets the timer device.
+ */
+EXTERN void i486_timer_reset(void);
 
 #endif /* !_ASM_FILE_ */
 

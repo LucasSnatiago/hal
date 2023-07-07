@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,8 +25,8 @@
 /* Must come first. */
 #define __NEED_HAL_CORE
 
-#include <nanvix/hal/core.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/core.h>
 #include <nanvix/hlib.h>
 
 /*===========================================================================*
@@ -36,26 +36,20 @@
 /**
  * @brief Generic exception handler.
  */
-PUBLIC int __do_kcall(
-	word_t arg0,
-	word_t arg1,
-	word_t arg2,
-	word_t arg3,
-	word_t arg4,
-	word_t kcall_nr
-)
+PUBLIC int __do_kcall(word_t arg0, word_t arg1, word_t arg2, word_t arg3,
+                      word_t arg4, word_t kcall_nr)
 {
-	int ret;
-	int modenum;
+    int ret;
+    int modenum;
 
-	/* Set trap execution mode. */
-	modenum = core_status_set_mode(CORE_STATUS_MODE_TRAP);
+    /* Set trap execution mode. */
+    modenum = core_status_set_mode(CORE_STATUS_MODE_TRAP);
 
-		/* Call kernel call. */
-		ret = do_kcall(arg0, arg1, arg2, arg3, arg4, kcall_nr);
+    /* Call kernel call. */
+    ret = do_kcall(arg0, arg1, arg2, arg3, arg4, kcall_nr);
 
-	/* Reset trap execution mode. */
-	core_status_set_mode(modenum);
+    /* Reset trap execution mode. */
+    core_status_set_mode(modenum);
 
-	return (ret);
+    return (ret);
 }

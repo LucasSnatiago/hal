@@ -25,17 +25,17 @@
 #define __NEED_RESOURCE
 
 #include <arch/target/unix64/unix64/portal.h>
+#include <fcntl.h>
+#include <nanvix/const.h>
 #include <nanvix/hal/processor.h>
 #include <nanvix/hal/resource.h>
-#include <nanvix/const.h>
 #include <nanvix/hlib.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
-#include <semaphore.h>
-#include <pthread.h>
-#include <fcntl.h>
 #include <posix/errno.h>
+#include <pthread.h>
+#include <semaphore.h>
 #include <stdio.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #if !__NANVIX_IKC_USES_ONLY_MAILBOX
@@ -53,54 +53,56 @@
 /**
  * @brief Portal buffer.
  */
-struct portal_buffer
-{
-	volatile int busy;                 /**< Busy?  */
-	volatile int ready;                /**< Ready? */
-	char data[UNIX64_PORTAL_MAX_SIZE]; /**< Data   */
+struct portal_buffer {
+    volatile int busy;                 /**< Busy?  */
+    volatile int ready;                /**< Ready? */
+    char data[UNIX64_PORTAL_MAX_SIZE]; /**< Data   */
 };
 
 /**
  * @brief Portals
  */
-struct portal
-{
-	/*
-	 * XXX: Don't Touch! This Must Come First!
-	 */
-	struct resource resource;                               /**< Generic resource information.  */
+struct portal {
+    /*
+     * XXX: Don't Touch! This Must Come First!
+     */
+    struct resource resource; /**< Generic resource information.  */
 
-	int remote;                                             /**< Remote NoC node ID.            */
-	int local;                                              /**< Local NoC node ID.             */
-	sem_t *lock;                                            /**< Portal lock.                   */
-	char portalname[UNIX64_PORTAL_NAME_LENGTH];             /**< Name of shared memory region.  */
-	char lockname[UNIX64_PORTAL_NAME_LENGTH];               /**< Name of shared memory region.  */
-	struct portal_buffer *buffers[PROCESSOR_NOC_NODES_NUM]; /**< Portal buffers.                */
-	int fd[PROCESSOR_NOC_NODES_NUM];                        /**< Underlying file descriptors.   */
+    int remote;  /**< Remote NoC node ID.            */
+    int local;   /**< Local NoC node ID.             */
+    sem_t *lock; /**< Portal lock.                   */
+    char portalname[UNIX64_PORTAL_NAME_LENGTH]; /**< Name of shared memory
+                                                   region.  */
+    char lockname[UNIX64_PORTAL_NAME_LENGTH]; /**< Name of shared memory region.
+                                               */
+    struct portal_buffer
+        *buffers[PROCESSOR_NOC_NODES_NUM]; /**< Portal buffers. */
+    int fd[PROCESSOR_NOC_NODES_NUM]; /**< Underlying file descriptors.   */
 };
 
 /**
  * @brief Table of portals.
  */
-PRIVATE struct
-{
-	/**
-	 * @brief Input portals.
-	 */
-	struct portal rxs[UNIX64_PORTAL_CREATE_MAX];
+PRIVATE struct {
+    /**
+     * @brief Input portals.
+     */
+    struct portal rxs[UNIX64_PORTAL_CREATE_MAX];
 
-	/**
-	 * @brief Output portals.
-	 */
-	struct portal txs[UNIX64_PORTAL_OPEN_MAX];
+    /**
+     * @brief Output portals.
+     */
+    struct portal txs[UNIX64_PORTAL_OPEN_MAX];
 } portaltab = {
-	.rxs[0 ... UNIX64_PORTAL_CREATE_MAX - 1] = {
-		.resource = {0},
-	},
+    .rxs[0 ... UNIX64_PORTAL_CREATE_MAX - 1] =
+        {
+            .resource = {0},
+        },
 
-	.txs[0 ... UNIX64_PORTAL_OPEN_MAX - 1] = {
-		.resource = {0},
-	},
+    .txs[0 ... UNIX64_PORTAL_OPEN_MAX - 1] =
+        {
+            .resource = {0},
+        },
 };
 
 /**
@@ -111,13 +113,12 @@ PRIVATE pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 /**
  * @brief Resource pool for portals
  */
-PRIVATE struct
-{
-	const struct resource_pool rx;
-	const struct resource_pool tx;
+PRIVATE struct {
+    const struct resource_pool rx;
+    const struct resource_pool tx;
 } pool = {
-	.rx = {portaltab.rxs, UNIX64_PORTAL_CREATE_MAX, sizeof(struct portal)},
-	.tx = {portaltab.txs, UNIX64_PORTAL_OPEN_MAX,   sizeof(struct portal)},
+    .rx = {portaltab.rxs, UNIX64_PORTAL_CREATE_MAX, sizeof(struct portal)},
+    .tx = {portaltab.txs, UNIX64_PORTAL_OPEN_MAX, sizeof(struct portal)},
 };
 
 /*============================================================================*
@@ -129,7 +130,7 @@ PRIVATE struct
  */
 PRIVATE void unix64_portals_lock(void)
 {
-	pthread_mutex_lock(&lock);
+    pthread_mutex_lock(&lock);
 }
 
 /*============================================================================*
@@ -141,7 +142,7 @@ PRIVATE void unix64_portals_lock(void)
  */
 PRIVATE void unix64_portals_unlock(void)
 {
-	pthread_mutex_unlock(&lock);
+    pthread_mutex_unlock(&lock);
 }
 
 /*============================================================================*
@@ -155,82 +156,70 @@ PRIVATE void unix64_portals_unlock(void)
  * @param local  Target local NoC node.
  * @param remote Target remote NoC node.
  */
-PRIVATE int unix64_portal_buffer_open(struct portal *portal, int local, int remote)
+PRIVATE int unix64_portal_buffer_open(struct portal *portal, int local,
+                                      int remote)
 {
-	int shm;
-	struct stat st;
-	int initialize = 0;
+    int shm;
+    struct stat st;
+    int initialize = 0;
 
-	/* Build portal name. */
-	sprintf(portal->portalname,
-		"%s-%d-%d",
-		UNIX64_PORTAL_BASENAME,
-		local,
-		remote
-	);
+    /* Build portal name. */
+    sprintf(
+        portal->portalname, "%s-%d-%d", UNIX64_PORTAL_BASENAME, local, remote);
 
-	/* Create portal buffers. */
-	KASSERT((shm =
-		shm_open(portal->portalname,
-			O_RDWR | O_CREAT,
-			S_IRUSR | S_IWUSR)
-		) != -1
-	);
+    /* Create portal buffers. */
+    KASSERT((shm = shm_open(portal->portalname,
+                            O_RDWR | O_CREAT,
+                            S_IRUSR | S_IWUSR)) != -1);
 
-	/* Allocate portal buffer. */
-	KASSERT(fstat(shm, &st) != -1);
-	if (st.st_size == 0)
-	{
-		initialize = 1;
-		KASSERT(
-			ftruncate(shm,
-				sizeof(struct portal_buffer)
-			) != -1
-		);
-	}
+    /* Allocate portal buffer. */
+    KASSERT(fstat(shm, &st) != -1);
+    if (st.st_size == 0) {
+        initialize = 1;
+        KASSERT(ftruncate(shm, sizeof(struct portal_buffer)) != -1);
+    }
 
-	/* Attach portal buffer. */
-	KASSERT((portal->buffers[remote] =
-		mmap(NULL,
-			PROCESSOR_NOC_NODES_NUM*sizeof(struct portal_buffer),
-			PROT_READ | PROT_WRITE,
-			MAP_SHARED,
-			shm,
-			0)
-		) != NULL
-	);
+    /* Attach portal buffer. */
+    KASSERT((portal->buffers[remote] =
+                 mmap(NULL,
+                      PROCESSOR_NOC_NODES_NUM * sizeof(struct portal_buffer),
+                      PROT_READ | PROT_WRITE,
+                      MAP_SHARED,
+                      shm,
+                      0)) != NULL);
 
-	if (initialize)
-	{
-		portal->buffers[remote]->busy = 0;
-		portal->buffers[remote]->ready = 0;
-	}
+    if (initialize) {
+        portal->buffers[remote]->busy = 0;
+        portal->buffers[remote]->ready = 0;
+    }
 
-	return (shm);
+    return (shm);
 }
 
 /**
  * @see unix64_portal_buffer_open()
  */
-PRIVATE void unix64_portal_buffer_rx_open(struct portal *portal, int local, int remote)
+PRIVATE void unix64_portal_buffer_rx_open(struct portal *portal, int local,
+                                          int remote)
 {
-	int fd;
+    int fd;
 
-	fd = unix64_portal_buffer_open(portal, local, remote);
+    fd = unix64_portal_buffer_open(portal, local, remote);
 
-	portal->fd[remote] = fd;
+    portal->fd[remote] = fd;
 }
 
 /**
  * @see unix64_portal_buffer_open()
  */
-PRIVATE void unix64_portal_buffer_tx_open(struct portal *portal, int local, int remote)
+PRIVATE void unix64_portal_buffer_tx_open(struct portal *portal, int local,
+                                          int remote)
 {
-	int fd;
+    int fd;
 
-	fd = unix64_portal_buffer_open(portal, remote, local);
+    fd = unix64_portal_buffer_open(portal, remote, local);
 
-	portal->fd[remote] = fd;
+    portal->fd[remote] = fd;
 }
 
 /*============================================================================*
@@ -245,14 +234,12 @@ PRIVATE void unix64_portal_buffer_tx_open(struct portal *portal, int local, int 
  */
 PRIVATE void unix64_portal_buffer_close(struct portal *portal, int bufferid)
 {
-	/* Detach portal buffer. */
-	KASSERT(munmap(portal->buffers[bufferid],
-			sizeof(struct portal_buffer)
-		) != -1
-	);
+    /* Detach portal buffer. */
+    KASSERT(munmap(portal->buffers[bufferid], sizeof(struct portal_buffer)) !=
+            -1);
 
-	/* Destroy portal buffers. */
-	shm_unlink(portal->portalname);
+    /* Destroy portal buffers. */
+    shm_unlink(portal->portalname);
 }
 
 /*============================================================================*
@@ -266,21 +253,13 @@ PRIVATE void unix64_portal_buffer_close(struct portal *portal, int bufferid)
  */
 PRIVATE void unix64_portal_lock_open(struct portal *portal, int local)
 {
-	/* Build portal name. */
-	sprintf(portal->lockname,
-		"%s-%d",
-		UNIX64_PORTAL_BASENAME,
-		local
-	);
+    /* Build portal name. */
+    sprintf(portal->lockname, "%s-%d", UNIX64_PORTAL_BASENAME, local);
 
-	/* Create and initialize portal buffer lock. */
-	KASSERT((portal->lock =
-		sem_open(portal->lockname,
-			O_RDWR | O_CREAT,
-			S_IRUSR | S_IWUSR,
-			1)
-		) != NULL
-	);
+    /* Create and initialize portal buffer lock. */
+    KASSERT((portal->lock = sem_open(
+                 portal->lockname, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR, 1)) !=
+            NULL);
 }
 
 /**
@@ -288,7 +267,7 @@ PRIVATE void unix64_portal_lock_open(struct portal *portal, int local)
  */
 PRIVATE void unix64_portal_lock_rx_open(struct portal *portal, int local)
 {
-	unix64_portal_lock_open(portal, local);
+    unix64_portal_lock_open(portal, local);
 }
 
 /**
@@ -296,7 +275,7 @@ PRIVATE void unix64_portal_lock_rx_open(struct portal *portal, int local)
  */
 PRIVATE void unix64_portal_lock_tx_open(struct portal *portal, int remote)
 {
-	unix64_portal_lock_open(portal, remote);
+    unix64_portal_lock_open(portal, remote);
 }
 
 /*============================================================================*
@@ -310,8 +289,8 @@ PRIVATE void unix64_portal_lock_tx_open(struct portal *portal, int remote)
  */
 PRIVATE void unix64_portal_lock_close(struct portal *portal)
 {
-	KASSERT(sem_close(portal->lock) != -1);
-	sem_unlink(portal->lockname);
+    KASSERT(sem_close(portal->lock) != -1);
+    sem_unlink(portal->lockname);
 }
 
 /*============================================================================*
@@ -325,7 +304,7 @@ PRIVATE void unix64_portal_lock_close(struct portal *portal)
  */
 PRIVATE inline void unix64_portal_lock(struct portal *portal)
 {
-	KASSERT(sem_wait(portal->lock) != -1);
+    KASSERT(sem_wait(portal->lock) != -1);
 }
 
 /*============================================================================*
@@ -339,7 +318,7 @@ PRIVATE inline void unix64_portal_lock(struct portal *portal)
  */
 PRIVATE inline void unix64_portal_unlock(struct portal *portal)
 {
-	KASSERT(sem_post(portal->lock) != -1);
+    KASSERT(sem_post(portal->lock) != -1);
 }
 
 /*============================================================================*
@@ -356,18 +335,17 @@ PRIVATE inline void unix64_portal_unlock(struct portal *portal)
  */
 PRIVATE int unix64_portal_rx_exists(int local)
 {
-	for (int i = 0; i < UNIX64_PORTAL_CREATE_MAX; i++)
-	{
-		/* Skip invalid portals. */
-		if (!resource_is_used(&portaltab.rxs[i].resource))
-			continue;
+    for (int i = 0; i < UNIX64_PORTAL_CREATE_MAX; i++) {
+        /* Skip invalid portals. */
+        if (!resource_is_used(&portaltab.rxs[i].resource))
+            continue;
 
-		/* Exists. */
-		if (portaltab.rxs[i].local == local)
-			return (1);
-	}
+        /* Exists. */
+        if (portaltab.rxs[i].local == local)
+            return (1);
+    }
 
-	return (0);
+    return (0);
 }
 
 /**
@@ -379,41 +357,39 @@ PRIVATE int unix64_portal_rx_exists(int local)
  */
 PRIVATE int do_unix64_portal_create(int local)
 {
-	int error;    /* Error code.   */
-	int portalid; /* ID of portal. */
+    int error;    /* Error code.   */
+    int portalid; /* ID of portal. */
 
-	unix64_portals_lock();
+    unix64_portals_lock();
 
-		/* Exists. */
-		if (unix64_portal_rx_exists(local))
-		{
-			error = -EEXIST;
-			goto error0;
-		}
+    /* Exists. */
+    if (unix64_portal_rx_exists(local)) {
+        error = -EEXIST;
+        goto error0;
+    }
 
-		/* Allocate portal. */
-		if ((portalid = resource_alloc(&pool.rx)) < 0)
-		{
-			error = -EAGAIN;
-			goto error0;
-		}
+    /* Allocate portal. */
+    if ((portalid = resource_alloc(&pool.rx)) < 0) {
+        error = -EAGAIN;
+        goto error0;
+    }
 
-		/* Open portal lock. */
-		unix64_portal_lock_rx_open(&portaltab.rxs[portalid], local);
+    /* Open portal lock. */
+    unix64_portal_lock_rx_open(&portaltab.rxs[portalid], local);
 
-		/* Initialize portal. */
-		portaltab.rxs[portalid].local = local;
-		portaltab.rxs[portalid].remote = -1;
-		resource_set_rdonly(&portaltab.rxs[portalid].resource);
-		resource_set_notbusy(&portaltab.rxs[portalid].resource);
+    /* Initialize portal. */
+    portaltab.rxs[portalid].local = local;
+    portaltab.rxs[portalid].remote = -1;
+    resource_set_rdonly(&portaltab.rxs[portalid].resource);
+    resource_set_notbusy(&portaltab.rxs[portalid].resource);
 
-		unix64_portals_unlock();
+    unix64_portals_unlock();
 
-	return (portalid);
+    return (portalid);
 
 error0:
-	unix64_portals_unlock();
-	return (error);
+    unix64_portals_unlock();
+    return (error);
 }
 
 /**
@@ -421,7 +397,7 @@ error0:
  */
 PUBLIC int unix64_portal_create(int local)
 {
-	return (do_unix64_portal_create(local));
+    return (do_unix64_portal_create(local));
 }
 
 /*============================================================================*
@@ -439,67 +415,60 @@ PRIVATE int do_unix64_portal_allow(int portalid, int remote)
 {
 again:
 
-	unix64_portals_lock();
+    unix64_portals_lock();
 
-		/* Bad portal. */
-		if (!resource_is_used(&portaltab.rxs[portalid].resource))
-		{
-			unix64_portals_unlock();
-			return (-EBADF);
-		}
+    /* Bad portal. */
+    if (!resource_is_used(&portaltab.rxs[portalid].resource)) {
+        unix64_portals_unlock();
+        return (-EBADF);
+    }
 
-		/* Busy portal. */
-		if (resource_is_busy(&portaltab.rxs[portalid].resource))
-		{
-			unix64_portals_unlock();
-			goto again;
-		}
+    /* Busy portal. */
+    if (resource_is_busy(&portaltab.rxs[portalid].resource)) {
+        unix64_portals_unlock();
+        goto again;
+    }
 
-		/* Read operation is ongoing. */
-		if (portaltab.rxs[portalid].remote != -1)
-		{
-			unix64_portals_unlock();
-			return (-EBUSY);
-		}
+    /* Read operation is ongoing. */
+    if (portaltab.rxs[portalid].remote != -1) {
+        unix64_portals_unlock();
+        return (-EBUSY);
+    }
 
-		/*
-		 * Set portal as busy, because we
-		 * release the global lock below.
-		 */
-		resource_set_busy(&portaltab.rxs[portalid].resource);
+    /*
+     * Set portal as busy, because we
+     * release the global lock below.
+     */
+    resource_set_busy(&portaltab.rxs[portalid].resource);
 
-	unix64_portals_unlock();
+    unix64_portals_unlock();
 
-	unix64_portal_lock(&portaltab.rxs[portalid]);
+    unix64_portal_lock(&portaltab.rxs[portalid]);
 
-		if (portaltab.rxs[portalid].buffers[remote] == NULL)
-		{
-			unix64_portal_buffer_rx_open(
-				&portaltab.rxs[portalid],
-				portaltab.rxs[portalid].local,
-				remote
-			);
-		}
+    if (portaltab.rxs[portalid].buffers[remote] == NULL) {
+        unix64_portal_buffer_rx_open(
+            &portaltab.rxs[portalid], portaltab.rxs[portalid].local, remote);
+    }
 
-		/* Device is busy. */
-		if (portaltab.rxs[portalid].buffers[remote]->busy)
-			goto error0;
+    /* Device is busy. */
+    if (portaltab.rxs[portalid].buffers[remote]->busy)
+        goto error0;
 
-		/* Device is ready. */
-		if (portaltab.rxs[portalid].buffers[remote]->ready)
-			goto error0;
+    /* Device is ready. */
+    if (portaltab.rxs[portalid].buffers[remote]->ready)
+        goto error0;
 
-		portaltab.rxs[portalid].remote = remote;
-		portaltab.rxs[portalid].buffers[remote]->ready = 1;
-		resource_set_notbusy(&portaltab.rxs[portalid].resource);
+    portaltab.rxs[portalid].remote = remote;
+    portaltab.rxs[portalid].buffers[remote]->ready = 1;
+    resource_set_notbusy(&portaltab.rxs[portalid].resource);
 
-	unix64_portal_unlock(&portaltab.rxs[portalid]);
+    unix64_portal_unlock(&portaltab.rxs[portalid]);
 
-	return (0);
+    return (0);
 
 error0:
-	unix64_portal_unlock(&portaltab.rxs[portalid]);
-	return (-EBUSY);
+    unix64_portal_unlock(&portaltab.rxs[portalid]);
+    return (-EBUSY);
 }
 
 /**
@@ -507,7 +476,7 @@ error0:
  */
 PUBLIC int unix64_portal_allow(int portalid, int remote)
 {
-	return (do_unix64_portal_allow(portalid, remote));
+    return (do_unix64_portal_allow(portalid, remote));
 }
 
 /*============================================================================*
@@ -525,22 +494,21 @@ PUBLIC int unix64_portal_allow(int portalid, int remote)
  */
 PRIVATE int unix64_portal_tx_exists(int local, int remote)
 {
-	for (int i = 0; i < UNIX64_PORTAL_OPEN_MAX; i++)
-	{
-		/* Skip invalid portals. */
-		if (!resource_is_used(&portaltab.txs[i].resource))
-			continue;
+    for (int i = 0; i < UNIX64_PORTAL_OPEN_MAX; i++) {
+        /* Skip invalid portals. */
+        if (!resource_is_used(&portaltab.txs[i].resource))
+            continue;
 
-		/* Skip invalid remotes. */
-		if (portaltab.txs[i].remote != remote)
-			continue;
+        /* Skip invalid remotes. */
+        if (portaltab.txs[i].remote != remote)
+            continue;
 
-		/* Exists. */
-		if (portaltab.txs[i].local == local)
-			return (1);
-	}
+        /* Exists. */
+        if (portaltab.txs[i].local == local)
+            return (1);
+    }
 
-	return (0);
+    return (0);
 }
 
 /**
@@ -552,42 +520,40 @@ PRIVATE int unix64_portal_tx_exists(int local, int remote)
  */
 PRIVATE int do_unix64_portal_open(int local, int remote)
 {
-	int error;    /* Error.        */
-	int portalid; /* ID of portal. */
+    int error;    /* Error.        */
+    int portalid; /* ID of portal. */
 
-	unix64_portals_lock();
+    unix64_portals_lock();
 
-		/* Exists. */
-		if (unix64_portal_tx_exists(local, remote))
-		{
-			error = -EEXIST;
-			goto error0;
-		}
+    /* Exists. */
+    if (unix64_portal_tx_exists(local, remote)) {
+        error = -EEXIST;
+        goto error0;
+    }
 
-		/* Allocate portal. */
-		if ((portalid = resource_alloc(&pool.tx)) < 0)
-		{
-			error = -EAGAIN;
-			goto error0;
-		}
+    /* Allocate portal. */
+    if ((portalid = resource_alloc(&pool.tx)) < 0) {
+        error = -EAGAIN;
+        goto error0;
+    }
 
-		/* Open portal lock and buffer. */
-		unix64_portal_lock_tx_open(&portaltab.txs[portalid], remote);
-		unix64_portal_buffer_tx_open(&portaltab.txs[portalid], local, remote);
+    /* Open portal lock and buffer. */
+    unix64_portal_lock_tx_open(&portaltab.txs[portalid], remote);
+    unix64_portal_buffer_tx_open(&portaltab.txs[portalid], local, remote);
 
-		/* Initialize portal. */
-		portaltab.txs[portalid].local = local;
-		portaltab.txs[portalid].remote = remote;
-		resource_set_wronly(&portaltab.txs[portalid].resource);
-		resource_set_notbusy(&portaltab.txs[portalid].resource);
+    /* Initialize portal. */
+    portaltab.txs[portalid].local = local;
+    portaltab.txs[portalid].remote = remote;
+    resource_set_wronly(&portaltab.txs[portalid].resource);
+    resource_set_notbusy(&portaltab.txs[portalid].resource);
 
-	unix64_portals_unlock();
+    unix64_portals_unlock();
 
-	return (portalid);
+    return (portalid);
 
 error0:
-	unix64_portals_unlock();
-	return (error);
+    unix64_portals_unlock();
+    return (error);
 }
 
 /**
@@ -595,7 +561,7 @@ error0:
  */
 PUBLIC int unix64_portal_open(int local, int remote)
 {
-	return (do_unix64_portal_open(local, remote));
+    return (do_unix64_portal_open(local, remote));
 }
 
 /*============================================================================*
@@ -611,64 +577,62 @@ PUBLIC int unix64_portal_open(int local, int remote)
  */
 PRIVATE ssize_t do_unix64_portal_read(int portalid, void *buf, size_t n)
 {
-	int nread;
-	int remote;
-	int err;
+    int nread;
+    int remote;
+    int err;
 
-	err = -EBADF;
+    err = -EBADF;
 
-	unix64_portals_lock();
+    unix64_portals_lock();
 
-		/* Bad portal. */
-		if (!resource_is_used(&portaltab.rxs[portalid].resource))
-			goto error0;
+    /* Bad portal. */
+    if (!resource_is_used(&portaltab.rxs[portalid].resource))
+        goto error0;
 
-		/* Busy portal. */
-		if (resource_is_busy(&portaltab.rxs[portalid].resource))
-		{
-			err = -EBUSY;
-			goto error0;
-		}
+    /* Busy portal. */
+    if (resource_is_busy(&portaltab.rxs[portalid].resource)) {
+        err = -EBUSY;
+        goto error0;
+    }
 
-		/* No read operation is ongoing. */
-		if (portaltab.rxs[portalid].remote == -1)
-			goto error0;
+    /* No read operation is ongoing. */
+    if (portaltab.rxs[portalid].remote == -1)
+        goto error0;
 
-		/*
-		 * Set portal as busy, because we
-		 * release the global lock below.
-		 */
-		resource_set_busy(&portaltab.rxs[portalid].resource);
+    /*
+     * Set portal as busy, because we
+     * release the global lock below.
+     */
+    resource_set_busy(&portaltab.rxs[portalid].resource);
 
-	unix64_portals_unlock();
+    unix64_portals_unlock();
 
-	unix64_portal_lock(&portaltab.rxs[portalid]);
+    unix64_portal_lock(&portaltab.rxs[portalid]);
 
-		remote = portaltab.rxs[portalid].remote;
+    remote = portaltab.rxs[portalid].remote;
 
-		/* No data is available. */
-		if (!portaltab.rxs[portalid].buffers[remote]->busy)
-		{
-			resource_set_notbusy(&portaltab.rxs[portalid].resource);
-			unix64_portal_unlock(&portaltab.rxs[portalid]);
-			return (-ENOMSG);
-		}
+    /* No data is available. */
+    if (!portaltab.rxs[portalid].buffers[remote]->busy) {
+        resource_set_notbusy(&portaltab.rxs[portalid].resource);
+        unix64_portal_unlock(&portaltab.rxs[portalid]);
+        return (-ENOMSG);
+    }
 
-		kmemcpy(buf, portaltab.rxs[portalid].buffers[remote]->data, nread = n);
+    kmemcpy(buf, portaltab.rxs[portalid].buffers[remote]->data, nread = n);
 
-		portaltab.rxs[portalid].remote = -1;
-		portaltab.rxs[portalid].buffers[remote]->busy = 0;
-		portaltab.rxs[portalid].buffers[remote]->ready = 0;
+    portaltab.rxs[portalid].remote = -1;
+    portaltab.rxs[portalid].buffers[remote]->busy = 0;
+    portaltab.rxs[portalid].buffers[remote]->ready = 0;
 
-		resource_set_notbusy(&portaltab.rxs[portalid].resource);
+    resource_set_notbusy(&portaltab.rxs[portalid].resource);
 
-	unix64_portal_unlock(&portaltab.rxs[portalid]);
+    unix64_portal_unlock(&portaltab.rxs[portalid]);
 
-	return (nread);
+    return (nread);
 
 error0:
-	unix64_portals_unlock();
-	return (err);
+    unix64_portals_unlock();
+    return (err);
 }
 
 /**
@@ -678,7 +642,7 @@ error0:
  */
 PUBLIC ssize_t unix64_portal_read(int portalid, void *buf, size_t n)
 {
-	return (do_unix64_portal_read(portalid, buf, n));
+    return (do_unix64_portal_read(portalid, buf, n));
 }
 
 /*============================================================================*
@@ -694,70 +658,66 @@ PUBLIC ssize_t unix64_portal_read(int portalid, void *buf, size_t n)
  */
 PRIVATE ssize_t do_unix64_portal_write(int portalid, const void *buf, size_t n)
 {
-	int nwrite;
-	int local;
-	int err;
+    int nwrite;
+    int local;
+    int err;
 
-	unix64_portals_lock();
+    unix64_portals_lock();
 
-		/* Bad portal. */
-		if (!resource_is_used(&portaltab.txs[portalid].resource))
-		{
-			err = -EBADF;
-			goto error0;
-		}
+    /* Bad portal. */
+    if (!resource_is_used(&portaltab.txs[portalid].resource)) {
+        err = -EBADF;
+        goto error0;
+    }
 
-		/* Busy portal. */
-		if (resource_is_busy(&portaltab.txs[portalid].resource))
-		{
-			err = -EBUSY;
-			goto error0;
-		}
+    /* Busy portal. */
+    if (resource_is_busy(&portaltab.txs[portalid].resource)) {
+        err = -EBUSY;
+        goto error0;
+    }
 
-		/*
-		 * Set portal as busy, because we
-		 * release the global lock below.
-		 */
-		resource_set_busy(&portaltab.txs[portalid].resource);
+    /*
+     * Set portal as busy, because we
+     * release the global lock below.
+     */
+    resource_set_busy(&portaltab.txs[portalid].resource);
 
-	unix64_portals_unlock();
+    unix64_portals_unlock();
 
-	unix64_portal_lock(&portaltab.txs[portalid]);
+    unix64_portal_lock(&portaltab.txs[portalid]);
 
-		local = portaltab.txs[portalid].local;
+    local = portaltab.txs[portalid].local;
 
-		/* Remote is not ready. */
-		if (!portaltab.txs[portalid].buffers[local]->ready)
-		{
-			err = -EACCES;
-			goto error1;
-		}
+    /* Remote is not ready. */
+    if (!portaltab.txs[portalid].buffers[local]->ready) {
+        err = -EACCES;
+        goto error1;
+    }
 
-		/* On-going transter. */
-		if (portaltab.txs[portalid].buffers[local]->busy)
-		{
-			err = -EBUSY;
-			goto error1;
-		}
+    /* On-going transter. */
+    if (portaltab.txs[portalid].buffers[local]->busy) {
+        err = -EBUSY;
+        goto error1;
+    }
 
-		kmemcpy(portaltab.txs[portalid].buffers[local]->data, buf, nwrite = n);
+    kmemcpy(portaltab.txs[portalid].buffers[local]->data, buf, nwrite = n);
 
-		portaltab.txs[portalid].buffers[local]->busy = 1;
+    portaltab.txs[portalid].buffers[local]->busy = 1;
 
-		resource_set_notbusy(&portaltab.txs[portalid].resource);
+    resource_set_notbusy(&portaltab.txs[portalid].resource);
 
-	unix64_portal_unlock(&portaltab.txs[portalid]);
+    unix64_portal_unlock(&portaltab.txs[portalid]);
 
-	return (nwrite);
+    return (nwrite);
 
 error1:
-	resource_set_notbusy(&portaltab.txs[portalid].resource);
-	unix64_portal_unlock(&portaltab.txs[portalid]);
-	return (err);
+    resource_set_notbusy(&portaltab.txs[portalid].resource);
+    unix64_portal_unlock(&portaltab.txs[portalid]);
+    return (err);
 
 error0:
-	unix64_portals_unlock();
-	return (err);
+    unix64_portals_unlock();
+    return (err);
 }
 
 /**
@@ -767,7 +727,7 @@ error0:
  */
 PUBLIC ssize_t unix64_portal_write(int portalid, const void *buf, size_t n)
 {
-	return (do_unix64_portal_write(portalid, buf, n));
+    return (do_unix64_portal_write(portalid, buf, n));
 }
 
 /*============================================================================*
@@ -785,50 +745,44 @@ PUBLIC int unix64_portal_unlink(int portalid)
 {
 again:
 
-	unix64_portals_lock();
+    unix64_portals_lock();
 
-		/* Bad local NoC node. */
-		if (portaltab.rxs[portalid].local != processor_node_get_num())
-		{
-			unix64_portals_unlock();
-			return (-EPERM);
-		}
+    /* Bad local NoC node. */
+    if (portaltab.rxs[portalid].local != processor_node_get_num()) {
+        unix64_portals_unlock();
+        return (-EPERM);
+    }
 
-		/* Bad portal. */
-		if (!resource_is_used(&portaltab.rxs[portalid].resource))
-		{
-			unix64_portals_unlock();
-			return (-EBADF);
-		}
+    /* Bad portal. */
+    if (!resource_is_used(&portaltab.rxs[portalid].resource)) {
+        unix64_portals_unlock();
+        return (-EBADF);
+    }
 
-		/* Busy portal. */
-		if (resource_is_busy(&portaltab.rxs[portalid].resource))
-		{
-			unix64_portals_unlock();
-			goto again;
-		}
+    /* Busy portal. */
+    if (resource_is_busy(&portaltab.rxs[portalid].resource)) {
+        unix64_portals_unlock();
+        goto again;
+    }
 
-		/* Release underlying resources. */
-		for (int i = 0; i < PROCESSOR_NOC_NODES_NUM; i++)
-		{
-			if (portaltab.rxs[portalid].buffers[i] != NULL)
-			{
-				portaltab.rxs[portalid].buffers[i]->busy = 0;
-				portaltab.rxs[portalid].buffers[i]->ready = 0;
-				KASSERT(munmap(portaltab.rxs[portalid].buffers[i],
-					sizeof(struct portal_buffer)
-				) == 0);
-				KASSERT(close(portaltab.rxs[portalid].fd[i]) == 0);
-				portaltab.rxs[portalid].buffers[i] = NULL;
-			}
-		}
-		KASSERT(sem_close(portaltab.rxs[portalid].lock) == 0);
+    /* Release underlying resources. */
+    for (int i = 0; i < PROCESSOR_NOC_NODES_NUM; i++) {
+        if (portaltab.rxs[portalid].buffers[i] != NULL) {
+            portaltab.rxs[portalid].buffers[i]->busy = 0;
+            portaltab.rxs[portalid].buffers[i]->ready = 0;
+            KASSERT(munmap(portaltab.rxs[portalid].buffers[i],
+                           sizeof(struct portal_buffer)) == 0);
+            KASSERT(close(portaltab.rxs[portalid].fd[i]) == 0);
+            portaltab.rxs[portalid].buffers[i] = NULL;
+        }
+    }
+    KASSERT(sem_close(portaltab.rxs[portalid].lock) == 0);
 
-		resource_free(&pool.rx, portalid);
+    resource_free(&pool.rx, portalid);
 
-	unix64_portals_unlock();
+    unix64_portals_unlock();
 
-	return (0);
+    return (0);
 }
 
 /*============================================================================*
@@ -844,39 +798,36 @@ again:
  */
 PUBLIC int unix64_portal_close(int portalid)
 {
-	int remote;
+    int remote;
 
 again:
 
-	unix64_portals_lock();
+    unix64_portals_lock();
 
-		/* Bad portal. */
-		if (!resource_is_used(&portaltab.txs[portalid].resource))
-		{
-			unix64_portals_unlock();
-			return (-EBADF);
-		}
+    /* Bad portal. */
+    if (!resource_is_used(&portaltab.txs[portalid].resource)) {
+        unix64_portals_unlock();
+        return (-EBADF);
+    }
 
-		/* Busy portal. */
-		if (resource_is_busy(&portaltab.txs[portalid].resource))
-		{
-			unix64_portals_unlock();
-			goto again;
-		}
+    /* Busy portal. */
+    if (resource_is_busy(&portaltab.txs[portalid].resource)) {
+        unix64_portals_unlock();
+        goto again;
+    }
 
-		/* Close underlying resources. */
-		remote = portaltab.txs[portalid].remote;
-		KASSERT(munmap(portaltab.txs[portalid].buffers[remote],
-			sizeof(struct portal_buffer)
-		) == 0);
-		KASSERT(close(portaltab.txs[portalid].fd[remote]) == 0);
-		KASSERT(sem_close(portaltab.txs[portalid].lock) == 0);
+    /* Close underlying resources. */
+    remote = portaltab.txs[portalid].remote;
+    KASSERT(munmap(portaltab.txs[portalid].buffers[remote],
+                   sizeof(struct portal_buffer)) == 0);
+    KASSERT(close(portaltab.txs[portalid].fd[remote]) == 0);
+    KASSERT(sem_close(portaltab.txs[portalid].lock) == 0);
 
-		resource_free(&pool.tx, portalid);
+    resource_free(&pool.tx, portalid);
 
-	unix64_portals_unlock();
+    unix64_portals_unlock();
 
-	return (0);
+    return (0);
 }
 
 /*============================================================================*
@@ -895,34 +846,32 @@ again:
  */
 PUBLIC int unix64_portal_ioctl(int portalid, unsigned request, va_list args)
 {
-	int ret = (-EINVAL); /* Return value. */
+    int ret = (-EINVAL); /* Return value. */
 
-	UNUSED(portalid);
-	UNUSED(args);
+    UNUSED(portalid);
+    UNUSED(args);
 
-	unix64_portals_lock();
+    unix64_portals_lock();
 
-		switch (request)
-		{
-			case UNIX64_PORTAL_IOCTL_SET_ASYNC_BEHAVIOR:
-			{
-				/**
-				 * The Unix64 does not have asynchronous operations, so the
-				 * definition of lock functions does not have any sense.
-				 */
-				ret = (0);
-			} break;
+    switch (request) {
+    case UNIX64_PORTAL_IOCTL_SET_ASYNC_BEHAVIOR: {
+        /**
+         * The Unix64 does not have asynchronous operations, so the
+         * definition of lock functions does not have any sense.
+         */
+        ret = (0);
+    } break;
 
-			default:
-				break;
-		}
+    default:
+        break;
+    }
 
-	/*
-	 * Release lock, since we may sleep below.
-	 */
-	unix64_portals_unlock();
+    /*
+     * Release lock, since we may sleep below.
+     */
+    unix64_portals_unlock();
 
-	return (ret);
+    return (ret);
 }
 
 /*============================================================================*
@@ -934,13 +883,12 @@ PUBLIC int unix64_portal_ioctl(int portalid, unsigned request, va_list args)
  */
 PUBLIC void unix64_portal_setup(void)
 {
-	kprintf("[hal][target] initializing portals...");
+    kprintf("[hal][target] initializing portals...");
 
-	for (int i = 0; i < UNIX64_PORTAL_CREATE_MAX; i++)
-	{
-		for (int j = 0; j < PROCESSOR_NOC_NODES_NUM; j++)
-			portaltab.rxs[i].buffers[j] = NULL;
-	}
+    for (int i = 0; i < UNIX64_PORTAL_CREATE_MAX; i++) {
+        for (int j = 0; j < PROCESSOR_NOC_NODES_NUM; j++)
+            portaltab.rxs[i].buffers[j] = NULL;
+    }
 }
 
 /*============================================================================*
@@ -952,48 +900,36 @@ PUBLIC void unix64_portal_setup(void)
  */
 PUBLIC void unix64_portal_shutdown(void)
 {
-	/* Input portals. */
-	for (int i = 0; i < UNIX64_PORTAL_CREATE_MAX; i++)
-	{
-		for (int j = 0; j < PROCESSOR_NOC_NODES_NUM; j++)
-		{
-			munmap(portaltab.rxs[i].buffers[j],
-				sizeof(struct portal_buffer)
-			);
-		}
-		sem_close(portaltab.rxs[i].lock);
-	}
+    /* Input portals. */
+    for (int i = 0; i < UNIX64_PORTAL_CREATE_MAX; i++) {
+        for (int j = 0; j < PROCESSOR_NOC_NODES_NUM; j++) {
+            munmap(portaltab.rxs[i].buffers[j], sizeof(struct portal_buffer));
+        }
+        sem_close(portaltab.rxs[i].lock);
+    }
 
-	/* Output portals. */
-	for (int i = 0; i < UNIX64_PORTAL_OPEN_MAX; i++)
-	{
-		for (int j = 0; j < PROCESSOR_NOC_NODES_NUM; j++)
-		{
-			munmap(portaltab.txs[i].buffers[j],
-				sizeof(struct portal_buffer)
-			);
-		}
-		sem_close(portaltab.txs[i].lock);
-	}
+    /* Output portals. */
+    for (int i = 0; i < UNIX64_PORTAL_OPEN_MAX; i++) {
+        for (int j = 0; j < PROCESSOR_NOC_NODES_NUM; j++) {
+            munmap(portaltab.txs[i].buffers[j], sizeof(struct portal_buffer));
+        }
+        sem_close(portaltab.txs[i].lock);
+    }
 
-	/* Unlink portals. */
-	if (cluster_get_num() == PROCESSOR_CLUSTERNUM_MASTER)
-	{
-		for (int i = 0; i < PROCESSOR_NOC_NODES_NUM; i++)
-		{
-			char pathname[UNIX64_PORTAL_NAME_LENGTH];
+    /* Unlink portals. */
+    if (cluster_get_num() == PROCESSOR_CLUSTERNUM_MASTER) {
+        for (int i = 0; i < PROCESSOR_NOC_NODES_NUM; i++) {
+            char pathname[UNIX64_PORTAL_NAME_LENGTH];
 
-			for (int j = 0; j < PROCESSOR_NOC_NODES_NUM; j++)
-			{
-				sprintf(pathname, "%s-%d-%d", UNIX64_PORTAL_BASENAME, i, j);
-				shm_unlink(pathname);
-			}
+            for (int j = 0; j < PROCESSOR_NOC_NODES_NUM; j++) {
+                sprintf(pathname, "%s-%d-%d", UNIX64_PORTAL_BASENAME, i, j);
+                shm_unlink(pathname);
+            }
 
-			sprintf(pathname,"%s-%d", UNIX64_PORTAL_BASENAME, i);
-			sem_unlink(pathname);
-		}
-	}
+            sprintf(pathname, "%s-%d", UNIX64_PORTAL_BASENAME, i);
+            sem_unlink(pathname);
+        }
+    }
 }
 
 #endif /* !__NANVIX_IKC_USES_ONLY_MAILBOX */
-

@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -33,14 +33,12 @@
  *
  * Lookup table for masks of interrupt levels.
  */
-PRIVATE uint32_t intlvl_masks[OR1K_NUM_IRQLVL] = {
-	OR1K_IRQLVL_MASK_0,
-	OR1K_IRQLVL_MASK_1,
-	OR1K_IRQLVL_MASK_2,
-	OR1K_IRQLVL_MASK_3,
-	OR1K_IRQLVL_MASK_4,
-	OR1K_IRQLVL_MASK_5
-};
+PRIVATE uint32_t intlvl_masks[OR1K_NUM_IRQLVL] = {OR1K_IRQLVL_MASK_0,
+                                                  OR1K_IRQLVL_MASK_1,
+                                                  OR1K_IRQLVL_MASK_2,
+                                                  OR1K_IRQLVL_MASK_3,
+                                                  OR1K_IRQLVL_MASK_4,
+                                                  OR1K_IRQLVL_MASK_5};
 
 /**
  * Current interrupt mask of the underlying or1k core.
@@ -59,7 +57,7 @@ PRIVATE int currlevel = OR1K_IRQLVL_0;
  */
 PUBLIC int or1k_pic_lvl_get(void)
 {
-	return (currlevel);
+    return (currlevel);
 }
 
 /**
@@ -69,29 +67,26 @@ PUBLIC int or1k_pic_lvl_get(void)
  */
 PUBLIC int or1k_pic_lvl_set(int newlevel)
 {
-	uint32_t mask;
-	int oldlevel;
+    uint32_t mask;
+    int oldlevel;
 
-	mask = intlvl_masks[newlevel];
-	or1k_mtspr(OR1K_SPR_PICMR, mask);
+    mask = intlvl_masks[newlevel];
+    or1k_mtspr(OR1K_SPR_PICMR, mask);
 
-	/* Check if timer should be masked. */
-	if (newlevel == OR1K_IRQLVL_0)
-	{
-		or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR) & ~OR1K_SPR_SR_TEE);
-		or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR) & ~OR1K_SPR_SR_IEE);
-	}
-	else
-	{
-		or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR) |  OR1K_SPR_SR_TEE);
-		or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR) |  OR1K_SPR_SR_IEE);
-	}
+    /* Check if timer should be masked. */
+    if (newlevel == OR1K_IRQLVL_0) {
+        or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR) & ~OR1K_SPR_SR_TEE);
+        or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR) & ~OR1K_SPR_SR_IEE);
+    } else {
+        or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR) | OR1K_SPR_SR_TEE);
+        or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR) | OR1K_SPR_SR_IEE);
+    }
 
-	currmask = mask;
-	oldlevel = currlevel;
-	currlevel = newlevel;
+    currmask = mask;
+    oldlevel = currlevel;
+    currlevel = newlevel;
 
-	return (oldlevel);
+    return (oldlevel);
 }
 
 /**
@@ -101,10 +96,11 @@ PUBLIC int or1k_pic_lvl_set(int newlevel)
  */
 PUBLIC void or1k_pic_ack(int irq)
 {
-	if (irq == OR1K_IRQ_TIMER)
-		or1k_mtspr(OR1K_SPR_TTMR, or1k_mfspr(OR1K_SPR_TTMR) & ~OR1K_SPR_TTMR_IP);
-	else
-		or1k_mtspr(OR1K_SPR_PICSR, (1UL << irq));
+    if (irq == OR1K_IRQ_TIMER)
+        or1k_mtspr(OR1K_SPR_TTMR,
+                   or1k_mfspr(OR1K_SPR_TTMR) & ~OR1K_SPR_TTMR_IP);
+    else
+        or1k_mtspr(OR1K_SPR_PICSR, (1UL << irq));
 }
 
 /**
@@ -114,16 +110,16 @@ PUBLIC void or1k_pic_ack(int irq)
  */
 PUBLIC int or1k_pic_mask(int irq)
 {
-	/* Invalid interrupt number. */
-	if ((irq < 0) || (irq >= OR1K_IRQ_NUM))
-		return (-EINVAL);
+    /* Invalid interrupt number. */
+    if ((irq < 0) || (irq >= OR1K_IRQ_NUM))
+        return (-EINVAL);
 
-	if (irq == OR1K_IRQ_TIMER)
-		or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR) & ~OR1K_SPR_SR_TEE);
-	else
-		or1k_mtspr(OR1K_SPR_PICMR, or1k_mfspr(OR1K_SPR_PICMR) & ~(1 << irq));
+    if (irq == OR1K_IRQ_TIMER)
+        or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR) & ~OR1K_SPR_SR_TEE);
+    else
+        or1k_mtspr(OR1K_SPR_PICMR, or1k_mfspr(OR1K_SPR_PICMR) & ~(1 << irq));
 
-	return (0);
+    return (0);
 }
 
 /**
@@ -133,16 +129,16 @@ PUBLIC int or1k_pic_mask(int irq)
  */
 PUBLIC int or1k_pic_unmask(int irq)
 {
-	/* Invalid interrupt number. */
-	if ((irq < 0) || (irq >= OR1K_IRQ_NUM))
-		return (-EINVAL);
+    /* Invalid interrupt number. */
+    if ((irq < 0) || (irq >= OR1K_IRQ_NUM))
+        return (-EINVAL);
 
-	if (irq == OR1K_IRQ_TIMER)
-		or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR) | OR1K_SPR_SR_TEE);
-	else
-		or1k_mtspr(OR1K_SPR_PICMR, or1k_mfspr(OR1K_SPR_PICMR) | (1 << irq));
+    if (irq == OR1K_IRQ_TIMER)
+        or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR) | OR1K_SPR_SR_TEE);
+    else
+        or1k_mtspr(OR1K_SPR_PICMR, or1k_mfspr(OR1K_SPR_PICMR) | (1 << irq));
 
-	return (0);
+    return (0);
 }
 
 /**
@@ -152,17 +148,16 @@ PUBLIC int or1k_pic_unmask(int irq)
  */
 PUBLIC int or1k_pic_next(void)
 {
-	unsigned picsr;
-	int bit;
+    unsigned picsr;
+    int bit;
 
-	bit   = 0;
-	picsr = or1k_mfspr(OR1K_SPR_PICSR);
+    bit = 0;
+    picsr = or1k_mfspr(OR1K_SPR_PICSR);
 
-	while (!(picsr & 1) && bit < 32)
-	{
-		picsr >>= 1;
-		bit++;
-	}
+    while (!(picsr & 1) && bit < 32) {
+        picsr >>= 1;
+        bit++;
+    }
 
-	return ( (!picsr) ? 0 : bit );
+    return ((!picsr) ? 0 : bit);
 }

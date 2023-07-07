@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -34,20 +34,18 @@ PUBLIC linux64_spinlock_t linux64_cores_lock;
  */
 PUBLIC int linux64_core_get_id(void)
 {
-	linux64_spinlock_lock(&linux64_cores_lock);
+    linux64_spinlock_lock(&linux64_cores_lock);
 
-	/* Search for target core. */
-	for (int i = 0; i < LINUX64_CLUSTER_NUM_CORES ; i++)
-	{
-		/* Found. */
-		if (linux64_cores_tab[i] == pthread_self())
-		{
-			linux64_spinlock_unlock(&linux64_cores_lock);
-			return (i);
-		}
-	}
+    /* Search for target core. */
+    for (int i = 0; i < LINUX64_CLUSTER_NUM_CORES; i++) {
+        /* Found. */
+        if (linux64_cores_tab[i] == pthread_self()) {
+            linux64_spinlock_unlock(&linux64_cores_lock);
+            return (i);
+        }
+    }
 
-	linux64_spinlock_unlock(&linux64_cores_lock);
+    linux64_spinlock_unlock(&linux64_cores_lock);
 
-	return (-1);
+    return (-1);
 }

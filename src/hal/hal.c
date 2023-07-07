@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -43,30 +43,30 @@
  */
 PUBLIC void hal_init(void)
 {
-	hal_log_setup();
+    hal_log_setup();
 
-	/* Sanity check size of structures. */
-	KASSERT_SIZE(sizeof(struct context), CONTEXT_SIZE);
-	KASSERT(ALIGNED(sizeof(struct context), DWORD_SIZE));
-	KASSERT_SIZE(sizeof(struct exception), EXCEPTION_SIZE);
-	KASSERT(ALIGNED(sizeof(struct exception), DWORD_SIZE));
-	KASSERT_SIZE(sizeof(struct pte), PTE_SIZE);
-	KASSERT_SIZE(sizeof(struct pde), PDE_SIZE);
+    /* Sanity check size of structures. */
+    KASSERT_SIZE(sizeof(struct context), CONTEXT_SIZE);
+    KASSERT(ALIGNED(sizeof(struct context), DWORD_SIZE));
+    KASSERT_SIZE(sizeof(struct exception), EXCEPTION_SIZE);
+    KASSERT(ALIGNED(sizeof(struct exception), DWORD_SIZE));
+    KASSERT_SIZE(sizeof(struct pte), PTE_SIZE);
+    KASSERT_SIZE(sizeof(struct pde), PDE_SIZE);
 
-	exception_setup();
-	interrupt_setup();
-	event_setup();
+    exception_setup();
+    interrupt_setup();
+    event_setup();
 
 #if (PROCESSOR_HAS_NOC)
-	processor_noc_setup();
+    processor_noc_setup();
 #endif
 #if (__TARGET_HAS_SYNC)
-	sync_setup();
+    sync_setup();
 #endif
 #if (__TARGET_HAS_MAILBOX)
-	mailbox_setup();
+    mailbox_setup();
 #endif
 #if (__TARGET_HAS_PORTAL)
-	portal_setup();
+    portal_setup();
 #endif
 }

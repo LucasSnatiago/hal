@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -23,8 +23,8 @@
  */
 
 #define __NEED_HAL_CLUSTER
-#include <nanvix/hal/cluster.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/cluster.h>
 #include <nanvix/hlib.h>
 
 /* Import definitions. */
@@ -34,11 +34,27 @@ EXTERN NORETURN void kmain(int, const char *[]);
  * @brief Cores table.
  */
 PUBLIC struct coreinfo cores[RISCV32_CLUSTER_NUM_CORES] = {
-	{ true,  CORE_RUNNING,   0, NULL, RV32GC_SPINLOCK_UNLOCKED }, /* Master Core   */
-	{ false, CORE_RESETTING, 0, NULL, RV32GC_SPINLOCK_LOCKED   }, /* Slave Core 1  */
-	{ false, CORE_RESETTING, 0, NULL, RV32GC_SPINLOCK_LOCKED   }, /* Slave Core 2  */
-	{ false, CORE_RESETTING, 0, NULL, RV32GC_SPINLOCK_LOCKED   }, /* Slave Core 3  */
-	{ false, CORE_RESETTING, 0, NULL, RV32GC_SPINLOCK_LOCKED   }, /* Slave Core 4  */
+    {true, CORE_RUNNING, 0, NULL, RV32GC_SPINLOCK_UNLOCKED}, /* Master Core   */
+    {false,
+     CORE_RESETTING,
+     0,
+     NULL,
+     RV32GC_SPINLOCK_LOCKED}, /* Slave Core 1  */
+    {false,
+     CORE_RESETTING,
+     0,
+     NULL,
+     RV32GC_SPINLOCK_LOCKED}, /* Slave Core 2  */
+    {false,
+     CORE_RESETTING,
+     0,
+     NULL,
+     RV32GC_SPINLOCK_LOCKED}, /* Slave Core 3  */
+    {false,
+     CORE_RESETTING,
+     0,
+     NULL,
+     RV32GC_SPINLOCK_LOCKED}, /* Slave Core 4  */
 };
 
 /*============================================================================*
@@ -47,15 +63,15 @@ PUBLIC struct coreinfo cores[RISCV32_CLUSTER_NUM_CORES] = {
 
 PUBLIC void riscv32_cluster_setup(void)
 {
-	int coreid;
+    int coreid;
 
-	coreid = rv32gc_core_get_id();
+    coreid = rv32gc_core_get_id();
 
-	if (coreid == RISCV32_CLUSTER_COREID_MASTER)
-		kprintf("[hal] booting up cluster...");
+    if (coreid == RISCV32_CLUSTER_COREID_MASTER)
+        kprintf("[hal] booting up cluster...");
 
-	mem_setup();
-	core_setup(NULL);
+    mem_setup();
+    core_setup(NULL);
 }
 
 /*============================================================================*
@@ -78,13 +94,12 @@ PUBLIC void riscv32_cluster_setup(void)
  */
 PUBLIC NORETURN void riscv32_cluster_slave_setup(void)
 {
-	riscv32_cluster_setup();
+    riscv32_cluster_setup();
 
-	while (true)
-	{
-		core_idle();
-		core_run();
-	}
+    while (true) {
+        core_idle();
+        core_run();
+    }
 }
 
 /*============================================================================*
@@ -104,7 +119,7 @@ PUBLIC NORETURN void riscv32_cluster_slave_setup(void)
  */
 PUBLIC NORETURN void riscv32_cluster_master_setup(void)
 {
-	riscv32_cluster_setup();
+    riscv32_cluster_setup();
 
-	kmain(0, NULL);
+    kmain(0, NULL);
 }

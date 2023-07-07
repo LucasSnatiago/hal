@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -33,7 +33,7 @@
  */
 /**@{*/
 
-	#include <nanvix/const.h>
+#include <nanvix/const.h>
 
 /*============================================================================*
  * Exported Interface                                                         *
@@ -47,13 +47,13 @@
 
 #ifdef __NANVIX_HAL
 
-	/**
-	 * @brief Initializes the interrupt vector table.
-	 */
-	static inline void ivt_setup(void *stack)
-	{
-		((void) stack);
-	}
+/**
+ * @brief Initializes the interrupt vector table.
+ */
+static inline void ivt_setup(void *stack)
+{
+    ((void)stack);
+}
 
 #endif /* __NANVIX_HAL */
 
@@ -62,4 +62,3 @@
 /**@endcond*/
 
 #endif /* ARCH_CORE_OR1k_IVT_H_ */
-

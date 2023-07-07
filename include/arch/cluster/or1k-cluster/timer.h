@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,8 +25,8 @@
 #ifndef ARCH_CLUSTER_OR1K_CLUSTER_TIMER_H_
 #define ARCH_CLUSTER_OR1K_CLUSTER_TIMER_H_
 
-	/* Cluster Interface Implementation */
-	#include <arch/cluster/or1k-cluster/_or1k-cluster.h>
+/* Cluster Interface Implementation */
+#include <arch/cluster/or1k-cluster/_or1k-cluster.h>
 
 /**
  * @addtogroup or1k-core-timer Timer
@@ -36,13 +36,13 @@
  */
 /**@{*/
 
-	#include <nanvix/const.h>
-	#include <posix/stdint.h>
+#include <nanvix/const.h>
+#include <posix/stdint.h>
 
-	/**
-	 * @brief Estimated CPU frequency (in Hz), 20Mhz.
-	 */
-	#define OR1K_CLUSTER_FREQUENCY OR1K_CORE_FREQUENCY
+/**
+ * @brief Estimated CPU frequency (in Hz), 20Mhz.
+ */
+#define OR1K_CLUSTER_FREQUENCY OR1K_CORE_FREQUENCY
 
 /*============================================================================*
  * Exported Interface                                                         *
@@ -52,33 +52,31 @@
  * @cond or1k_cluster
  */
 
-	/**
-	 * @name Exported Constants
-	 */
-	/**@{*/
-	#define CLUSTER_FREQ OR1K_CLUSTER_FREQ /**< @see OR1K_CLUSTER_FREQ */
-	/**@}*/
+/**
+ * @name Exported Constants
+ */
+/**@{*/
+#define CLUSTER_FREQ OR1K_CLUSTER_FREQ /**< @see OR1K_CLUSTER_FREQ */
+/**@}*/
 
-	/**
-	 * @name Exported Functions
-	 */
-	/**@{*/
-	#define __timer_init_fn  /**< timer_init()  */
-	#define __timer_reset_fn /**< timer_reset() */
-	#define __clock_read_fn  /**< clock_read()  */
-	/**@}*/
+/**
+ * @name Exported Functions
+ */
+/**@{*/
+#define __timer_init_fn  /**< timer_init()  */
+#define __timer_reset_fn /**< timer_reset() */
+#define __clock_read_fn  /**< clock_read()  */
+/**@}*/
 
-	/**
-	 * @see or1k_timer_init().
-	 */
-	#define __timer_init(freq) \
-		or1k_timer_init(freq)
+/**
+ * @see or1k_timer_init().
+ */
+#define __timer_init(freq) or1k_timer_init(freq)
 
-	/**
-	 * @see or1k_timer_reset().
-	 */
-	#define timer_reset(void) \
-		or1k_timer_reset(void)
+/**
+ * @see or1k_timer_reset().
+ */
+#define timer_reset(void) or1k_timer_reset(void)
 
 /**@endcond*/
 

@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -27,8 +27,8 @@
 /* Must come first. */
 #define __NEED_HAL_CORE
 
-#include <nanvix/hal/core.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/core.h>
 #include <nanvix/hlib.h>
 
 /*============================================================================*
@@ -44,13 +44,13 @@
  */
 PUBLIC NORETURN void core_halt(void)
 {
-	kprintf("[hal][core] halting...");
+    kprintf("[hal][core] halting...");
 
-	/* Disable all interrupts. */
-	interrupts_disable();
+    /* Disable all interrupts. */
+    interrupts_disable();
 
-	/* Stay here forever. */
-	UNREACHABLE();
+    /* Stay here forever. */
+    UNREACHABLE();
 }
 
 /*============================================================================*
@@ -67,12 +67,12 @@ PUBLIC NORETURN void core_halt(void)
  */
 PUBLIC void core_setup(void *stack)
 {
-	kprintf("[hal][core] booting up core...");
+    kprintf("[hal][core] booting up core...");
 
-	core_status_set_mode(CORE_STATUS_MODE_INTERRUPT);
-	mmu_setup();
-	perf_setup();
-	ivt_setup(stack);
+    core_status_set_mode(CORE_STATUS_MODE_INTERRUPT);
+    mmu_setup();
+    perf_setup();
+    ivt_setup(stack);
 }
 
 #else

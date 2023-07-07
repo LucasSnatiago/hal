@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -33,21 +33,20 @@
  */
 PUBLIC void kprintf(const char *fmt, ...)
 {
-	size_t len;                    /* String length.           */
-	va_list args;                  /* Variable arguments list. */
-	char buffer[KBUFFER_SIZE + 2]; /* Temporary buffer (+2 for \n\0). */
+    size_t len;                    /* String length.           */
+    va_list args;                  /* Variable arguments list. */
+    char buffer[KBUFFER_SIZE + 2]; /* Temporary buffer (+2 for \n\0). */
 
-	/* Convert to raw string. */
-	va_start(args, fmt);
+    /* Convert to raw string. */
+    va_start(args, fmt);
 
-	/* Give it 1 extra byte because the size includes '\0'. */
-	len = kvsnprintf(buffer, KBUFFER_SIZE + 1, fmt, args);
-	/* Substitute the ending with \n\0. */
-	buffer[++len] = '\n';
-	buffer[++len] = '\0';
+    /* Give it 1 extra byte because the size includes '\0'. */
+    len = kvsnprintf(buffer, KBUFFER_SIZE + 1, fmt, args);
+    /* Substitute the ending with \n\0. */
+    buffer[++len] = '\n';
+    buffer[++len] = '\0';
 
-	va_end(args);
+    va_end(args);
 
-	kputs(buffer);
+    kputs(buffer);
 }
-

@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -37,7 +37,7 @@
  */
 static inline int mor1kx_perf_monitor_is_valid(int perf)
 {
-	return ((perf >= 0) && (perf < MOR1KX_PERF_MONITORS_NUM));
+    return ((perf >= 0) && (perf < MOR1KX_PERF_MONITORS_NUM));
 }
 
 /**
@@ -50,10 +50,10 @@ static inline int mor1kx_perf_monitor_is_valid(int perf)
  */
 static inline int mor1kx_perf_event_is_valid(int event)
 {
-	if (event < 0 || event >= MOR1KX_PERF_EVENTS_NUM)
-		return (0);
+    if (event < 0 || event >= MOR1KX_PERF_EVENTS_NUM)
+        return (0);
 
-	return (1);
+    return (1);
 }
 
 /**
@@ -64,28 +64,28 @@ static inline int mor1kx_perf_event_is_valid(int event)
  */
 PUBLIC int mor1kx_perf_start(int perf, int event)
 {
-	or1k_word_t pcmr; /* Mode register. */
+    or1k_word_t pcmr; /* Mode register. */
 
-	/* Invalid performance monitor. */
-	if (UNLIKELY(!mor1kx_perf_monitor_is_valid(perf)))
-		return (-EINVAL);
+    /* Invalid performance monitor. */
+    if (UNLIKELY(!mor1kx_perf_monitor_is_valid(perf)))
+        return (-EINVAL);
 
-	/* Invalid event. */
-	if (UNLIKELY(!mor1kx_perf_event_is_valid(event)))
-		return (-EINVAL);
+    /* Invalid event. */
+    if (UNLIKELY(!mor1kx_perf_event_is_valid(event)))
+        return (-EINVAL);
 
-	/* Invalid counter. */
-	if (UNLIKELY(!(or1k_mfspr(OR1K_SPR_PCMR(perf)) & OR1K_SPR_PCMR_CP)))
-		return (-EINVAL);
+    /* Invalid counter. */
+    if (UNLIKELY(!(or1k_mfspr(OR1K_SPR_PCMR(perf)) & OR1K_SPR_PCMR_CP)))
+        return (-EINVAL);
 
-	/* Reset counter and starts. */
-	pcmr = OR1K_SPR_PCMR_CP | OR1K_SPR_PCMR_CISM | OR1K_SPR_PCMR_CIUM
-		| (1 << (event + MOR1KX_PERF_EVENT_OFFSET));
+    /* Reset counter and starts. */
+    pcmr = OR1K_SPR_PCMR_CP | OR1K_SPR_PCMR_CISM | OR1K_SPR_PCMR_CIUM |
+           (1 << (event + MOR1KX_PERF_EVENT_OFFSET));
 
-	or1k_mtspr(OR1K_SPR_PCCR(perf), 0);
-	or1k_mtspr(OR1K_SPR_PCMR(perf), pcmr);
+    or1k_mtspr(OR1K_SPR_PCCR(perf), 0);
+    or1k_mtspr(OR1K_SPR_PCMR(perf), pcmr);
 
-	return (0);
+    return (0);
 }
 
 /**
@@ -93,17 +93,17 @@ PUBLIC int mor1kx_perf_start(int perf, int event)
  */
 PUBLIC int mor1kx_perf_stop(int perf)
 {
-	/* Invalid performance monitor. */
-	if (UNLIKELY(!mor1kx_perf_monitor_is_valid(perf)))
-		return (-EINVAL);
+    /* Invalid performance monitor. */
+    if (UNLIKELY(!mor1kx_perf_monitor_is_valid(perf)))
+        return (-EINVAL);
 
-	/* Invalid counter. */
-	if (UNLIKELY(!(or1k_mfspr(OR1K_SPR_PCMR(perf)) & OR1K_SPR_PCMR_CP)))
-		return (-EINVAL);
+    /* Invalid counter. */
+    if (UNLIKELY(!(or1k_mfspr(OR1K_SPR_PCMR(perf)) & OR1K_SPR_PCMR_CP)))
+        return (-EINVAL);
 
-	or1k_mtspr(OR1K_SPR_PCMR(perf), OR1K_SPR_PCMR_CP);
+    or1k_mtspr(OR1K_SPR_PCMR(perf), OR1K_SPR_PCMR_CP);
 
-	return (0);
+    return (0);
 }
 
 /**
@@ -111,23 +111,23 @@ PUBLIC int mor1kx_perf_stop(int perf)
  */
 PUBLIC int mor1kx_perf_restart(int perf)
 {
-	or1k_word_t pcmr; /* Mode register.  */
+    or1k_word_t pcmr; /* Mode register.  */
 
-	/* Invalid performance monitor. */
-	if (UNLIKELY(!mor1kx_perf_monitor_is_valid(perf)))
-		return (-EINVAL);
+    /* Invalid performance monitor. */
+    if (UNLIKELY(!mor1kx_perf_monitor_is_valid(perf)))
+        return (-EINVAL);
 
-	/* Stop counter. */
-	pcmr = or1k_mfspr(OR1K_SPR_PCMR(perf));
-	or1k_mtspr(OR1K_SPR_PCMR(perf), 0);
+    /* Stop counter. */
+    pcmr = or1k_mfspr(OR1K_SPR_PCMR(perf));
+    or1k_mtspr(OR1K_SPR_PCMR(perf), 0);
 
-	/* Resets counter. */
-	or1k_mtspr(OR1K_SPR_PCCR(perf), 0);
+    /* Resets counter. */
+    or1k_mtspr(OR1K_SPR_PCCR(perf), 0);
 
-	/* Start counter again. */
-	or1k_mtspr(OR1K_SPR_PCMR(perf), pcmr);
+    /* Start counter again. */
+    or1k_mtspr(OR1K_SPR_PCMR(perf), pcmr);
 
-	return (0);
+    return (0);
 }
 
 /**
@@ -141,18 +141,18 @@ PUBLIC int mor1kx_perf_restart(int perf)
  */
 PUBLIC uint64_t mor1kx_perf_read(int perf)
 {
-	uint32_t pccr; /* Count register. */
+    uint32_t pccr; /* Count register. */
 
-	/* Invalid performance monitor. */
-	if (UNLIKELY(!mor1kx_perf_monitor_is_valid(perf)))
-		return ((uint64_t) - 1);
+    /* Invalid performance monitor. */
+    if (UNLIKELY(!mor1kx_perf_monitor_is_valid(perf)))
+        return ((uint64_t)-1);
 
-	/* Invalid counter. */
-	if (UNLIKELY(!(or1k_mfspr(OR1K_SPR_PCMR(perf)) & OR1K_SPR_PCMR_CP)))
-		return ((uint64_t) - 1);
+    /* Invalid counter. */
+    if (UNLIKELY(!(or1k_mfspr(OR1K_SPR_PCMR(perf)) & OR1K_SPR_PCMR_CP)))
+        return ((uint64_t)-1);
 
-	pccr = or1k_mfspr(OR1K_SPR_PCCR(perf));
-	return ((uint64_t) pccr);
+    pccr = or1k_mfspr(OR1K_SPR_PCCR(perf));
+    return ((uint64_t)pccr);
 }
 
 /**
@@ -163,24 +163,21 @@ PUBLIC uint64_t mor1kx_perf_read(int perf)
  */
 PUBLIC void mor1kx_perf_setup(void)
 {
-	or1k_word_t pcmr; /* Mode register. */
-	int i;            /* Loop index.    */
+    or1k_word_t pcmr; /* Mode register. */
+    int i;            /* Loop index.    */
 
-	/* If performance counters available. */
-	if (or1k_mfspr(OR1K_SPR_UPR) & OR1K_SPR_UPR_PCUP)
-	{
-		/*
-		 * For each counter, resets and disables all
-		 * counters availables.
-		 */
-		for (i = 0; i < MOR1KX_PERF_MONITORS_NUM; i++)
-		{
-			pcmr = or1k_mfspr(OR1K_SPR_PCMR(i));
-			if (pcmr & OR1K_SPR_PCMR_CP)
-			{
-				or1k_mtspr(OR1K_SPR_PCCR(i), 0);
-				or1k_mtspr(OR1K_SPR_PCMR(i), pcmr & OR1K_SPR_PCMR_CP);
-			}
-		}
-	}
+    /* If performance counters available. */
+    if (or1k_mfspr(OR1K_SPR_UPR) & OR1K_SPR_UPR_PCUP) {
+        /*
+         * For each counter, resets and disables all
+         * counters availables.
+         */
+        for (i = 0; i < MOR1KX_PERF_MONITORS_NUM; i++) {
+            pcmr = or1k_mfspr(OR1K_SPR_PCMR(i));
+            if (pcmr & OR1K_SPR_PCMR_CP) {
+                or1k_mtspr(OR1K_SPR_PCCR(i), 0);
+                or1k_mtspr(OR1K_SPR_PCMR(i), pcmr & OR1K_SPR_PCMR_CP);
+            }
+        }
+    }
 }

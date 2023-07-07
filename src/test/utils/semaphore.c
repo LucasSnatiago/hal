@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
 #include "../test.h"
+#include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
+#include <nanvix/hlib.h>
 
 /*----------------------------------------------------------------------------*
  * Semaphore                                                                  *
@@ -39,8 +39,8 @@
  */
 PUBLIC void semaphore_init(struct semaphore *s, int c)
 {
-	spinlock_init(&s->lock);
-	s->count = c;
+    spinlock_init(&s->lock);
+    s->count = c;
 }
 
 /**
@@ -53,15 +53,14 @@ PUBLIC void semaphore_init(struct semaphore *s, int c)
  */
 PUBLIC void semaphore_down(struct semaphore *s)
 {
-	while (true)
-	{
-		spinlock_lock(&s->lock);
-			if (s->count > 0)
-				break;
-		spinlock_unlock(&s->lock);
-	}
-	s->count--;
-	spinlock_unlock(&s->lock);
+    while (true) {
+        spinlock_lock(&s->lock);
+        if (s->count > 0)
+            break;
+        spinlock_unlock(&s->lock);
+    }
+    s->count--;
+    spinlock_unlock(&s->lock);
 }
 
 /**
@@ -71,7 +70,7 @@ PUBLIC void semaphore_down(struct semaphore *s)
  */
 PUBLIC void semaphore_up(struct semaphore *s)
 {
-	spinlock_lock(&s->lock);
-		s->count++;
-	spinlock_unlock(&s->lock);
+    spinlock_lock(&s->lock);
+    s->count++;
+    spinlock_unlock(&s->lock);
 }

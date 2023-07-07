@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#include <arch/core/rv32gc/timer.h>
 #include <arch/core/rv32gc/mcall.h>
+#include <arch/core/rv32gc/timer.h>
 #include <nanvix/const.h>
 #include <nanvix/hlib.h>
 #include <posix/stdint.h>
@@ -60,13 +60,13 @@ PRIVATE uint64_t *rv32gc_mtimecmp = NULL;
  */
 PRIVATE uint64_t rv32gc_mtime_read(void)
 {
-	uint32_t lo;
-	uint32_t hi;
+    uint32_t lo;
+    uint32_t hi;
 
-	hi = *((uint32_t *)(rv32gc_mtime) + 1);
-	lo = *((uint32_t *)(rv32gc_mtime));
+    hi = *((uint32_t *)(rv32gc_mtime) + 1);
+    lo = *((uint32_t *)(rv32gc_mtime));
 
-	return (((hi & 0xffffffffull) << 32) | (lo & 0xffffffffull));
+    return (((hi & 0xffffffffull) << 32) | (lo & 0xffffffffull));
 }
 
 /**
@@ -76,13 +76,13 @@ PRIVATE uint64_t rv32gc_mtime_read(void)
  */
 PRIVATE uint64_t rv32gc_mtimecmp_read(void)
 {
-	uint32_t lo;
-	uint32_t hi;
+    uint32_t lo;
+    uint32_t hi;
 
-	hi = *((uint32_t *)(rv32gc_mtimecmp) + 1);
-	lo = *((uint32_t *)(rv32gc_mtimecmp));
+    hi = *((uint32_t *)(rv32gc_mtimecmp) + 1);
+    lo = *((uint32_t *)(rv32gc_mtimecmp));
 
-	return (((hi & 0xffffffffull) << 32) | (lo & 0xffffffffull));
+    return (((hi & 0xffffffffull) << 32) | (lo & 0xffffffffull));
 }
 
 /**
@@ -92,12 +92,12 @@ PRIVATE uint64_t rv32gc_mtimecmp_read(void)
  */
 PRIVATE void rv32gc_mtimecmp_write(uint64_t time)
 {
-	*((uint32_t *)(rv32gc_mtimecmp) + 1) = 0xffffffff;
-	*((uint32_t *)(rv32gc_mtimecmp)) = (uint32_t)(time & 0xffffffff);
-	*((uint32_t *)(rv32gc_mtimecmp) + 1) =
-		(uint32_t)((time & 0xffffffff00000000ull) >> 32);
+    *((uint32_t *)(rv32gc_mtimecmp) + 1) = 0xffffffff;
+    *((uint32_t *)(rv32gc_mtimecmp)) = (uint32_t)(time & 0xffffffff);
+    *((uint32_t *)(rv32gc_mtimecmp) + 1) =
+        (uint32_t)((time & 0xffffffff00000000ull) >> 32);
 
-	rv32gc_mcall_timer_ack();
+    rv32gc_mcall_timer_ack();
 }
 
 /**
@@ -109,12 +109,12 @@ PRIVATE void rv32gc_mtimecmp_write(uint64_t time)
  */
 PRIVATE uint64_t rv32gc_timer_calibrate(void)
 {
-	uint64_t t0, t1;
+    uint64_t t0, t1;
 
-	t0 = rv32gc_mtime_read();
-	t1 = rv32gc_mtime_read();
+    t0 = rv32gc_mtime_read();
+    t1 = rv32gc_mtime_read();
 
-	return (t1 - t0);
+    return (t1 - t0);
 }
 
 /**
@@ -125,13 +125,13 @@ PRIVATE uint64_t rv32gc_timer_calibrate(void)
  */
 PUBLIC void rv32gc_timer_reset(void)
 {
-	uint64_t ctime;
+    uint64_t ctime;
 
-	/* Get current time. */
-	ctime = rv32gc_mtime_read();
+    /* Get current time. */
+    ctime = rv32gc_mtime_read();
 
-	/* Set next timer interrupt to near future. */
-	rv32gc_mtimecmp_write(ctime + timer_delta + timer_delay);
+    /* Set next timer interrupt to near future. */
+    rv32gc_mtimecmp_write(ctime + timer_delta + timer_delay);
 }
 
 /**
@@ -139,16 +139,15 @@ PUBLIC void rv32gc_timer_reset(void)
  */
 PRIVATE uint64_t ctzdi2(uint64_t a)
 {
-	uint64_t i = 0;
+    uint64_t i = 0;
 
-	if (a > 0)
-	{
-		do
-			i++;
-		while ((a = a >> 1));
-	}
+    if (a > 0) {
+        do
+            i++;
+        while ((a = a >> 1));
+    }
 
-	return (i);
+    return (i);
 }
 
 /**
@@ -157,37 +156,32 @@ PRIVATE uint64_t ctzdi2(uint64_t a)
  *
  * @author Pedro Henrique Penna
  */
-PUBLIC void rv32gc_timer_init(
-	uint64_t freq,
-	uint64_t timebase,
-	uint64_t *mtime,
-	uint64_t *mtimecmp
-)
+PUBLIC void rv32gc_timer_init(uint64_t freq, uint64_t timebase, uint64_t *mtime,
+                              uint64_t *mtimecmp)
 {
 
-	/* Nothing to do. */
-	if (initialized)
-		return;
+    /* Nothing to do. */
+    if (initialized)
+        return;
 
-	kprintf("[hal] initializing the timer device...");
+    kprintf("[hal] initializing the timer device...");
 
-	/* Setup memory mapped registers. */
-	rv32gc_mtime = mtime;
-	rv32gc_mtimecmp = mtimecmp;
+    /* Setup memory mapped registers. */
+    rv32gc_mtime = mtime;
+    rv32gc_mtimecmp = mtimecmp;
 
-	/* Initialize timer. */
-	timer_delta = timebase >> ctzdi2(freq);
-	timer_delay = rv32gc_timer_calibrate();
-	initialized = true;
+    /* Initialize timer. */
+    timer_delta = timebase >> ctzdi2(freq);
+    timer_delay = rv32gc_timer_calibrate();
+    initialized = true;
 
-	/* Print some info. */
-	kprintf("[hal] timer delay is %d ticks", timer_delay);
-	kprintf("[hal] timer delta is %d ticks", timer_delta);
+    /* Print some info. */
+    kprintf("[hal] timer delay is %d ticks", timer_delay);
+    kprintf("[hal] timer delta is %d ticks", timer_delta);
 
-	/*
-	 * Reset the timer for the first
-	 * time, so that it starts working.
-	 */
-	rv32gc_timer_reset();
-
+    /*
+     * Reset the timer for the first
+     * time, so that it starts working.
+     */
+    rv32gc_timer_reset();
 }

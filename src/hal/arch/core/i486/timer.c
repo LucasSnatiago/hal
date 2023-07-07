@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#include <arch/core/i486/timer.h>
 #include <arch/core/i486/pmio.h>
+#include <arch/core/i486/timer.h>
 #include <nanvix/const.h>
 #include <posix/stdint.h>
 
@@ -34,14 +34,14 @@
  */
 PUBLIC void i486_timer_init(unsigned freq)
 {
-	uint16_t freq_divisor;
+    uint16_t freq_divisor;
 
-	freq_divisor = PIT_FREQUENCY/freq;
+    freq_divisor = PIT_FREQUENCY / freq;
 
-	/* Send control byte: adjust frequency divisor. */
-	i486_output8(PIT_CTRL, 0x36);
+    /* Send control byte: adjust frequency divisor. */
+    i486_output8(PIT_CTRL, 0x36);
 
-	/* Send data byte: divisor_low and divisor_high. */
-	i486_output8(PIT_DATA, (uint8_t)(freq_divisor & 0xff));
-	i486_output8(PIT_DATA, (uint8_t)((freq_divisor >> 8)));
+    /* Send data byte: divisor_low and divisor_high. */
+    i486_output8(PIT_DATA, (uint8_t)(freq_divisor & 0xff));
+    i486_output8(PIT_DATA, (uint8_t)((freq_divisor >> 8)));
 }

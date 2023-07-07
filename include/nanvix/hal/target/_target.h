@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,42 +25,42 @@
 #ifndef _NANVIX_HAL_TARGET_TARGET_H_
 #define _NANVIX_HAL_TARGET_TARGET_H_
 
-	/**
-	 * @defgroup targets Targets
-	 */
+/**
+ * @defgroup targets Targets
+ */
 
-	#if (defined(__qemu_x86__))
+#if (defined(__qemu_x86__))
 
-		#undef  __NEED_TARGET_QEMU_I486_PC
-		#define __NEED_TARGET_QEMU_I486_PC
-		#include <arch/target/qemu/i486-pc.h>
+#undef __NEED_TARGET_QEMU_I486_PC
+#define __NEED_TARGET_QEMU_I486_PC
+#include <arch/target/qemu/i486-pc.h>
 
-	#elif (defined(__qemu_openrisc__))
+#elif (defined(__qemu_openrisc__))
 
-		#undef  __NEED_TARGET_QEMU_OR1K_PC
-		#define __NEED_TARGET_QEMU_OR1K_PC
-		#include <arch/target/qemu/or1k-pc.h>
+#undef __NEED_TARGET_QEMU_OR1K_PC
+#define __NEED_TARGET_QEMU_OR1K_PC
+#include <arch/target/qemu/or1k-pc.h>
 
-	#elif (defined(__qemu_riscv32__))
+#elif (defined(__qemu_riscv32__))
 
-		#undef  __NEED_TARGET_QEMU_RISCV32
-		#define __NEED_TARGET_QEMU_RISCV32
-		#include <arch/target/qemu/riscv32.h>
+#undef __NEED_TARGET_QEMU_RISCV32
+#define __NEED_TARGET_QEMU_RISCV32
+#include <arch/target/qemu/riscv32.h>
 
-	#elif (defined(__unix64__))
+#elif (defined(__unix64__))
 
-		#undef  __NEED_TARGET_UNIX64
-		#define __NEED_TARGET_UNIX64
-		#include <arch/target/unix64/unix64.h>
+#undef __NEED_TARGET_UNIX64
+#define __NEED_TARGET_UNIX64
+#include <arch/target/unix64/unix64.h>
 
-	#else
+#else
 
-		#error "unknown target"
+#error "unknown target"
 
-	#endif
+#endif
 
-	#undef  __NEED_HAL_PROCESSOR
-	#define __NEED_HAL_PROCESSOR
-	#include <nanvix/hal/processor.h>
+#undef __NEED_HAL_PROCESSOR
+#define __NEED_HAL_PROCESSOR
+#include <nanvix/hal/processor.h>
 
 #endif /* _NANVIX_HAL_TARGET_TARGET_H_ */

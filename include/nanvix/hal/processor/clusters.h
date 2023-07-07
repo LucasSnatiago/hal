@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,49 +25,50 @@
 #ifndef NANVIX_HAL_PROCESSOR_CLUSTERS_H_
 #define NANVIX_HAL_PROCESSOR_CLUSTERS_H_
 
-	/* Processor Interface Implementation */
-	#include <nanvix/hal/processor/_processor.h>
+/* Processor Interface Implementation */
+#include <nanvix/hal/processor/_processor.h>
 
 /*============================================================================*
  * Interface Implementation Checking                                          *
  *============================================================================*/
 
-#if defined(__INTERFACE_CHECK) || defined(__INTERFACE_CHECK_PROCESSOR_AL) || defined(__INTERFACE_CHECK_CLUSTERS)
+#if defined(__INTERFACE_CHECK) || defined(__INTERFACE_CHECK_PROCESSOR_AL) ||   \
+    defined(__INTERFACE_CHECK_CLUSTERS)
 
-	/* Feature Checking */
-	#ifndef PROCESSOR_IS_MULTICLUSTER
-	#error "Is this processor multicluster?"
-	#endif
+/* Feature Checking */
+#ifndef PROCESSOR_IS_MULTICLUSTER
+#error "Is this processor multicluster?"
+#endif
 
-	/* Multicluster Processor */
-	#if (PROCESSOR_IS_MULTICLUSTER)
+/* Multicluster Processor */
+#if (PROCESSOR_IS_MULTICLUSTER)
 
-		/* Constants */
-		#ifndef PROCESSOR_CCLUSTERS_NUM
-		#error "PROCESSOR_CCLUSTERS_NUM not defined"
-		#endif
-		#ifndef PROCESSOR_IOCLUSTERS_NUM
-		#error "PROCESSOR_IOCLUSTERS_NUM not defined"
-		#endif
-		#ifndef PROCESSOR_CLUSTERNUM_MASTER
-		#error "PROCESSOR_CLUSTERNUM_MASTER not defined"
-		#endif
-		#ifndef PROCESSOR_CLUSTERNUM_LEADER
-		#error "PROCESSOR_CLUSTERNUM_LEADER not defined"
-		#endif
+/* Constants */
+#ifndef PROCESSOR_CCLUSTERS_NUM
+#error "PROCESSOR_CCLUSTERS_NUM not defined"
+#endif
+#ifndef PROCESSOR_IOCLUSTERS_NUM
+#error "PROCESSOR_IOCLUSTERS_NUM not defined"
+#endif
+#ifndef PROCESSOR_CLUSTERNUM_MASTER
+#error "PROCESSOR_CLUSTERNUM_MASTER not defined"
+#endif
+#ifndef PROCESSOR_CLUSTERNUM_LEADER
+#error "PROCESSOR_CLUSTERNUM_LEADER not defined"
+#endif
 
-		/* Functions */
-		#ifndef __cluster_get_num_fn
-		#error "cluster_get_num() not defined?"
-		#endif
-		#ifndef __cluster_is_ccluster_fn
-		#error "cluster_is_ccluster() not defined?"
-		#endif
-		#ifndef __cluster_is_iocluster_fn
-		#error "cluster_is_iocluster() not defined?"
-		#endif
+/* Functions */
+#ifndef __cluster_get_num_fn
+#error "cluster_get_num() not defined?"
+#endif
+#ifndef __cluster_is_ccluster_fn
+#error "cluster_is_ccluster() not defined?"
+#endif
+#ifndef __cluster_is_iocluster_fn
+#error "cluster_is_iocluster() not defined?"
+#endif
 
-	#endif
+#endif
 
 #endif
 
@@ -85,40 +86,40 @@
  */
 /**@{*/
 
-	#include <nanvix/hlib.h>
+#include <nanvix/hlib.h>
 
-	/**
-	 * @brief Total number of clusters in the processor.
-	 */
-	#define PROCESSOR_CLUSTERS_NUM \
-		(PROCESSOR_IOCLUSTERS_NUM + PROCESSOR_CCLUSTERS_NUM)
+/**
+ * @brief Total number of clusters in the processor.
+ */
+#define PROCESSOR_CLUSTERS_NUM                                                 \
+    (PROCESSOR_IOCLUSTERS_NUM + PROCESSOR_CCLUSTERS_NUM)
 
-	/**
-	 * @brief Gets the logical ID of the underlying cluster.
-	 *
-	 * @returns The ID of the underlying cluster.
-	 */
-	EXTERN int cluster_get_num(void);
+/**
+ * @brief Gets the logical ID of the underlying cluster.
+ *
+ * @returns The ID of the underlying cluster.
+ */
+EXTERN int cluster_get_num(void);
 
-	/**
-	 * @brief Asserts if a cluster is a compute cluster.
-	 *
-	 * @param clusternum Logic ID of the target cluster.
-	 *
-	 * @returns Non-zero if the target cluster @p clusternum is a
-	 * compute cluster and zero otherwise.
-	 */
-	EXTERN int cluster_is_ccluster(int clusternum);
+/**
+ * @brief Asserts if a cluster is a compute cluster.
+ *
+ * @param clusternum Logic ID of the target cluster.
+ *
+ * @returns Non-zero if the target cluster @p clusternum is a
+ * compute cluster and zero otherwise.
+ */
+EXTERN int cluster_is_ccluster(int clusternum);
 
-	/**
-	 * @brief Asserts if a cluster is an I/O cluster.
-	 *
-	 * @param clusternum Logic ID of the target cluster.
-	 *
-	 * @returns Non-zero if the target cluster @p clusternum is an I/O
-	 * cluster and zero otherwise.
-	 */
-	EXTERN int cluster_is_iocluster(int clusternum);
+/**
+ * @brief Asserts if a cluster is an I/O cluster.
+ *
+ * @param clusternum Logic ID of the target cluster.
+ *
+ * @returns Non-zero if the target cluster @p clusternum is an I/O
+ * cluster and zero otherwise.
+ */
+EXTERN int cluster_is_iocluster(int clusternum);
 
 /**@}*/
 

@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,12 +25,12 @@
 #ifndef ARCH_CLUSTER_X86_CLUSTER_H_
 #define ARCH_CLUSTER_X86_CLUSTER_H_
 
-	#ifndef __NEED_CLUSTER_X86
-		#error "bad cluster configuration?"
-	#endif
+#ifndef __NEED_CLUSTER_X86
+#error "bad cluster configuration?"
+#endif
 
-	/* Cluster Interface Implementation */
-	#include <arch/cluster/x86-cluster/_x86-cluster.h>
+/* Cluster Interface Implementation */
+#include <arch/cluster/x86-cluster/_x86-cluster.h>
 
 /*============================================================================*
  * Exported Interface                                                         *
@@ -44,21 +44,21 @@
  */
 /**@{*/
 
-	#include <arch/cluster/x86-cluster/timer.h>
-	#include <arch/cluster/x86-cluster/cores.h>
-	#include <arch/cluster/x86-cluster/memory.h>
+#include <arch/cluster/x86-cluster/timer.h>
+#include <arch/cluster/x86-cluster/cores.h>
+#include <arch/cluster/x86-cluster/memory.h>
 
-	/**
-	 * @name Provided Features
-	 */
-	/**@{*/
-	#define CLUSTER_IS_MULTICORE  0 /**< Multicore Cluster */
-	#define CLUSTER_IS_IO         1 /**< I/O Cluster       */
-	#define CLUSTER_IS_COMPUTE    0 /**< Compute Cluster   */
-	#define CLUSTER_HAS_EVENTS    0 /**< Event Support?    */
-	#define CLUSTER_HAS_RTC       0 /**< RTC Support?      */
-	#define CLUSTER_HAS_IPI       0 /**< IPI Support?      */
-	/**@}*/
+/**
+ * @name Provided Features
+ */
+/**@{*/
+#define CLUSTER_IS_MULTICORE 0 /**< Multicore Cluster */
+#define CLUSTER_IS_IO 1        /**< I/O Cluster       */
+#define CLUSTER_IS_COMPUTE 0   /**< Compute Cluster   */
+#define CLUSTER_HAS_EVENTS 0   /**< Event Support?    */
+#define CLUSTER_HAS_RTC 0      /**< RTC Support?      */
+#define CLUSTER_HAS_IPI 0      /**< IPI Support?      */
+                               /**@}*/
 
 /**@}*/
 

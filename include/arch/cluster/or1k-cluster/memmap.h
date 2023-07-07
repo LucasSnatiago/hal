@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,16 +25,16 @@
 #ifndef CLUSTER_OR1K_CLUSTER_MEMMAP_H_
 #define CLUSTER_OR1K_CLUSTER_MEMMAP_H_
 
-	#ifndef __or1k_cluster__
-		#error "wrong cluter included!"
-	#endif
+#ifndef __or1k_cluster__
+#error "wrong cluter included!"
+#endif
 
-	#ifndef __NEED_CLUSTER_MEMMAP
-		#error "do not include this file"
-	#endif
+#ifndef __NEED_CLUSTER_MEMMAP
+#error "do not include this file"
+#endif
 
-	/* Cluster Interface Implementation */
-	#include <arch/cluster/or1k-cluster/_or1k-cluster.h>
+/* Cluster Interface Implementation */
+#include <arch/cluster/or1k-cluster/_or1k-cluster.h>
 
 /**
  * @addtogroup or1k_cluster-cluster-memmap Memory Map
@@ -44,45 +44,44 @@
  */
 /**@{*/
 
-	/**
-	 * @name Physical Memory Layout
-	 */
-	/**@{*/
-	#define OR1K_CLUSTER_UART_BASE_PHYS  0x90000000 /**< UART Base  */
-	#define OR1K_CLUSTER_UART_END_PHYS   0x90010000 /**< UART End   */
-	#define OR1K_CLUSTER_ETH_BASE_PHYS   0x92000000 /**< ETH Base   */
-	#define OR1K_CLUSTER_ETH_END_PHYS    0x92010000 /**< ETH Base   */
-	#define OR1K_CLUSTER_OMPIC_BASE_PHYS 0x98000000 /**< OMPIC Base */
-	#define OR1K_CLUSTER_OMPIC_END_PHYS  0x98010000 /**< OMPIC End  */
-	#define OR1K_CLUSTER_DRAM_BASE_PHYS  0x00000000 /**< DRAM Base  */
-	#define OR1K_CLUSTER_DRAM_END_PHYS   0x08000000 /**< DRAM End   */
-	/**@}*/
+/**
+ * @name Physical Memory Layout
+ */
+/**@{*/
+#define OR1K_CLUSTER_UART_BASE_PHYS 0x90000000  /**< UART Base  */
+#define OR1K_CLUSTER_UART_END_PHYS 0x90010000   /**< UART End   */
+#define OR1K_CLUSTER_ETH_BASE_PHYS 0x92000000   /**< ETH Base   */
+#define OR1K_CLUSTER_ETH_END_PHYS 0x92010000    /**< ETH Base   */
+#define OR1K_CLUSTER_OMPIC_BASE_PHYS 0x98000000 /**< OMPIC Base */
+#define OR1K_CLUSTER_OMPIC_END_PHYS 0x98010000  /**< OMPIC End  */
+#define OR1K_CLUSTER_DRAM_BASE_PHYS 0x00000000  /**< DRAM Base  */
+#define OR1K_CLUSTER_DRAM_END_PHYS 0x08000000   /**< DRAM End   */
+/**@}*/
 
-	/**
-	 * @brief DRAM size (in bytes).
-	 */
-	#define OR1K_CLUSTER_DRAM_SIZE \
-		(OR1K_CLUSTER_DRAM_END_PHYS - OR1K_CLUSTER_DRAM_BASE_PHYS)
+/**
+ * @brief DRAM size (in bytes).
+ */
+#define OR1K_CLUSTER_DRAM_SIZE                                                 \
+    (OR1K_CLUSTER_DRAM_END_PHYS - OR1K_CLUSTER_DRAM_BASE_PHYS)
 
-	/**
-	 * @brief OMPIC size (in bytes).
-	 */
-	#define OR1K_CLUSTER_OMPIC_MEM_SIZE \
-		(OR1K_CLUSTER_OMPIC_END_PHYS - OR1K_CLUSTER_OMPIC_BASE_PHYS)
+/**
+ * @brief OMPIC size (in bytes).
+ */
+#define OR1K_CLUSTER_OMPIC_MEM_SIZE                                            \
+    (OR1K_CLUSTER_OMPIC_END_PHYS - OR1K_CLUSTER_OMPIC_BASE_PHYS)
 
-	/**
-	 * @brief UART size (in bytes).
-	 */
-	#define OR1K_CLUSTER_UART_MEM_SIZE \
-		(OR1K_CLUSTER_UART_END_PHYS - OR1K_CLUSTER_UART_BASE_PHYS)
+/**
+ * @brief UART size (in bytes).
+ */
+#define OR1K_CLUSTER_UART_MEM_SIZE                                             \
+    (OR1K_CLUSTER_UART_END_PHYS - OR1K_CLUSTER_UART_BASE_PHYS)
 
-	/**
-	 * @brief ETH size (in bytes).
-	 */
-	#define OR1K_CLUSTER_ETH_MEM_SIZE \
-		(OR1K_CLUSTER_ETH_END_PHYS - OR1K_CLUSTER_ETH_BASE_PHYS)
+/**
+ * @brief ETH size (in bytes).
+ */
+#define OR1K_CLUSTER_ETH_MEM_SIZE                                              \
+    (OR1K_CLUSTER_ETH_END_PHYS - OR1K_CLUSTER_ETH_BASE_PHYS)
 
 /**@}*/
 
 #endif /* CLUSTER_OR1K_CLUSTER_MEMMAP_H_ */
-

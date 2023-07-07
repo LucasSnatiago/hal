@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,24 +25,25 @@
 #ifndef NANVIX_HAL_CORE_UPCALL_H_
 #define NANVIX_HAL_CORE_UPCALL_H_
 
-	/* Core Interface Implementation */
-	#include <nanvix/hal/core/_core.h>
+/* Core Interface Implementation */
+#include <nanvix/hal/core/_core.h>
 
 /*============================================================================*
  * Interface Implementation Checking                                          *
  *============================================================================*/
 
-#if defined(__INTERFACE_CHECK) || defined(__INTERFACE_CHECK_CORE_AL) || defined(__INTERFACE_CHECK_UPCALL)
+#if defined(__INTERFACE_CHECK) || defined(__INTERFACE_CHECK_CORE_AL) ||        \
+    defined(__INTERFACE_CHECK_UPCALL)
 
-	/* Constants. */
-	#ifndef NR_upcall_ret
-	#error "NR_upcall_ret not defined!"
-	#endif
+/* Constants. */
+#ifndef NR_upcall_ret
+#error "NR_upcall_ret not defined!"
+#endif
 
-	/* Functions */
-	#ifndef __upcall_ret_fn
-	#error "upcall_ret() not defined?"
-	#endif
+/* Functions */
+#ifndef __upcall_ret_fn
+#error "upcall_ret() not defined?"
+#endif
 
 #endif
 
@@ -58,46 +59,42 @@
  */
 /**@{*/
 
-	#include <nanvix/hal/core/context.h>
-	#include <nanvix/const.h>
-	#include <nanvix/hlib.h>
+#include <nanvix/hal/core/context.h>
+#include <nanvix/const.h>
+#include <nanvix/hlib.h>
 
-	/**
-	 * @name Offsets to the Upcall Stack Frame
-	 */
-	/**@{*/
-	#define UPCALL_STACK_FRAME_FN_OFF      (0*WORD_SIZE) /**< Target Function */
-	#define UPCALL_STACK_FRAME_ARGSIZE_OFF (1*WORD_SIZE) /**< Argument Size   */
-	#define UPCALL_STACK_FRAME_ARG_OFF     (2*WORD_SIZE) /**< Argument        */
-	/**@}*/
+/**
+ * @name Offsets to the Upcall Stack Frame
+ */
+/**@{*/
+#define UPCALL_STACK_FRAME_FN_OFF (0 * WORD_SIZE)      /**< Target Function */
+#define UPCALL_STACK_FRAME_ARGSIZE_OFF (1 * WORD_SIZE) /**< Argument Size   */
+#define UPCALL_STACK_FRAME_ARG_OFF (2 * WORD_SIZE)     /**< Argument        */
+/**@}*/
 
-	/**
-	 * @brief Returns the stack frame size of an upcall.
-	 *
-	 * @param x Size of upcall argument.
-	 */
-	#define UPCALL_STACK_FRAME_SIZE(x) \
-		(CONTEXT_SIZE + sizeof(word_t) + sizeof(word_t) + TRUNCATE(x, DWORD_SIZE))
+/**
+ * @brief Returns the stack frame size of an upcall.
+ *
+ * @param x Size of upcall argument.
+ */
+#define UPCALL_STACK_FRAME_SIZE(x)                                             \
+    (CONTEXT_SIZE + sizeof(word_t) + sizeof(word_t) + TRUNCATE(x, DWORD_SIZE))
 
-	/**
-	 * @brief Forges an upcall.
-	 *
-	 * @param ctx     Saved context.
-	 * @param fn      Target function.
-	 * @param arg     Argument.
-	 * @param argsize Size of argument.
-	 */
-	EXTERN void upcall_forge(
-		struct context *ctx,
-		void (*fn)(void *),
-		void *arg,
-		word_t argsize
-	);
+/**
+ * @brief Forges an upcall.
+ *
+ * @param ctx     Saved context.
+ * @param fn      Target function.
+ * @param arg     Argument.
+ * @param argsize Size of argument.
+ */
+EXTERN void upcall_forge(struct context *ctx, void (*fn)(void *), void *arg,
+                         word_t argsize);
 
-	/**
-	 * @brief Returns from an upcall.
-	 */
-	EXTERN void upcall_ret(void);
+/**
+ * @brief Returns from an upcall.
+ */
+EXTERN void upcall_ret(void);
 
 /**@}*/
 

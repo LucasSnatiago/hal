@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/core/exception.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/core/exception.h>
 #include <nanvix/hlib.h>
 
 /**
@@ -34,24 +34,24 @@
  * @endcond
  */
 PUBLIC struct exception_info exceptions[RV32GC_EXCP_NUM_EXT] = {
-	{ NULL, "instruction address misaligned" },
-	{ NULL, "instruction access fault"       },
-	{ NULL, "illegal instruction"            },
-	{ NULL, "breakpoint"                     },
-	{ NULL, "load address misaligned"        },
-	{ NULL, "load access fault"              },
-	{ NULL, "store/amo address misaligned"   },
-	{ NULL, "store/amo access fault"         },
-	{ NULL, "environment call from u-mode"   },
-	{ NULL, "environment call from s-mode"   },
-	{ NULL, "reserved"                       },
-	{ NULL, "environment call from m-mode"   },
-	{ NULL, "instruction page fault"         },
-	{ NULL, "load page fault"                },
-	{ NULL, "reserved"                       },
-	{ NULL, "page fault"                     },
-	{ NULL, "page protection"                },
-	{ NULL, "general protection"             },
+    {NULL, "instruction address misaligned"},
+    {NULL, "instruction access fault"},
+    {NULL, "illegal instruction"},
+    {NULL, "breakpoint"},
+    {NULL, "load address misaligned"},
+    {NULL, "load access fault"},
+    {NULL, "store/amo address misaligned"},
+    {NULL, "store/amo access fault"},
+    {NULL, "environment call from u-mode"},
+    {NULL, "environment call from s-mode"},
+    {NULL, "reserved"},
+    {NULL, "environment call from m-mode"},
+    {NULL, "instruction page fault"},
+    {NULL, "load page fault"},
+    {NULL, "reserved"},
+    {NULL, "page fault"},
+    {NULL, "page protection"},
+    {NULL, "general protection"},
 };
 
 /**
@@ -59,5 +59,5 @@ PUBLIC struct exception_info exceptions[RV32GC_EXCP_NUM_EXT] = {
  */
 PUBLIC void rv32gc_excp_dump(const struct exception *excp)
 {
-	kprintf("%s", exceptions[excp->num].name);
+    kprintf("%s", exceptions[excp->num].name);
 }

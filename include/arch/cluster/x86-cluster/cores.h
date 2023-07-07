@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,8 +25,8 @@
 #ifndef ARCH_CLUSTER_X86_CLUSTER_CORES_H_
 #define ARCH_CLUSTER_X86_CLUSTER_CORES_H_
 
-	/* Cluster Interface Implementation */
-	#include <arch/cluster/x86-cluster/_x86-cluster.h>
+/* Cluster Interface Implementation */
+#include <arch/cluster/x86-cluster/_x86-cluster.h>
 
 /**
  * @addtogroup x86-cluster-cpu Cores
@@ -36,35 +36,35 @@
  */
 /**@{*/
 
-	/**
-	 * @brief Number of cores.
-	 */
-	#define X86_CLUSTER_NUM_CORES 1
+/**
+ * @brief Number of cores.
+ */
+#define X86_CLUSTER_NUM_CORES 1
 
-	/**
-	 * @brief ID of the master core.
-	 */
-	#define X86_CLUSTER_COREID_MASTER 0
+/**
+ * @brief ID of the master core.
+ */
+#define X86_CLUSTER_COREID_MASTER 0
 
 #ifndef _ASM_FILE_
 
-	/**
-	 * @brief Initializes the underlying cluster.
-	 */
-	EXTERN void x86_cluster_setup(void);
+/**
+ * @brief Initializes the underlying cluster.
+ */
+EXTERN void x86_cluster_setup(void);
 
-	/**
-	 * @brief Gets the number of cores.
-	 *
-	 * The x86_cluster_cluster_get_num_cores() gets the number of cores in
-	 * the underlying x86 cluster.
-	 *
-	 * @returns The the number of cores in the underlying cluster.
-	 */
-	static inline int x86_cluster_cluster_get_num_cores(void)
-	{
-		return (X86_CLUSTER_NUM_CORES);
-	}
+/**
+ * @brief Gets the number of cores.
+ *
+ * The x86_cluster_cluster_get_num_cores() gets the number of cores in
+ * the underlying x86 cluster.
+ *
+ * @returns The the number of cores in the underlying cluster.
+ */
+static inline int x86_cluster_cluster_get_num_cores(void)
+{
+    return (X86_CLUSTER_NUM_CORES);
+}
 
 #endif /* _ASM_FILE_ */
 
@@ -78,33 +78,33 @@
  * @cond x86_cluster
  */
 
-	/**
-	 * @name Provided Functions
-	 */
-	/**@{*/
-	#define __cluster_get_num_cores /**< cluster_get_num_cores() */
-	/**@}*/
+/**
+ * @name Provided Functions
+ */
+/**@{*/
+#define __cluster_get_num_cores /**< cluster_get_num_cores() */
+/**@}*/
 
-	/**
-	 * @brief Number of cores in a cluster.
-	 */
-	#define CORES_NUM X86_CLUSTER_NUM_CORES
+/**
+ * @brief Number of cores in a cluster.
+ */
+#define CORES_NUM X86_CLUSTER_NUM_CORES
 
-	/**
-	 * @brief ID of the master core.
-	 */
-	#define COREID_MASTER X86_CLUSTER_COREID_MASTER
+/**
+ * @brief ID of the master core.
+ */
+#define COREID_MASTER X86_CLUSTER_COREID_MASTER
 
 #ifndef _ASM_FILE_
 #ifdef __NANVIX_HAL
 
-	/**
-	 * @see x86_cluster_cluster_get_num_cores()
-	 */
-	static inline int cluster_get_num_cores(void)
-	{
-		return (x86_cluster_cluster_get_num_cores());
-	}
+/**
+ * @see x86_cluster_cluster_get_num_cores()
+ */
+static inline int cluster_get_num_cores(void)
+{
+    return (x86_cluster_cluster_get_num_cores());
+}
 
 #endif /* __NANVIX_HAL */
 #endif /* _ASM_FILE_ */

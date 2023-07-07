@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,8 +25,8 @@
 #ifndef ARCH_CLUSTER_RISCV32_CLUSTER_EVENT_H_
 #define ARCH_CLUSTER_RISCV32_CLUSTER_EVENT_H_
 
-	/* Cluster Interface Implementation */
-	#include <arch/cluster/riscv32-cluster/_riscv32-cluster.h>
+/* Cluster Interface Implementation */
+#include <arch/cluster/riscv32-cluster/_riscv32-cluster.h>
 
 /**
  * @addtogroup riscv-cluster-event Events
@@ -36,21 +36,21 @@
  */
 /**@{*/
 
-	#include <nanvix/const.h>
+#include <nanvix/const.h>
 
 #ifndef _ASM_FILE_
 
-	/**
-	 * @brief Notifies a local core about an event.
-	 *
-	 * @param coreid ID of target core.
-	 */
-	EXTERN int riscv32_cluster_event_notify(int coreid);
+/**
+ * @brief Notifies a local core about an event.
+ *
+ * @param coreid ID of target core.
+ */
+EXTERN int riscv32_cluster_event_notify(int coreid);
 
-	/**
-	 * @brief Waits for an event.
-	 */
-	EXTERN int riscv32_cluster_event_wait(void);
+/**
+ * @brief Waits for an event.
+ */
+EXTERN int riscv32_cluster_event_wait(void);
 
 #endif /* _ASM_FILE_ */
 
@@ -64,44 +64,43 @@
  * @cond riscv32_cluster
  */
 
-	/**
-	 * @name Exported Functions
-	 */
-	/**@{*/
-	#define __event_notify_fn /**< event_notify() */
-	#define __event_wait_fn   /**< event_wait()   */
-	#define __event_reset_fn  /**< event_reset()  */
-	/**@}*/
+/**
+ * @name Exported Functions
+ */
+/**@{*/
+#define __event_notify_fn /**< event_notify() */
+#define __event_wait_fn   /**< event_wait()   */
+#define __event_reset_fn  /**< event_reset()  */
+                          /**@}*/
 
 #ifndef _ASM_FILE_
 
-	/**
-	 * @see riscv32_cluster_event_notify()
-	 */
-	static inline int __event_notify(int coreid)
-	{
-		return (riscv32_cluster_event_notify(coreid));
-	}
+/**
+ * @see riscv32_cluster_event_notify()
+ */
+static inline int __event_notify(int coreid)
+{
+    return (riscv32_cluster_event_notify(coreid));
+}
 
-	/**
-	 * @see riscv32_cluster_event_wait().
-	 */
-	static inline void __event_wait(void)
-	{
-		riscv32_cluster_event_wait();
-	}
+/**
+ * @see riscv32_cluster_event_wait().
+ */
+static inline void __event_wait(void)
+{
+    riscv32_cluster_event_wait();
+}
 
-	/**
-	 * @brief Dummy function
-	 */
-	static inline void __event_reset(void)
-	{
-		/* noop. */
-	}
+/**
+ * @brief Dummy function
+ */
+static inline void __event_reset(void)
+{
+    /* noop. */
+}
 
 #endif /* _ASM_FILE_ */
 
 /**@endcond*/
 
 #endif /* ARCH_CLUSTER_RISCV32_CLUSTER_EVENT_H_ */
-

@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
+#include "../test.h"
 #include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
 #include <nanvix/hlib.h>
 #include <posix/errno.h>
-#include "../test.h"
 
 /**
  * @brief Run destructive tests?
@@ -51,14 +51,11 @@
  */
 PRIVATE void mmu_pte_clear(void)
 {
-	struct pte pte;
+    struct pte pte;
 
-	kmemset(&pte, 1, sizeof(struct pte));
-	pte_clear(&pte);
-	KASSERT(
-		(pte_frame_get(&pte) == 0) &&
-		(pte_is_present(&pte) == 0)
-	);
+    kmemset(&pte, 1, sizeof(struct pte));
+    pte_clear(&pte);
+    KASSERT((pte_frame_get(&pte) == 0) && (pte_is_present(&pte) == 0));
 }
 
 /*----------------------------------------------------------------------------*
@@ -70,11 +67,11 @@ PRIVATE void mmu_pte_clear(void)
  */
 PRIVATE void mmu_pde_clear(void)
 {
-	struct pde pde;
+    struct pde pde;
 
-	kmemset(&pde, 1, sizeof(struct pde));
-	pde_clear(&pde);
-	KASSERT((pde_frame_get(&pde) == 0) && (pde_is_present(&pde) == 0));
+    kmemset(&pde, 1, sizeof(struct pde));
+    pde_clear(&pde);
+    KASSERT((pde_frame_get(&pde) == 0) && (pde_is_present(&pde) == 0));
 }
 
 /*----------------------------------------------------------------------------*
@@ -86,21 +83,18 @@ PRIVATE void mmu_pde_clear(void)
  */
 PRIVATE void mmu_pte_frame_set(void)
 {
-	struct pte pte;
-	frame_t frame = (0x1UL << (VADDR_BIT - PAGE_SHIFT)) - 1;
+    struct pte pte;
+    frame_t frame = (0x1UL << (VADDR_BIT - PAGE_SHIFT)) - 1;
 
-	kmemset(&pte, 1, sizeof(struct pte));
-	pte_clear(&pte);
-	pte_frame_set(&pte, frame);
+    kmemset(&pte, 1, sizeof(struct pte));
+    pte_clear(&pte);
+    pte_frame_set(&pte, frame);
 
 #if (TEST_MMU_VERBOSE)
-	kprintf("frame = %x, pte->frame = %x",
-		frame,
-		pte_frame_get(&pte)
-	);
+    kprintf("frame = %x, pte->frame = %x", frame, pte_frame_get(&pte));
 #endif
 
-	KASSERT(pte_frame_get(&pte) == frame);
+    KASSERT(pte_frame_get(&pte) == frame);
 }
 
 /*----------------------------------------------------------------------------*
@@ -112,21 +106,18 @@ PRIVATE void mmu_pte_frame_set(void)
  */
 PRIVATE void mmu_pde_frame_set(void)
 {
-	struct pde pde;
-	frame_t frame = (0X1UL << (VADDR_BIT - PAGE_SHIFT)) - 1;
+    struct pde pde;
+    frame_t frame = (0X1UL << (VADDR_BIT - PAGE_SHIFT)) - 1;
 
-	kmemset(&pde, 1, sizeof(struct pde));
-	pde_clear(&pde);
-	pde_frame_set(&pde, frame);
+    kmemset(&pde, 1, sizeof(struct pde));
+    pde_clear(&pde);
+    pde_frame_set(&pde, frame);
 
 #if (TEST_MMU_VERBOSE)
-	kprintf("frame = %x, pde->frame = %x",
-		frame,
-		pde_frame_get(&pde)
-	);
+    kprintf("frame = %x, pde->frame = %x", frame, pde_frame_get(&pde));
 #endif
 
-	KASSERT(pde_frame_get(&pde) == frame);
+    KASSERT(pde_frame_get(&pde) == frame);
 }
 
 /*----------------------------------------------------------------------------*
@@ -138,14 +129,14 @@ PRIVATE void mmu_pde_frame_set(void)
  */
 PRIVATE void mmu_pte_present_set(void)
 {
-	struct pte pte;
+    struct pte pte;
 
-	kmemset(&pte, 1, sizeof(struct pte));
-	pte_clear(&pte);
-	pte_present_set(&pte, 1);
-	KASSERT(pte_is_present(&pte));
-	pte_present_set(&pte, 0);
-	KASSERT(!pte_is_present(&pte));
+    kmemset(&pte, 1, sizeof(struct pte));
+    pte_clear(&pte);
+    pte_present_set(&pte, 1);
+    KASSERT(pte_is_present(&pte));
+    pte_present_set(&pte, 0);
+    KASSERT(!pte_is_present(&pte));
 }
 
 /*----------------------------------------------------------------------------*
@@ -157,14 +148,14 @@ PRIVATE void mmu_pte_present_set(void)
  */
 PRIVATE void mmu_pde_present_set(void)
 {
-	struct pde pde;
+    struct pde pde;
 
-	kmemset(&pde, 1, sizeof(struct pde));
-	pde_clear(&pde);
-	pde_present_set(&pde, 1);
-	KASSERT(pde_is_present(&pde));
-	pde_present_set(&pde, 0);
-	KASSERT(!pde_is_present(&pde));
+    kmemset(&pde, 1, sizeof(struct pde));
+    pde_clear(&pde);
+    pde_present_set(&pde, 1);
+    KASSERT(pde_is_present(&pde));
+    pde_present_set(&pde, 0);
+    KASSERT(!pde_is_present(&pde));
 }
 
 /*----------------------------------------------------------------------------*
@@ -176,14 +167,14 @@ PRIVATE void mmu_pde_present_set(void)
  */
 PRIVATE void mmu_pte_user_set(void)
 {
-	struct pte pte;
+    struct pte pte;
 
-	kmemset(&pte, 1, sizeof(struct pte));
-	pte_clear(&pte);
-	pte_user_set(&pte, 1);
-	KASSERT(pte_is_user(&pte));
-	pte_user_set(&pte, 0);
-	KASSERT(!pte_is_user(&pte));
+    kmemset(&pte, 1, sizeof(struct pte));
+    pte_clear(&pte);
+    pte_user_set(&pte, 1);
+    KASSERT(pte_is_user(&pte));
+    pte_user_set(&pte, 0);
+    KASSERT(!pte_is_user(&pte));
 }
 
 /*----------------------------------------------------------------------------*
@@ -195,14 +186,14 @@ PRIVATE void mmu_pte_user_set(void)
  */
 PRIVATE void mmu_pde_user_set(void)
 {
-	struct pde pde;
+    struct pde pde;
 
-	kmemset(&pde, 1, sizeof(struct pde));
-	pde_clear(&pde);
-	pde_user_set(&pde, 1);
-	KASSERT(pde_is_user(&pde));
-	pde_user_set(&pde, 0);
-	KASSERT(!pde_is_user(&pde));
+    kmemset(&pde, 1, sizeof(struct pde));
+    pde_clear(&pde);
+    pde_user_set(&pde, 1);
+    KASSERT(pde_is_user(&pde));
+    pde_user_set(&pde, 0);
+    KASSERT(!pde_is_user(&pde));
 }
 
 /*----------------------------------------------------------------------------*
@@ -214,14 +205,14 @@ PRIVATE void mmu_pde_user_set(void)
  */
 PRIVATE void mmu_pte_write_set(void)
 {
-	struct pte pte;
+    struct pte pte;
 
-	kmemset(&pte, 1, sizeof(struct pte));
-	pte_clear(&pte);
-	pte_write_set(&pte, 1);
-	KASSERT(pte_is_write(&pte));
-	pte_write_set(&pte, 0);
-	KASSERT(!pte_is_write(&pte));
+    kmemset(&pte, 1, sizeof(struct pte));
+    pte_clear(&pte);
+    pte_write_set(&pte, 1);
+    KASSERT(pte_is_write(&pte));
+    pte_write_set(&pte, 0);
+    KASSERT(!pte_is_write(&pte));
 }
 
 /*----------------------------------------------------------------------------*
@@ -233,14 +224,14 @@ PRIVATE void mmu_pte_write_set(void)
  */
 PRIVATE void mmu_pde_write_set(void)
 {
-	struct pde pde;
+    struct pde pde;
 
-	kmemset(&pde, 1, sizeof(struct pde));
-	pde_clear(&pde);
-	pde_write_set(&pde, 1);
-	KASSERT(pde_is_write(&pde));
-	pde_write_set(&pde, 0);
-	KASSERT(!pde_is_write(&pde));
+    kmemset(&pde, 1, sizeof(struct pde));
+    pde_clear(&pde);
+    pde_write_set(&pde, 1);
+    KASSERT(pde_is_write(&pde));
+    pde_write_set(&pde, 0);
+    KASSERT(!pde_is_write(&pde));
 }
 
 /*----------------------------------------------------------------------------*
@@ -252,7 +243,7 @@ PRIVATE void mmu_pde_write_set(void)
  */
 PRIVATE void mmu_pte_get(void)
 {
-	KASSERT(pte_get(kernel_pgtab, KBASE_VIRT) != NULL);
+    KASSERT(pte_get(kernel_pgtab, KBASE_VIRT) != NULL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -264,7 +255,7 @@ PRIVATE void mmu_pte_get(void)
  */
 PRIVATE void mmu_pde_get(void)
 {
-	KASSERT(pde_get(root_pgdir, KBASE_VIRT) != NULL);
+    KASSERT(pde_get(root_pgdir, KBASE_VIRT) != NULL);
 }
 
 /*============================================================================*
@@ -280,7 +271,7 @@ PRIVATE void mmu_pde_get(void)
  */
 PRIVATE void mmu_pte_clear_inval(void)
 {
-	KASSERT(pte_clear(NULL) == -EINVAL);
+    KASSERT(pte_clear(NULL) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -292,7 +283,7 @@ PRIVATE void mmu_pte_clear_inval(void)
  */
 PRIVATE void mmu_pde_clear_inval(void)
 {
-	KASSERT(pde_clear(NULL) == -EINVAL);
+    KASSERT(pde_clear(NULL) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -304,9 +295,9 @@ PRIVATE void mmu_pde_clear_inval(void)
  */
 PRIVATE void mmu_pte_frame_set_inval(void)
 {
-	frame_t frame = (0X1UL << (VADDR_BIT - PAGE_SHIFT)) - 1;
+    frame_t frame = (0X1UL << (VADDR_BIT - PAGE_SHIFT)) - 1;
 
-	KASSERT(pte_frame_set(NULL, frame) == -EINVAL);
+    KASSERT(pte_frame_set(NULL, frame) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -318,9 +309,9 @@ PRIVATE void mmu_pte_frame_set_inval(void)
  */
 PRIVATE void mmu_pde_frame_set_inval(void)
 {
-	frame_t frame = (0X1UL << (VADDR_BIT - PAGE_SHIFT)) - 1;
+    frame_t frame = (0X1UL << (VADDR_BIT - PAGE_SHIFT)) - 1;
 
-	KASSERT(pde_frame_set(NULL, frame) == -EINVAL);
+    KASSERT(pde_frame_set(NULL, frame) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -332,9 +323,9 @@ PRIVATE void mmu_pde_frame_set_inval(void)
  */
 PRIVATE void mmu_pte_frame_set_inval2(void)
 {
-	struct pte pte;
+    struct pte pte;
 
-	KASSERT(pte_frame_set(&pte, -1) == -EINVAL);
+    KASSERT(pte_frame_set(&pte, -1) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -346,9 +337,9 @@ PRIVATE void mmu_pte_frame_set_inval2(void)
  */
 PRIVATE void mmu_pde_frame_set_inval2(void)
 {
-	struct pde pde;
+    struct pde pde;
 
-	KASSERT(pde_frame_set(&pde, -1) == -EINVAL);
+    KASSERT(pde_frame_set(&pde, -1) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -360,7 +351,7 @@ PRIVATE void mmu_pde_frame_set_inval2(void)
  */
 PRIVATE void mmu_pte_present_set_inval(void)
 {
-	KASSERT(pte_present_set(NULL, 0) == -EINVAL);
+    KASSERT(pte_present_set(NULL, 0) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -372,7 +363,7 @@ PRIVATE void mmu_pte_present_set_inval(void)
  */
 PRIVATE void mmu_pde_present_set_inval(void)
 {
-	KASSERT(pde_present_set(NULL, 0) == -EINVAL);
+    KASSERT(pde_present_set(NULL, 0) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -384,7 +375,7 @@ PRIVATE void mmu_pde_present_set_inval(void)
  */
 PRIVATE void mmu_pte_user_set_inval(void)
 {
-	KASSERT(pte_user_set(NULL, 0) == -EINVAL);
+    KASSERT(pte_user_set(NULL, 0) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -396,7 +387,7 @@ PRIVATE void mmu_pte_user_set_inval(void)
  */
 PRIVATE void mmu_pde_user_set_inval(void)
 {
-	KASSERT(pde_user_set(NULL, 0) == -EINVAL);
+    KASSERT(pde_user_set(NULL, 0) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -408,7 +399,7 @@ PRIVATE void mmu_pde_user_set_inval(void)
  */
 PRIVATE void mmu_pte_write_set_inval(void)
 {
-	KASSERT(pte_write_set(NULL, 0) == -EINVAL);
+    KASSERT(pte_write_set(NULL, 0) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -420,7 +411,7 @@ PRIVATE void mmu_pte_write_set_inval(void)
  */
 PRIVATE void mmu_pde_write_set_inval(void)
 {
-	KASSERT(pde_write_set(NULL, 0) == -EINVAL);
+    KASSERT(pde_write_set(NULL, 0) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -432,7 +423,7 @@ PRIVATE void mmu_pde_write_set_inval(void)
  */
 PRIVATE void mmu_pte_get_inval(void)
 {
-	KASSERT(pte_get(NULL, KBASE_VIRT) == NULL);
+    KASSERT(pte_get(NULL, KBASE_VIRT) == NULL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -444,7 +435,7 @@ PRIVATE void mmu_pte_get_inval(void)
  */
 PRIVATE void mmu_pde_get_inval(void)
 {
-	KASSERT(pde_get(NULL, KBASE_VIRT) == NULL);
+    KASSERT(pde_get(NULL, KBASE_VIRT) == NULL);
 }
 
 /*============================================================================*
@@ -455,40 +446,40 @@ PRIVATE void mmu_pde_get_inval(void)
  * @brief Unit tests.
  */
 PRIVATE struct test mmu_api_tests[] = {
-	{ mmu_pte_clear,       "clear pte      " },
-	{ mmu_pde_clear,       "clear pde      " },
-	{ mmu_pte_frame_set,   "pte frame set  " },
-	{ mmu_pde_frame_set,   "pde frame set  " },
-	{ mmu_pte_present_set, "pte present set" },
-	{ mmu_pde_present_set, "pde present set" },
-	{ mmu_pte_user_set,    "pte user set   " },
-	{ mmu_pde_user_set,    "pde user set   " },
-	{ mmu_pte_write_set,   "pte write set  " },
-	{ mmu_pde_write_set,   "pde write set  " },
-	{ mmu_pte_get,         "pte get        " },
-	{ mmu_pde_get,         "pde get        " },
-	{ NULL,                 NULL             },
+    {mmu_pte_clear, "clear pte      "},
+    {mmu_pde_clear, "clear pde      "},
+    {mmu_pte_frame_set, "pte frame set  "},
+    {mmu_pde_frame_set, "pde frame set  "},
+    {mmu_pte_present_set, "pte present set"},
+    {mmu_pde_present_set, "pde present set"},
+    {mmu_pte_user_set, "pte user set   "},
+    {mmu_pde_user_set, "pde user set   "},
+    {mmu_pte_write_set, "pte write set  "},
+    {mmu_pde_write_set, "pde write set  "},
+    {mmu_pte_get, "pte get        "},
+    {mmu_pde_get, "pde get        "},
+    {NULL, NULL},
 };
 
 /**
  * @brief Unit tests.
  */
 PRIVATE struct test mmu_fault_tests[] = {
-	{ mmu_pte_clear_inval,       "clear invalid pte             " },
-	{ mmu_pde_clear_inval,       "clear invalid pde             " },
-	{ mmu_pte_frame_set_inval,   "set frame in invalid pte      " },
-	{ mmu_pde_frame_set_inval,   "set frame in invalid pde      " },
-	{ mmu_pte_frame_set_inval2,  "set invalid frame in pte      " },
-	{ mmu_pde_frame_set_inval2,  "set invalid frame in pde      " },
-	{ mmu_pte_present_set_inval, "set present bit in invalid pte" },
-	{ mmu_pde_present_set_inval, "set present bit in invalid pde" },
-	{ mmu_pte_user_set_inval,    "set user bit in invalid pte   " },
-	{ mmu_pde_user_set_inval,    "set user bit in invalid pde   " },
-	{ mmu_pte_write_set_inval,   "set write bit in invalid pte  " },
-	{ mmu_pde_write_set_inval,   "set write bit in invalid pde  " },
-	{ mmu_pte_get_inval,         "get invalid pte               " },
-	{ mmu_pde_get_inval,         "get invalid pde               " },
-	{ NULL, NULL },
+    {mmu_pte_clear_inval, "clear invalid pte             "},
+    {mmu_pde_clear_inval, "clear invalid pde             "},
+    {mmu_pte_frame_set_inval, "set frame in invalid pte      "},
+    {mmu_pde_frame_set_inval, "set frame in invalid pde      "},
+    {mmu_pte_frame_set_inval2, "set invalid frame in pte      "},
+    {mmu_pde_frame_set_inval2, "set invalid frame in pde      "},
+    {mmu_pte_present_set_inval, "set present bit in invalid pte"},
+    {mmu_pde_present_set_inval, "set present bit in invalid pde"},
+    {mmu_pte_user_set_inval, "set user bit in invalid pte   "},
+    {mmu_pde_user_set_inval, "set user bit in invalid pde   "},
+    {mmu_pte_write_set_inval, "set write bit in invalid pte  "},
+    {mmu_pde_write_set_inval, "set write bit in invalid pde  "},
+    {mmu_pte_get_inval, "get invalid pte               "},
+    {mmu_pde_get_inval, "get invalid pde               "},
+    {NULL, NULL},
 };
 
 /**
@@ -499,20 +490,18 @@ PRIVATE struct test mmu_fault_tests[] = {
  */
 PUBLIC void test_mmu(void)
 {
-	/* API Tests */
-	CLUSTER_KPRINTF(HLINE);
-	for (int i = 0; mmu_api_tests[i].test_fn != NULL; i++)
-	{
-		mmu_api_tests[i].test_fn();
-		CLUSTER_KPRINTF("[test][api][mmu] %s [passed]", mmu_api_tests[i].name);
-	}
+    /* API Tests */
+    CLUSTER_KPRINTF(HLINE);
+    for (int i = 0; mmu_api_tests[i].test_fn != NULL; i++) {
+        mmu_api_tests[i].test_fn();
+        CLUSTER_KPRINTF("[test][api][mmu] %s [passed]", mmu_api_tests[i].name);
+    }
 
-	/* Fault Tests */
-	CLUSTER_KPRINTF(HLINE);
-	for (int i = 0; mmu_fault_tests[i].test_fn != NULL; i++)
-	{
-		mmu_fault_tests[i].test_fn();
-		CLUSTER_KPRINTF("[test][fault][mmu] %s [passed]", mmu_fault_tests[i].name);
-	}
+    /* Fault Tests */
+    CLUSTER_KPRINTF(HLINE);
+    for (int i = 0; mmu_fault_tests[i].test_fn != NULL; i++) {
+        mmu_fault_tests[i].test_fn();
+        CLUSTER_KPRINTF("[test][fault][mmu] %s [passed]",
+                        mmu_fault_tests[i].name);
+    }
 }
-

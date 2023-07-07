@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,33 +22,32 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
 #include "../test.h"
+#include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
+#include <nanvix/hlib.h>
 
 /**
  * @brief Launch verbose tests?
  */
 #define TEST_TRAP_VERBOSE 0
 
-
 /**
  * @brief Magic Numbers.
  */
 /**@{*/
-#define KCALL0_NR          1
-#define KCALL1_NR          2
-#define KCALL2_NR          3
-#define KCALL3_NR          4
-#define KCALL4_NR          5
-#define KCALL5_NR          6
-#define MAGIC0       0xbeefcace
-#define MAGIC1       0xC00010FF
-#define MAGIC2       0xcafebabe
-#define MAGIC3       0xcafed00d
-#define MAGIC4       0x0d15ea5e
-#define MAGIC5       0xdead10cc
+#define KCALL0_NR 1
+#define KCALL1_NR 2
+#define KCALL2_NR 3
+#define KCALL3_NR 4
+#define KCALL4_NR 5
+#define KCALL5_NR 6
+#define MAGIC0 0xbeefcace
+#define MAGIC1 0xC00010FF
+#define MAGIC2 0xcafebabe
+#define MAGIC3 0xcafed00d
+#define MAGIC4 0x0d15ea5e
+#define MAGIC5 0xdead10cc
 /**@}*/
 
 /**
@@ -65,34 +64,29 @@
  * @returns Upon successful completion, zero is returned. Upon
  * failure, a negative error code is returned instead.
  */
-PUBLIC int do_kcall(
-	word_t arg0,
-	word_t arg1,
-	word_t arg2,
-	word_t arg3,
-	word_t arg4,
-	word_t kcall_nr)
+PUBLIC int do_kcall(word_t arg0, word_t arg1, word_t arg2, word_t arg3,
+                    word_t arg4, word_t kcall_nr)
 {
 
 #if (TEST_TRAP_VERBOSE)
-	kprintf("kcall() nr=%x", kcall_nr);
-	kprintf("kcall() arg0=%x arg1=%x", arg0, arg1);
-	kprintf("kcall() arg2=%x arg3=%x", arg2, arg3);
-	kprintf("kcall() arg4=%x", arg4);
+    kprintf("kcall() nr=%x", kcall_nr);
+    kprintf("kcall() arg0=%x arg1=%x", arg0, arg1);
+    kprintf("kcall() arg2=%x arg3=%x", arg2, arg3);
+    kprintf("kcall() arg4=%x", arg4);
 #endif
 
-	if (kcall_nr >= KCALL1_NR)
-		KASSERT(arg0 == MAGIC0);
-	if (kcall_nr >= KCALL2_NR)
-		KASSERT(arg1 == MAGIC1);
-	if (kcall_nr >= KCALL3_NR)
-		KASSERT(arg2 == MAGIC2);
-	if (kcall_nr >= KCALL4_NR)
-		KASSERT(arg3 == MAGIC3);
-	if (kcall_nr >= KCALL5_NR)
-		KASSERT(arg4 == MAGIC4);
+    if (kcall_nr >= KCALL1_NR)
+        KASSERT(arg0 == MAGIC0);
+    if (kcall_nr >= KCALL2_NR)
+        KASSERT(arg1 == MAGIC1);
+    if (kcall_nr >= KCALL3_NR)
+        KASSERT(arg2 == MAGIC2);
+    if (kcall_nr >= KCALL4_NR)
+        KASSERT(arg3 == MAGIC3);
+    if (kcall_nr >= KCALL5_NR)
+        KASSERT(arg4 == MAGIC4);
 
-	return (MAGIC5);
+    return (MAGIC5);
 }
 
 /*============================================================================*
@@ -108,10 +102,7 @@ PUBLIC int do_kcall(
  */
 PRIVATE void test_trap_issue0(void)
 {
-	KASSERT((kcall0(
-		KCALL0_NR
-	  ) & 0xffffffff) == MAGIC5
-	);
+    KASSERT((kcall0(KCALL0_NR) & 0xffffffff) == MAGIC5);
 }
 
 /*----------------------------------------------------------------------------*
@@ -123,11 +114,7 @@ PRIVATE void test_trap_issue0(void)
  */
 PRIVATE void test_trap_issue1(void)
 {
-	KASSERT((kcall1(
-		KCALL1_NR,
-		MAGIC0
-	  ) & 0xffffffff) == MAGIC5
-	);
+    KASSERT((kcall1(KCALL1_NR, MAGIC0) & 0xffffffff) == MAGIC5);
 }
 
 /*----------------------------------------------------------------------------*
@@ -139,12 +126,7 @@ PRIVATE void test_trap_issue1(void)
  */
 PRIVATE void test_trap_issue2(void)
 {
-	KASSERT((kcall2(
-		KCALL2_NR,
-		MAGIC0,
-		MAGIC1
-	  ) & 0xffffffff) == MAGIC5
-	);
+    KASSERT((kcall2(KCALL2_NR, MAGIC0, MAGIC1) & 0xffffffff) == MAGIC5);
 }
 
 /*----------------------------------------------------------------------------*
@@ -156,13 +138,7 @@ PRIVATE void test_trap_issue2(void)
  */
 PRIVATE void test_trap_issue3(void)
 {
-	KASSERT((kcall3(
-		KCALL3_NR,
-		MAGIC0,
-		MAGIC1,
-		MAGIC2
-	  ) & 0xffffffff) == MAGIC5
-	);
+    KASSERT((kcall3(KCALL3_NR, MAGIC0, MAGIC1, MAGIC2) & 0xffffffff) == MAGIC5);
 }
 
 /*----------------------------------------------------------------------------*
@@ -174,14 +150,8 @@ PRIVATE void test_trap_issue3(void)
  */
 PRIVATE void test_trap_issue4(void)
 {
-	KASSERT((kcall4(
-		KCALL4_NR,
-		MAGIC0,
-		MAGIC1,
-		MAGIC2,
-		MAGIC3
-	  ) & 0xffffffff) == MAGIC5
-	);
+    KASSERT((kcall4(KCALL4_NR, MAGIC0, MAGIC1, MAGIC2, MAGIC3) & 0xffffffff) ==
+            MAGIC5);
 }
 
 /*----------------------------------------------------------------------------*
@@ -193,15 +163,8 @@ PRIVATE void test_trap_issue4(void)
  */
 PRIVATE void test_trap_issue5(void)
 {
-	KASSERT((kcall5(
-		KCALL5_NR,
-		MAGIC0,
-		MAGIC1,
-		MAGIC2,
-		MAGIC3,
-		MAGIC4
-	  ) & 0xffffffff) == MAGIC5
-	);
+    KASSERT((kcall5(KCALL5_NR, MAGIC0, MAGIC1, MAGIC2, MAGIC3, MAGIC4) &
+             0xffffffff) == MAGIC5);
 }
 
 /*============================================================================*
@@ -212,13 +175,13 @@ PRIVATE void test_trap_issue5(void)
  * @brief Unit tests.
  */
 PRIVATE struct test trap_tests_api[] = {
-	{ test_trap_issue0, "issue a trap no arguments   " },
-	{ test_trap_issue1, "issue a trap one argument   " },
-	{ test_trap_issue2, "issue a trap two arguments  " },
-	{ test_trap_issue3, "issue a trap three arguments" },
-	{ test_trap_issue4, "issue a trap four arguments " },
-	{ test_trap_issue5, "issue a trap five arguments " },
-	{ NULL,             NULL                           },
+    {test_trap_issue0, "issue a trap no arguments   "},
+    {test_trap_issue1, "issue a trap one argument   "},
+    {test_trap_issue2, "issue a trap two arguments  "},
+    {test_trap_issue3, "issue a trap three arguments"},
+    {test_trap_issue4, "issue a trap four arguments "},
+    {test_trap_issue5, "issue a trap five arguments "},
+    {NULL, NULL},
 };
 
 /**
@@ -229,11 +192,11 @@ PRIVATE struct test trap_tests_api[] = {
  */
 PUBLIC void test_trap(void)
 {
-	/* API Tests */
-	CLUSTER_KPRINTF(HLINE);
-	for (int i = 0; trap_tests_api[i].test_fn != NULL; i++)
-	{
-		trap_tests_api[i].test_fn();
-		CLUSTER_KPRINTF("[test][api][trap] %s [passed]", trap_tests_api[i].name);
-	}
+    /* API Tests */
+    CLUSTER_KPRINTF(HLINE);
+    for (int i = 0; trap_tests_api[i].test_fn != NULL; i++) {
+        trap_tests_api[i].test_fn();
+        CLUSTER_KPRINTF("[test][api][trap] %s [passed]",
+                        trap_tests_api[i].name);
+    }
 }

@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -33,67 +33,67 @@
  */
 /**@{*/
 
-	#include <nanvix/hlib.h>
-	#include <signal.h>
+#include <nanvix/hlib.h>
+#include <signal.h>
 
-	/**
-	 * @brief Number of interrupts.
-	 */
-	#define LINUX64_INT_NUM                2
-	#define LINUX64_INT_MAX_NUM (SIGALRM + 1)
-	#define LINUX64_INT_IPI              265 /* Dummy IPI */
+/**
+ * @brief Number of interrupts.
+ */
+#define LINUX64_INT_NUM 2
+#define LINUX64_INT_MAX_NUM (SIGALRM + 1)
+#define LINUX64_INT_IPI 265 /* Dummy IPI */
 
-	/**
-	 * @brief Enable all the interrupts.
-	 */
-	EXTERN void linux64_interrupts_disable(void);
+/**
+ * @brief Enable all the interrupts.
+ */
+EXTERN void linux64_interrupts_disable(void);
 
-	/**
-	 * @brief Disable all the interrupts.
-	 */
-	EXTERN void linux64_interrupts_enable(void);
+/**
+ * @brief Disable all the interrupts.
+ */
+EXTERN void linux64_interrupts_enable(void);
 
-	/**
-	 * @brief Gets the interrupt level of the underlying core.
-	 *
-	 * @returns The current interrupt level.
-	 */
-	EXTERN int linux64_interrupts_get_level(void);
+/**
+ * @brief Gets the interrupt level of the underlying core.
+ *
+ * @returns The current interrupt level.
+ */
+EXTERN int linux64_interrupts_get_level(void);
 
+/**
+ * @brief Sets the interrupt level of the underlying core.
+ *
+ * @param newlevel New interrupt level.
+ *
+ * @returns The old interrupt level.
+ */
+EXTERN int linux64_interrupts_set_level(int newlevel);
 
-	/**
-	 * @brief Sets the interrupt level of the underlying core.
-	 *
-	 * @param newlevel New interrupt level.
-	 *
-	 * @returns The old interrupt level.
-	 */
-	EXTERN int linux64_interrupts_set_level(int newlevel);
+/**
+ * @brief Unmask a interrupt.
+ *
+ * @param The number of the interrupt to mask.
+ *
+ * @return 0 if succesful, negative value otherwise.
+ */
+EXTERN int linux64_interrupt_mask(int intnum);
 
-	/**
-	 * @brief Unmask a interrupt.
-	 *
-	 * @param The number of the interrupt to mask.
-	 *
-	 * @return 0 if succesful, negative value otherwise.
-	 */
-	EXTERN int linux64_interrupt_mask(int intnum);
+/**
+ * @brief Unmask a interrupt.
+ *
+ * @param The number of the interrupt to unmask.
+ *
+ * @return 0 if succesful, negative value otherwise.
+ */
+EXTERN int linux64_interrupt_unmask(int intnum);
 
-	/**
-	 * @brief Unmask a interrupt.
-	 *
-	 * @param The number of the interrupt to unmask.
-	 *
-	 * @return 0 if succesful, negative value otherwise.
-	 */
-	EXTERN int linux64_interrupt_unmask(int intnum);
-
-	/**
- 	* @brief Give the next interrupt called while blocked.
- 	*
- 	* @return The number of the next interrupt OR a negative value if there is none.
- 	*/
-	EXTERN int linux64_interrupt_next(void);
+/**
+ * @brief Give the next interrupt called while blocked.
+ *
+ * @return The number of the next interrupt OR a negative value if there is
+ * none.
+ */
+EXTERN int linux64_interrupt_next(void);
 
 /**@}*/
 
@@ -105,102 +105,102 @@
  * @cond linux64
  */
 
-	/**
-	 * @name Exported Constants
-	 */
-	/**@{*/
-	#define INTERRUPTS_NUM         LINUX64_INT_MAX_NUM /**< @ref LINUX64_INT_NUM */
-	#define INTERRUPT_IPI	       LINUX64_INT_IPI     /**< @ref LINUX64_INT_IPI */
-	#define INTERRUPT_LEVEL_LOW    0 /**< Interrupts enable.  */
-	#define INTERRUPT_LEVEL_MEDIUM 1 /**< Interrupts enable.  */
-	#define INTERRUPT_LEVEL_HIGH   1 /**< Timer enable.       */
-	#define INTERRUPT_LEVEL_NONE   2 /**< Interrupts disable. */
-	/**@}*/
+/**
+ * @name Exported Constants
+ */
+/**@{*/
+#define INTERRUPTS_NUM LINUX64_INT_MAX_NUM /**< @ref LINUX64_INT_NUM */
+#define INTERRUPT_IPI LINUX64_INT_IPI      /**< @ref LINUX64_INT_IPI */
+#define INTERRUPT_LEVEL_LOW 0              /**< Interrupts enable.  */
+#define INTERRUPT_LEVEL_MEDIUM 1           /**< Interrupts enable.  */
+#define INTERRUPT_LEVEL_HIGH 1             /**< Timer enable.       */
+#define INTERRUPT_LEVEL_NONE 2             /**< Interrupts disable. */
+/**@}*/
 
-	/**
-	 * @name Exported Variables
-	 */
-	/**@{*/
-	#define __interrupt_handlers_var /**< @ref interrupt_handlers */
-	/**@}*/
+/**
+ * @name Exported Variables
+ */
+/**@{*/
+#define __interrupt_handlers_var /**< @ref interrupt_handlers */
+/**@}*/
 
-	/**
-	 * @name Exported Functions
-	 */
-	/**@{*/
-	#define __interrupts_disable_fn   /**< @ref interrupts_disable()   */
-	#define __interrupts_enable_fn    /**< @ref interrupts_enable()    */
-	#define __interrupts_get_level_fn /**< @ref interrupts_get_level() */
-	#define __interrupts_set_level_fn /**< @ref interrupts_set_level() */
-	#define __interrupt_next_fn       /**< @ref interrupt_next()       */
-	#define __interrupt_mask_fn       /**< @ref interrupt_mask()       */
-	#define __interrupt_unmask_fn     /**< @ref interrupt_unmask()     */
-	#define __interrupt_ack_fn        /**< @ref interrupt_ack()        */
-	/**@}*/
+/**
+ * @name Exported Functions
+ */
+/**@{*/
+#define __interrupts_disable_fn   /**< @ref interrupts_disable()   */
+#define __interrupts_enable_fn    /**< @ref interrupts_enable()    */
+#define __interrupts_get_level_fn /**< @ref interrupts_get_level() */
+#define __interrupts_set_level_fn /**< @ref interrupts_set_level() */
+#define __interrupt_next_fn       /**< @ref interrupt_next()       */
+#define __interrupt_mask_fn       /**< @ref interrupt_mask()       */
+#define __interrupt_unmask_fn     /**< @ref interrupt_unmask()     */
+#define __interrupt_ack_fn        /**< @ref interrupt_ack()        */
+/**@}*/
 
-	/**
-	 * @see linux64_core_int_disable().
-	 */
-	static inline void __interrupts_disable(void)
-	{
-		linux64_interrupts_disable();
-	}
+/**
+ * @see linux64_core_int_disable().
+ */
+static inline void __interrupts_disable(void)
+{
+    linux64_interrupts_disable();
+}
 
-	/**
-	 * @see linux64_interrupts_enable().
-	 */
-	static inline void __interrupts_enable(void)
-	{
-		linux64_interrupts_enable();
-	}
+/**
+ * @see linux64_interrupts_enable().
+ */
+static inline void __interrupts_enable(void)
+{
+    linux64_interrupts_enable();
+}
 
-	/**
-	 * @see linux64_interrupts_get_level().
-	 */
-	static inline int interrupts_get_level(void)
-	{
-		return (linux64_interrupts_get_level());
-	}
+/**
+ * @see linux64_interrupts_get_level().
+ */
+static inline int interrupts_get_level(void)
+{
+    return (linux64_interrupts_get_level());
+}
 
-	/**
-	 * @see linux64_interrupts_set_level().
-	 */
-	static inline int __interrupts_set_level(int newlevel)
-	{
-		return (linux64_interrupts_set_level(newlevel));
-	}
+/**
+ * @see linux64_interrupts_set_level().
+ */
+static inline int __interrupts_set_level(int newlevel)
+{
+    return (linux64_interrupts_set_level(newlevel));
+}
 
-	/**
-	 * @see linux64_interrupt_mask().
-	 */
-	static inline int interrupt_mask(int intnum)
-	{
-		return (linux64_interrupt_mask(intnum));
-	}
+/**
+ * @see linux64_interrupt_mask().
+ */
+static inline int interrupt_mask(int intnum)
+{
+    return (linux64_interrupt_mask(intnum));
+}
 
-	/**
-	 * @see linux64_interrupt_unmask().
-	 */
-	static inline int interrupt_unmask(int intnum)
-	{
-		return (linux64_interrupt_unmask(intnum));
-	}
+/**
+ * @see linux64_interrupt_unmask().
+ */
+static inline int interrupt_unmask(int intnum)
+{
+    return (linux64_interrupt_unmask(intnum));
+}
 
-	/**
-	 * @brief Dummy function, No Interrupt controller in linux64
-	 */
-	static inline void interrupt_ack(int intnum)
-	{
-		UNUSED(intnum);
-	}
+/**
+ * @brief Dummy function, No Interrupt controller in linux64
+ */
+static inline void interrupt_ack(int intnum)
+{
+    UNUSED(intnum);
+}
 
-	/**
-	 * @see linux64_interrupt_next().
-	 */
-	static inline int interrupt_next(void)
-	{
-		return (linux64_interrupt_next());
-	}
+/**
+ * @see linux64_interrupt_next().
+ */
+static inline int interrupt_next(void)
+{
+    return (linux64_interrupt_next());
+}
 
 /**@endcond*/
 

@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -33,45 +33,43 @@
  */
 /**@{*/
 
-	/**
-	 * @name Provided Interface
-	 */
-	/**@{*/
-	#define __tlb_flush_fn /**< tlb_flush() */
-	/**@}*/
+/**
+ * @name Provided Interface
+ */
+/**@{*/
+#define __tlb_flush_fn /**< tlb_flush() */
+                       /**@}*/
 
 #ifndef _ASM_FILE_
 
-	/**
-	 * @brief Flushes changes in the TLB.
-	 *
-	 * The i486_tlb_flush() function flushes the changes made to the
-	 * TLB of the underlying i486 core.
-	 *
-	 * @returns This function always returns zero.
-	 *
-	 * @todo We can improve this by using the invlpg instruction.
-	 */
-	static inline int i486_tlb_flush(void)
-	{
-		asm volatile (
-			"movl %%cr3, %%eax;\
+/**
+ * @brief Flushes changes in the TLB.
+ *
+ * The i486_tlb_flush() function flushes the changes made to the
+ * TLB of the underlying i486 core.
+ *
+ * @returns This function always returns zero.
+ *
+ * @todo We can improve this by using the invlpg instruction.
+ */
+static inline int i486_tlb_flush(void)
+{
+    asm volatile("movl %%cr3, %%eax;\
 			movl %%eax, %%cr3;"
-			:
-			:
-			:
-		);
+                 :
+                 :
+                 :);
 
-		return (0);
-	}
+    return (0);
+}
 
-	/**
-	 * @see i486_tlb_flush().
-	 */
-	static inline int tlb_flush(void)
-	{
-		return (i486_tlb_flush());
-	}
+/**
+ * @see i486_tlb_flush().
+ */
+static inline int tlb_flush(void)
+{
+    return (i486_tlb_flush());
+}
 
 #endif /* _ASM_FILE_ */
 

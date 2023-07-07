@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,17 +22,16 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
-#include <nanvix/const.h>
 #include "test.h"
+#include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
+#include <nanvix/hlib.h>
 
 /**
  * Horizontal line for tests.
  */
-PUBLIC const char *HLINE = \
-"--------------------------------------------------------------------------------";
+PUBLIC const char *HLINE = "---------------------------------------------------"
+                           "-----------------------------";
 
 /**
  * @brief Launch unit tests on performance interface?
@@ -53,20 +52,20 @@ PUBLIC const char *HLINE = \
  */
 PRIVATE void test_core_al(void)
 {
-	test_arithmetic();
-	test_core();
-	test_exception();
-	test_interrupt();
-	test_mmu();
-	test_tlb();
-	test_trap();
+    test_arithmetic();
+    test_core();
+    test_exception();
+    test_interrupt();
+    test_mmu();
+    test_tlb();
+    test_trap();
 #ifndef __unix64__
-	test_upcall();
+    test_upcall();
 #endif
 #if (CORE_HAS_PERF) && (TEST_PERF)
-	test_perf();
+    test_perf();
 #endif
-	test_abstract_resource();
+    test_abstract_resource();
 }
 
 /**
@@ -75,7 +74,7 @@ PRIVATE void test_core_al(void)
 PRIVATE void test_cluster_al(void)
 {
 #if (CLUSTER_IS_MULTICORE)
-	test_cluster_cores();
+    test_cluster_cores();
 #endif
 }
 
@@ -85,10 +84,10 @@ PRIVATE void test_cluster_al(void)
 PRIVATE void test_processor_al(void)
 {
 #if (PROCESSOR_IS_MULTICLUSTER)
-	test_clusters();
+    test_clusters();
 #endif
 #if (PROCESSOR_HAS_NOC)
-	test_noc();
+    test_noc();
 #endif
 }
 
@@ -98,15 +97,15 @@ PRIVATE void test_processor_al(void)
 PRIVATE void test_target_al(void)
 {
 #if (__TARGET_HAS_SYNC)
-	test_sync();
+    test_sync();
 #endif
 
 #if (__TARGET_HAS_MAILBOX)
-	test_mailbox();
+    test_mailbox();
 #endif
 
 #if (__TARGET_HAS_PORTAL)
-	test_portal();
+    test_portal();
 #endif
 }
 
@@ -117,10 +116,10 @@ PRIVATE void test_target_al(void)
  */
 PUBLIC int main(int argc, const char *argv[])
 {
-	UNUSED(argc);
-	UNUSED(argv);
+    UNUSED(argc);
+    UNUSED(argv);
 
-	return (0);
+    return (0);
 }
 
 #endif
@@ -130,59 +129,59 @@ PUBLIC int main(int argc, const char *argv[])
  */
 PUBLIC NORETURN void kmain(int argc, const char *argv[])
 {
-	UNUSED(argc);
-	UNUSED(argv);
+    UNUSED(argc);
+    UNUSED(argv);
 
-	/*
-	 * Initializes the HAL. Must come
-	 * before everything else.
-	 */
-	hal_init();
+    /*
+     * Initializes the HAL. Must come
+     * before everything else.
+     */
+    hal_init();
 
 #ifndef __unix64__
 
-	timer_init(TIMER_FREQ);
+    timer_init(TIMER_FREQ);
 
 #endif
 
 #if (!PROCESSOR_IS_MULTICLUSTER)
 
-	test_core_al();
-	test_cluster_al();
-	test_processor_al();
-	test_target_al();
+    test_core_al();
+    test_cluster_al();
+    test_processor_al();
+    test_target_al();
 
 #else
 
-	int nodenum = processor_node_get_num();
+    int nodenum = processor_node_get_num();
 
 #ifdef __unix64__
-	if (nodenum == NODENUM_MASTER)
+    if (nodenum == NODENUM_MASTER)
 #else
-	/* Run local unit tests. */
-	if ((nodenum == NODENUM_MASTER) || (nodenum == NODENUM_SLAVE))
+    /* Run local unit tests. */
+    if ((nodenum == NODENUM_MASTER) || (nodenum == NODENUM_SLAVE))
 #endif
-	{
-		test_core_al();
-		test_cluster_al();
-		test_processor_al();
+    {
+        test_core_al();
+        test_cluster_al();
+        test_processor_al();
 
 #ifndef __unix64__
-		/* Run comm. service unit tests. */
-		if (nodenum == NODENUM_MASTER)
+        /* Run comm. service unit tests. */
+        if (nodenum == NODENUM_MASTER)
 #endif
-			test_target_al();
+            test_target_al();
 #ifndef __unix64__
-		/* Run Inter-Cluster tests. */
-		test_stress_al();
+        /* Run Inter-Cluster tests. */
+        test_stress_al();
 #endif
-	}
+    }
 #ifdef __unix64__
-	if ((nodenum == NODENUM_MASTER) || (nodenum == NODENUM_SLAVE))
-		test_stress_al();
+    if ((nodenum == NODENUM_MASTER) || (nodenum == NODENUM_SLAVE))
+        test_stress_al();
 #endif
 
 #endif
 
-	target_poweroff();
+    target_poweroff();
 }

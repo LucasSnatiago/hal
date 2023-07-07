@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,12 +25,12 @@
 #ifndef PROCESSOR_RISCV32_H_
 #define PROCESSOR_RISCV32_H_
 
-	#ifndef __NEED_PROCESSOR_RISCV32
-		#error "bad processor configuration?"
-	#endif
+#ifndef __NEED_PROCESSOR_RISCV32
+#error "bad processor configuration?"
+#endif
 
-	/* Processor Interface Implementation */
-	#include <arch/processor/riscv32/_riscv32.h>
+/* Processor Interface Implementation */
+#include <arch/processor/riscv32/_riscv32.h>
 
 /**
  * @addtogroup processor-riscv32 RISCV-32
@@ -49,13 +49,13 @@
  * @cond or1kqemu
  */
 
-	/**
-	 * @name Provided Features
-	 */
-	/**@{*/
-	#define PROCESSOR_IS_MULTICLUSTER 0 /**< Multicluster feature */
-	#define PROCESSOR_HAS_NOC         0 /**< NoC feature          */
-	/**@}*/
+/**
+ * @name Provided Features
+ */
+/**@{*/
+#define PROCESSOR_IS_MULTICLUSTER 0 /**< Multicluster feature */
+#define PROCESSOR_HAS_NOC 0         /**< NoC feature          */
+                                    /**@}*/
 
 /**@endcond*/
 

@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/core/interrupt.h>
 #include <arch/core/linux64/int.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/core/interrupt.h>
 
 /**
- * @brief Current level. 
+ * @brief Current level.
  */
 PRIVATE int current_it_level = INTERRUPT_LEVEL_NONE;
 
@@ -36,33 +36,38 @@ PRIVATE int current_it_level = INTERRUPT_LEVEL_NONE;
  */
 PRIVATE void linux64_do_interrupt(int intnum)
 {
-	if (intnum == SIGINT)
-		kprintf("<Keybord Interrupt> detected ! (%d)", intnum);
-	else
-		kprintf("<Alarm Interrupt> detected ! (%d)", intnum);
+    if (intnum == SIGINT)
+        kprintf("<Keybord Interrupt> detected ! (%d)", intnum);
+    else
+        kprintf("<Alarm Interrupt> detected ! (%d)", intnum);
 
-	exit(0);
+    exit(0);
 }
 
 /**
  * @brief List of the signal considered as interrupts
  */
-PRIVATE int linux64_int_signals[] = {
-	SIGALRM,
-    SIGINT,
-	-1
-};
+PRIVATE int linux64_int_signals[] = {SIGALRM, SIGINT, -1};
 
 /**
  * @brief interrupt handlers.
  */
 PUBLIC void (*interrupt_handlers[LINUX64_INT_MAX_NUM])(int) = {
-	NULL,NULL,
-	linux64_do_interrupt,
-	NULL, NULL, NULL, NULL,
-	NULL, NULL, NULL, NULL,
-	NULL, NULL, NULL,
-	linux64_do_interrupt,
+    NULL,
+    NULL,
+    linux64_do_interrupt,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    linux64_do_interrupt,
 };
 
 /**
@@ -70,10 +75,10 @@ PUBLIC void (*interrupt_handlers[LINUX64_INT_MAX_NUM])(int) = {
  */
 PUBLIC void linux64_interrupts_enable(void)
 {
-	for (int i = 0; linux64_int_signals[i] != -1; i++)
-		signal(linux64_int_signals[i], do_interrupt);
+    for (int i = 0; linux64_int_signals[i] != -1; i++)
+        signal(linux64_int_signals[i], do_interrupt);
 
-	current_it_level = INTERRUPT_LEVEL_LOW;
+    current_it_level = INTERRUPT_LEVEL_LOW;
 }
 
 /**
@@ -81,10 +86,10 @@ PUBLIC void linux64_interrupts_enable(void)
  */
 PUBLIC void linux64_interrupts_disable(void)
 {
-	for (int i = 0; linux64_int_signals[i] != -1; i++)
-		signal(linux64_int_signals[i], NULL);
+    for (int i = 0; linux64_int_signals[i] != -1; i++)
+        signal(linux64_int_signals[i], NULL);
 
-	current_it_level = INTERRUPT_LEVEL_NONE;
+    current_it_level = INTERRUPT_LEVEL_NONE;
 }
 
 /**
@@ -92,7 +97,7 @@ PUBLIC void linux64_interrupts_disable(void)
  */
 PUBLIC int linux64_interrupts_get_level(void)
 {
-	return (current_it_level);
+    return (current_it_level);
 }
 
 /**
@@ -100,42 +105,38 @@ PUBLIC int linux64_interrupts_get_level(void)
  */
 PUBLIC int linux64_interrupts_set_level(int newlevel)
 {
-	int oldlevel;
+    int oldlevel;
 
-	if (newlevel < INTERRUPT_LEVEL_LOW || newlevel > INTERRUPT_LEVEL_NONE)
-		return (-EINVAL);
+    if (newlevel < INTERRUPT_LEVEL_LOW || newlevel > INTERRUPT_LEVEL_NONE)
+        return (-EINVAL);
 
-	oldlevel = current_it_level;
+    oldlevel = current_it_level;
 
-	switch (newlevel)
-	{
-		/* INTERRUPT_LEVEL_HIGH */
-		case 0:
-		{
-			linux64_interrupts_enable();
-		} break;
+    switch (newlevel) {
+    /* INTERRUPT_LEVEL_HIGH */
+    case 0: {
+        linux64_interrupts_enable();
+    } break;
 
-		/**
-		 * INTERRUPT_LEVEL_HIGH:
-		 * INTERRUPT_LEVEL_MEDIUM:
-		 */
-		case 1:
-		{
+    /**
+     * INTERRUPT_LEVEL_HIGH:
+     * INTERRUPT_LEVEL_MEDIUM:
+     */
+    case 1: {
 
-			/* Disable SIGINT interrupt. */
-			signal(linux64_int_signals[1], NULL);
+        /* Disable SIGINT interrupt. */
+        signal(linux64_int_signals[1], NULL);
 
-			current_it_level = newlevel;
-		} break;
+        current_it_level = newlevel;
+    } break;
 
-		/* INTERRUPT_LEVEL_NONE */
-		default:
-		{
-			linux64_interrupts_disable();
-		} break;
-	}
+    /* INTERRUPT_LEVEL_NONE */
+    default: {
+        linux64_interrupts_disable();
+    } break;
+    }
 
-	return (oldlevel);
+    return (oldlevel);
 }
 
 /**
@@ -147,10 +148,10 @@ PUBLIC int linux64_interrupts_set_level(int newlevel)
  */
 PUBLIC int linux64_interrupt_mask(int intnum)
 {
-	if (signal(intnum, NULL) == SIG_ERR)
-		return (-EINVAL);
+    if (signal(intnum, NULL) == SIG_ERR)
+        return (-EINVAL);
 
-	return (0);
+    return (0);
 }
 
 /**
@@ -162,27 +163,27 @@ PUBLIC int linux64_interrupt_mask(int intnum)
  */
 PUBLIC int linux64_interrupt_unmask(int intnum)
 {
-	if (signal(intnum, do_interrupt) == SIG_ERR)
-		return (-EINVAL);
+    if (signal(intnum, do_interrupt) == SIG_ERR)
+        return (-EINVAL);
 
-	return (0);
+    return (0);
 }
 
 /**
  * @brief Give the next interrupt called while blocked.
  *
- * @return The number of the next interrupt OR a negative value if there is none.
+ * @return The number of the next interrupt OR a negative value if there is
+ * none.
  */
 PUBLIC int linux64_interrupt_next(void)
 {
-	sigset_t set;
-	sigpending(&set);
+    sigset_t set;
+    sigpending(&set);
 
-	for (int i = 0; linux64_int_signals[i] != -1; i++)
-	{
-		if (sigismember(&set, linux64_int_signals[i]))
-			return (linux64_int_signals[i]);
-	}
+    for (int i = 0; linux64_int_signals[i] != -1; i++) {
+        if (sigismember(&set, linux64_int_signals[i]))
+            return (linux64_int_signals[i]);
+    }
 
-	return (-EINVAL);
+    return (-EINVAL);
 }

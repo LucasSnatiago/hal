@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,21 +25,18 @@
 /* Must come fist. */
 #define __NEED_HAL_TARGET
 
-#include <nanvix/hal/target.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/target.h>
 #include <nanvix/hlib.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 /**
  * @brief Boot arguments.
  */
-PRIVATE struct
-{
-	int nclusters; /**< Number of Clusters */
-} boot_args = {
-	1
-};
+PRIVATE struct {
+    int nclusters; /**< Number of Clusters */
+} boot_args = {1};
 
 /**
  * @brief Parses boot arguments.
@@ -49,26 +46,26 @@ PRIVATE struct
  */
 PRIVATE void unix64_parse_boot_args(int argc, const char **argv)
 {
-	for (int i = 1; i < argc; /* noop*/)
-	{
-		/* Unkonwn argument. */
-		if (strcmp(argv[i], "--nclusters"))
-			exit(-EINVAL);
+    for (int i = 1; i < argc; /* noop*/) {
+        /* Unkonwn argument. */
+        if (strcmp(argv[i], "--nclusters"))
+            exit(-EINVAL);
 
-		/* Missing argument. */
-		if ((i + 1) > argc)
-			exit(-EINVAL);
+        /* Missing argument. */
+        if ((i + 1) > argc)
+            exit(-EINVAL);
 
-		sscanf(argv[i + 1], "%d", &boot_args.nclusters);
+        sscanf(argv[i + 1], "%d", &boot_args.nclusters);
 
-		fprintf(stderr, "[unix64] argv[%d]: %s %s\n", i, argv[i], argv[i + 1]);
+        fprintf(stderr, "[unix64] argv[%d]: %s %s\n", i, argv[i], argv[i + 1]);
 
-		i += 2;
-	}
+        i += 2;
+    }
 
-	/* Bad argument. */
-	if ((boot_args.nclusters < 1) || (boot_args.nclusters > PROCESSOR_CLUSTERS_NUM))
-		exit(-EINVAL);
+    /* Bad argument. */
+    if ((boot_args.nclusters < 1) ||
+        (boot_args.nclusters > PROCESSOR_CLUSTERS_NUM))
+        exit(-EINVAL);
 }
 
 /**
@@ -78,15 +75,15 @@ PRIVATE void unix64_parse_boot_args(int argc, const char **argv)
  */
 PRIVATE int unix64_boot(int nclusters)
 {
-	/*
-	 * Early initialization of Virtual
-	 * TTY device to help us debugging.
-	 */
-	tty_virt_init();
+    /*
+     * Early initialization of Virtual
+     * TTY device to help us debugging.
+     */
+    tty_virt_init();
 
-	kprintf("[hal][target] powering on...");
+    kprintf("[hal][target] powering on...");
 
-	return (linux64_processor_boot(nclusters));
+    return (linux64_processor_boot(nclusters));
 }
 
 /**
@@ -94,16 +91,16 @@ PRIVATE int unix64_boot(int nclusters)
  */
 PUBLIC NORETURN void unix64_poweroff(void)
 {
-	if (cluster_get_num() == PROCESSOR_CLUSTERNUM_MASTER)
-		kprintf("[hal][target] powering off...");
+    if (cluster_get_num() == PROCESSOR_CLUSTERNUM_MASTER)
+        kprintf("[hal][target] powering off...");
 
-	unix64_mailbox_shutdown();
+    unix64_mailbox_shutdown();
 #if !__NANVIX_IKC_USES_ONLY_MAILBOX
-	unix64_sync_shutdown();
-	unix64_portal_shutdown();
+    unix64_sync_shutdown();
+    unix64_portal_shutdown();
 #endif /* !__NANVIX_IKC_USES_ONLY_MAILBOX  */
 
-	processor_poweroff();
+    processor_poweroff();
 }
 
 /**
@@ -114,17 +111,17 @@ PUBLIC NORETURN void unix64_poweroff(void)
  */
 int main(int argc, const char **argv)
 {
-	int error;
+    int error;
 
-	unix64_parse_boot_args(argc, argv);
+    unix64_parse_boot_args(argc, argv);
 
-	/* Boot processor. */
-	if ((error = unix64_boot(boot_args.nclusters)) < 0)
-		return (error);
+    /* Boot processor. */
+    if ((error = unix64_boot(boot_args.nclusters)) < 0)
+        return (error);
 
-	unix64_setup();
+    unix64_setup();
 
-	UNREACHABLE();
+    UNREACHABLE();
 
-	return (0);
+    return (0);
 }

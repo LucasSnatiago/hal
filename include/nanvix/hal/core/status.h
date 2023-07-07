@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,8 +25,8 @@
 #ifndef NANVIX_HAL_CORE_STATUS_H_
 #define NANVIX_HAL_CORE_STATUS_H_
 
-	/* Core Interface Implementation */
-	#include <nanvix/hal/core/_core.h>
+/* Core Interface Implementation */
+#include <nanvix/hal/core/_core.h>
 
 /*============================================================================*
  * Status Interface                                                           *
@@ -40,40 +40,40 @@
  */
 /**@{*/
 
-	/**
-	 * @name Core status modes.
-	 */
-	/**@{*/
-	#define CORE_STATUS_MODE_NORMAL    0                             /**< Core is on normal execution. */
-	#define CORE_STATUS_MODE_INTERRUPT 1                             /**< Core is in an interrupt.     */
-	#define CORE_STATUS_MODE_EXCEPTION 2                             /**< Core is in an exception.     */
-	#define CORE_STATUS_MODE_TRAP      3                             /**< Core is in a trap.           */
-	#define CORE_STATUS_MODE_MASKED    4                             /**< Core interrupts were masked. */
-	#define CORE_STATUS_MODE_LIMIT     (CORE_STATUS_MODE_MASKED + 1) /**< Limiting number.             */
-	/**@}*/
+/**
+ * @name Core status modes.
+ */
+/**@{*/
+#define CORE_STATUS_MODE_NORMAL 0    /**< Core is on normal execution. */
+#define CORE_STATUS_MODE_INTERRUPT 1 /**< Core is in an interrupt.     */
+#define CORE_STATUS_MODE_EXCEPTION 2 /**< Core is in an exception.     */
+#define CORE_STATUS_MODE_TRAP 3      /**< Core is in a trap.           */
+#define CORE_STATUS_MODE_MASKED 4    /**< Core interrupts were masked. */
+#define CORE_STATUS_MODE_LIMIT                                                 \
+    (CORE_STATUS_MODE_MASKED + 1) /**< Limiting number.             */
+/**@}*/
 
-	/**
-	 * @brief Core Status.
-	 *
-	 * @details This structure holds general status informations about the
-	 * underlying core that is updated by kernels code. In this sense, we can
-	 * easy consult the execution status of the core in an
-	 * architecture-independent way.
-	 */
-	struct core_status
-	{
-		int mode; /**< @see Core status modes. */
-	} ALIGN(CACHE_LINE_SIZE);
+/**
+ * @brief Core Status.
+ *
+ * @details This structure holds general status informations about the
+ * underlying core that is updated by kernels code. In this sense, we can
+ * easy consult the execution status of the core in an
+ * architecture-independent way.
+ */
+struct core_status {
+    int mode; /**< @see Core status modes. */
+} ALIGN(CACHE_LINE_SIZE);
 
-	/**
-	 * @brief Set execution mode.
-	 */
-	EXTERN int core_status_set_mode(int mode);
+/**
+ * @brief Set execution mode.
+ */
+EXTERN int core_status_set_mode(int mode);
 
-	/**
-	 * @brief Get execution mode.
-	 */
-	EXTERN int core_status_get_mode(void);
+/**
+ * @brief Get execution mode.
+ */
+EXTERN int core_status_get_mode(void);
 
 /**@}*/
 

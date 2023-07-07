@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,10 +25,9 @@
 #ifndef _CLUSTER_OR1K_CLUSTER_H_
 #define _CLUSTER_OR1K_CLUSTER_H_
 
-	#undef  __NEED_CORE_OR1K
-	#define __NEED_CORE_OR1K
+#undef __NEED_CORE_OR1K
+#define __NEED_CORE_OR1K
 
-	#include <arch/core/or1k.h>
+#include <arch/core/or1k.h>
 
 #endif /* _CLUSTER_OR1K_CLUSTER_H_ */
-

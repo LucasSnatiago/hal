@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
+#include <nanvix/const.h>
 #include <nanvix/hal/core/context.h>
 #include <nanvix/hal/core/upcall.h>
-#include <nanvix/const.h>
 #include <nanvix/hlib.h>
 
 #ifndef __upcall_forge_fn
@@ -40,52 +40,47 @@
  * @note It is up to the caller to check if enough memory is available
  * in the user stack to perform the upcall.
  */
-PUBLIC void upcall_forge(
-	struct context *ctx,
-	void (*fn)(void *),
-	void *arg,
-	word_t argsize
-)
+PUBLIC void upcall_forge(struct context *ctx, void (*fn)(void *), void *arg,
+                         word_t argsize)
 {
-	word_t sp;          /* Stack pointer    */
-	byte_t padding = 0; /* Argument padding.*/
+    word_t sp;          /* Stack pointer    */
+    byte_t padding = 0; /* Argument padding.*/
 
-	/* We must ensure this. */
-	KASSERT_SIZE(sizeof(void *), sizeof(word_t));
-	KASSERT(ALIGNED(UPCALL_STACK_FRAME_SIZE(argsize), DWORD_SIZE));
+    /* We must ensure this. */
+    KASSERT_SIZE(sizeof(void *), sizeof(word_t));
+    KASSERT(ALIGNED(UPCALL_STACK_FRAME_SIZE(argsize), DWORD_SIZE));
 
-	/* Compute argument padding. */
-	padding = DWORD_SIZE - (argsize % DWORD_SIZE);
+    /* Compute argument padding. */
+    padding = DWORD_SIZE - (argsize % DWORD_SIZE);
 
-	sp = context_get_sp(ctx);
+    sp = context_get_sp(ctx);
 
-	/* Push saved context. */
-	sp -= sizeof(struct context);
-	kmemcpy((void *)sp, ctx, sizeof(struct context));
+    /* Push saved context. */
+    sp -= sizeof(struct context);
+    kmemcpy((void *)sp, ctx, sizeof(struct context));
 
-	/* Align to double word boundary. */
-	if (padding > 0)
-	{
-		sp -= padding;
-		kmemset((void *)sp, 0, padding);
-	}
+    /* Align to double word boundary. */
+    if (padding > 0) {
+        sp -= padding;
+        kmemset((void *)sp, 0, padding);
+    }
 
-	/* Push arguments. */
-	sp -= argsize;
-	kmemcpy((void *)sp, arg, argsize);
+    /* Push arguments. */
+    sp -= argsize;
+    kmemcpy((void *)sp, arg, argsize);
 
-	/* Push arguments size with padding. */
-	argsize += padding;
-	sp -= sizeof(word_t);
-	kmemcpy((void *)sp, &argsize, sizeof(word_t));
+    /* Push arguments size with padding. */
+    argsize += padding;
+    sp -= sizeof(word_t);
+    kmemcpy((void *)sp, &argsize, sizeof(word_t));
 
-	/* Push target function. */
-	sp -= sizeof(word_t);
-	kmemcpy((void *)sp, &fn, sizeof(word_t));
+    /* Push target function. */
+    sp -= sizeof(word_t);
+    kmemcpy((void *)sp, &fn, sizeof(word_t));
 
-	/* Tweak saved context. */
-	context_set_pc(ctx, (word_t) upcall_ret);
-	context_set_sp(ctx, sp);
+    /* Tweak saved context. */
+    context_set_pc(ctx, (word_t)upcall_ret);
+    context_set_sp(ctx, sp);
 }
 
 #endif /* !__upcall_forge_fn */

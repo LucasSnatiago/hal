@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/core/interrupt.h>
-#include <arch/core/or1k/int.h>
 #include <arch/core/or1k/core.h>
+#include <arch/core/or1k/int.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/core/interrupt.h>
 #include <nanvix/hlib.h>
 #include <posix/errno.h>
 
@@ -33,8 +33,7 @@
  * @brief Interrupt handlers.
  */
 PUBLIC void (*interrupt_handlers[OR1K_INT_NUM])(int) = {
-	NULL, NULL, NULL, NULL, NULL
-};
+    NULL, NULL, NULL, NULL, NULL};
 
 /**
  * @brief Receives an interrupt number, checks if belongs
@@ -46,12 +45,12 @@ PUBLIC void (*interrupt_handlers[OR1K_INT_NUM])(int) = {
  */
 PUBLIC void or1k_do_interrupt(int num)
 {
-	int interrupt; /* Interrupt to be served. */
+    int interrupt; /* Interrupt to be served. */
 
-	if (num == OR1K_INT_EXTERNAL)
-		interrupt = or1k_pic_next();
-	else
-		interrupt = num;
+    if (num == OR1K_INT_EXTERNAL)
+        interrupt = or1k_pic_next();
+    else
+        interrupt = num;
 
-	do_interrupt(interrupt);
+    do_interrupt(interrupt);
 }

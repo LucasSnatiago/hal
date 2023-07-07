@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,24 +25,25 @@
 #ifndef NANVIX_HAL_CORE_CACHE_H_
 #define NANVIX_HAL_CORE_CACHE_H_
 
-	/* Core Interface Implementation */
-	#include <nanvix/hal/core/_core.h>
+/* Core Interface Implementation */
+#include <nanvix/hal/core/_core.h>
 
 /*============================================================================*
  * Interface Implementation Checking                                          *
  *============================================================================*/
 
-#if defined(__INTERFACE_CHECK) || defined(__INTERFACE_CHECK_CORE_AL) || defined(__INTERFACE_CHECK_CACHE)
+#if defined(__INTERFACE_CHECK) || defined(__INTERFACE_CHECK_CORE_AL) ||        \
+    defined(__INTERFACE_CHECK_CACHE)
 
-	/* Constants */
-	#ifndef CACHE_LINE_SIZE
-	#error "CACHE_LINE_SIZE not defined"
-	#endif
+/* Constants */
+#ifndef CACHE_LINE_SIZE
+#error "CACHE_LINE_SIZE not defined"
+#endif
 
-	/* Functions */
-	#ifndef __dcache_invalidate_fn
-	#error "dcache_invalidate() not defined?"
-	#endif
+/* Functions */
+#ifndef __dcache_invalidate_fn
+#error "dcache_invalidate() not defined?"
+#endif
 
 #endif
 
@@ -58,27 +59,27 @@
  */
 /**@{*/
 
-	#include <nanvix/const.h>
+#include <nanvix/const.h>
 
-	/**
-	 * @brief Invalidates the data cache.
-	 */
-	EXTERN void dcache_invalidate(void);
+/**
+ * @brief Invalidates the data cache.
+ */
+EXTERN void dcache_invalidate(void);
 
-	/**
-	 * @brief Flushes the data cache.
-	 */
-	EXTERN void dcache_flush(void);
+/**
+ * @brief Flushes the data cache.
+ */
+EXTERN void dcache_flush(void);
 
-	/**
-	 * @brief Waits for ongoing operations on the data cache.
-	 */
-	EXTERN void dcache_fence(void);
+/**
+ * @brief Waits for ongoing operations on the data cache.
+ */
+EXTERN void dcache_fence(void);
 
-	/**
-	 * @brief Invalidades the instruction cache.
-	 */
-	EXTERN void icache_invalidate(void);
+/**
+ * @brief Invalidades the instruction cache.
+ */
+EXTERN void icache_invalidate(void);
 
 /**@}*/
 

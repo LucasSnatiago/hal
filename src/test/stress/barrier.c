@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
-#include <posix/errno.h>
 #include "../test.h"
 #include "vsyscall.h"
+#include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
+#include <nanvix/hlib.h>
+#include <posix/errno.h>
 
 #if (__TARGET_HAS_SYNC)
 
@@ -35,7 +35,7 @@
  * @name Synchronization points.
  */
 /**@{*/
-static int _syncin  = -1;
+static int _syncin = -1;
 static int _syncout = -1;
 /**@}*/
 
@@ -48,7 +48,7 @@ static int _syncout = -1;
  */
 PRIVATE void dummy_handler(int num)
 {
-	UNUSED(num);
+    UNUSED(num);
 }
 
 /**
@@ -56,13 +56,13 @@ PRIVATE void dummy_handler(int num)
  */
 PUBLIC void test_stress_interrupt_setup(void)
 {
-	/* Ignores spurious interrupts. */
-	if (core_get_id() == 0)
-		KASSERT(interrupt_register(INTERRUPT_TIMER, dummy_handler) == 0);
+    /* Ignores spurious interrupts. */
+    if (core_get_id() == 0)
+        KASSERT(interrupt_register(INTERRUPT_TIMER, dummy_handler) == 0);
 
-	interrupts_enable();
+    interrupts_enable();
 
-	interrupt_mask(INTERRUPT_TIMER);
+    interrupt_mask(INTERRUPT_TIMER);
 }
 
 /**
@@ -70,13 +70,13 @@ PUBLIC void test_stress_interrupt_setup(void)
  */
 PUBLIC void test_stress_interrupt_cleanup(void)
 {
-	interrupt_unmask(INTERRUPT_TIMER);
+    interrupt_unmask(INTERRUPT_TIMER);
 
-	interrupts_disable();
+    interrupts_disable();
 
-	/* Unregister interrupt handler. */
-	if (core_get_id() == 0)
-		KASSERT(interrupt_unregister(INTERRUPT_TIMER) == 0);
+    /* Unregister interrupt handler. */
+    if (core_get_id() == 0)
+        KASSERT(interrupt_unregister(INTERRUPT_TIMER) == 0);
 }
 
 /**
@@ -84,24 +84,24 @@ PUBLIC void test_stress_interrupt_cleanup(void)
  */
 PUBLIC void test_stress_setup(void)
 {
-	int local;
-	int remote;
-	int nodes[2];
+    int local;
+    int remote;
+    int nodes[2];
 
-	test_stress_interrupt_setup();
+    test_stress_interrupt_setup();
 
-	local  = processor_node_get_num();
-	remote = local == NODENUM_MASTER ? NODENUM_SLAVE : NODENUM_MASTER;
+    local = processor_node_get_num();
+    remote = local == NODENUM_MASTER ? NODENUM_SLAVE : NODENUM_MASTER;
 
-	/* Create sync. */
-	nodes[0] = remote;
-	nodes[1] = local;
-	KASSERT((_syncin = vsys_sync_create(nodes, 2, SYNC_ONE_TO_ALL)) >= 0);
+    /* Create sync. */
+    nodes[0] = remote;
+    nodes[1] = local;
+    KASSERT((_syncin = vsys_sync_create(nodes, 2, SYNC_ONE_TO_ALL)) >= 0);
 
-	/* Open sync. */
-	nodes[0] = local;
-	nodes[1] = remote;
-	KASSERT((_syncout = vsys_sync_open(nodes, 2, SYNC_ONE_TO_ALL)) >= 0);
+    /* Open sync. */
+    nodes[0] = local;
+    nodes[1] = remote;
+    KASSERT((_syncout = vsys_sync_open(nodes, 2, SYNC_ONE_TO_ALL)) >= 0);
 }
 
 /**
@@ -109,13 +109,13 @@ PUBLIC void test_stress_setup(void)
  */
 PUBLIC void test_stress_cleanup(void)
 {
-	KASSERT(vsys_sync_unlink(_syncin) == 0);
-	KASSERT(vsys_sync_close(_syncout) == 0);
+    KASSERT(vsys_sync_unlink(_syncin) == 0);
+    KASSERT(vsys_sync_close(_syncout) == 0);
 
-	_syncin  = -1;
-	_syncout = -1;
+    _syncin = -1;
+    _syncout = -1;
 
-	test_stress_interrupt_cleanup();
+    test_stress_interrupt_cleanup();
 }
 
 /**
@@ -123,26 +123,23 @@ PUBLIC void test_stress_cleanup(void)
  */
 PUBLIC void test_stress_barrier(void)
 {
-	int ret;
+    int ret;
 
-	if (processor_node_get_num() == NODENUM_MASTER)
-	{
-		do
-			ret = vsys_sync_signal(_syncout);
-		while (ret == (-EAGAIN));
-		KASSERT(ret == 0);
+    if (processor_node_get_num() == NODENUM_MASTER) {
+        do
+            ret = vsys_sync_signal(_syncout);
+        while (ret == (-EAGAIN));
+        KASSERT(ret == 0);
 
-		KASSERT(vsys_sync_wait(_syncin) == 0);
-	}
-	else
-	{
-		KASSERT(vsys_sync_wait(_syncin) == 0);
+        KASSERT(vsys_sync_wait(_syncin) == 0);
+    } else {
+        KASSERT(vsys_sync_wait(_syncin) == 0);
 
-		do
-			ret = vsys_sync_signal(_syncout);
-		while (ret == (-EAGAIN));
-		KASSERT(ret == 0);
-	}
+        do
+            ret = vsys_sync_signal(_syncout);
+        while (ret == (-EAGAIN));
+        KASSERT(ret == 0);
+    }
 }
 
 #endif /* __TARGET_HAS_SYNC */

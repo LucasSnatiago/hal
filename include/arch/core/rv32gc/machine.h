@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 
 #ifndef ARCH_CORE_RV32GC_MACHINE_H_
 #define ARCH_CORE_RV32GC_MACHINE_H_
@@ -34,66 +33,66 @@
  */
 /**@{*/
 
-	#ifndef __NEED_CORE_MACHINE
-		#error "do not include this file"
-	#endif
+#ifndef __NEED_CORE_MACHINE
+#error "do not include this file"
+#endif
 
-	/* Must come first. */
-	#define __NEED_CORE_CONTEXT
-	#define __NEED_CORE_TYPES
+/* Must come first. */
+#define __NEED_CORE_CONTEXT
+#define __NEED_CORE_TYPES
 
-	#include <arch/core/rv32gc/ctx.h>
-	#include <arch/core/rv32gc/types.h>
-	#include <nanvix/const.h>
+#include <arch/core/rv32gc/ctx.h>
+#include <arch/core/rv32gc/types.h>
+#include <nanvix/const.h>
 
 #ifndef _ASM_FILE_
 
-	/**
-	 * @brief Dumps all CSRs.
-	 */
-	EXTERN void rv32gc_dump_all_csr(void);
+/**
+ * @brief Dumps all CSRs.
+ */
+EXTERN void rv32gc_dump_all_csr(void);
 
-	/**
-	 * @brief Enters supervisor mode.
-	 *
-	 * @param pc Target program counter.
-	 */
-	EXTERN NORETURN void rv32gc_supervisor_enter(rv32gc_word_t pc);
+/**
+ * @brief Enters supervisor mode.
+ *
+ * @param pc Target program counter.
+ */
+EXTERN NORETURN void rv32gc_supervisor_enter(rv32gc_word_t pc);
 
-	/**
-	 * @brief Handles a bad machine exception.
-	 */
-	EXTERN NORETURN void rv32gc_do_mbad(const struct context *ctx);
+/**
+ * @brief Handles a bad machine exception.
+ */
+EXTERN NORETURN void rv32gc_do_mbad(const struct context *ctx);
 
-	/**
-	 * @brief Handles machine calls.
-	 *
-	 * @param ctx Interrupted context
-	 */
-	EXTERN void rv32gc_do_mcall(struct context *ctx);
+/**
+ * @brief Handles machine calls.
+ *
+ * @param ctx Interrupted context
+ */
+EXTERN void rv32gc_do_mcall(struct context *ctx);
 
-	/**
-	 * @brief Handles machine exceptions.
-	 *
-	 * @param ctx Interrupted context
-	 */
-	EXTERN NORETURN void rv32gc_do_mexcp(const struct context *ctx);
+/**
+ * @brief Handles machine exceptions.
+ *
+ * @param ctx Interrupted context
+ */
+EXTERN NORETURN void rv32gc_do_mexcp(const struct context *ctx);
 
-	/**
-	 * @brief Handles machine interrupts.
-	 *
-	 * @param ctx Interrupted context.
-	 */
-	EXTERN void rv32gc_do_mint(const struct context *ctx);
+/**
+ * @brief Handles machine interrupts.
+ *
+ * @param ctx Interrupted context.
+ */
+EXTERN void rv32gc_do_mint(const struct context *ctx);
 
-	/**
-	 * @brief Delegates traps to loower-privilege levels.
-	 *
-	 * @bug FIXME check if supervisor mode is supported.
-	 *
-	 * @author Pedro Henrique Penna
-	 */
-	EXTERN void rv32gc_machine_delegate_traps(void);
+/**
+ * @brief Delegates traps to loower-privilege levels.
+ *
+ * @bug FIXME check if supervisor mode is supported.
+ *
+ * @author Pedro Henrique Penna
+ */
+EXTERN void rv32gc_machine_delegate_traps(void);
 
 #endif /* _ASM_FILE_ */
 

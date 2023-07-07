@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,12 +25,12 @@
 #ifndef TARGET_QEMU_I486_PC_H_
 #define TARGET_QEMU_I486_PC_H_
 
-	#ifndef __NEED_TARGET_QEMU_I486_PC
-		#error "bad target configuration?"
-	#endif
+#ifndef __NEED_TARGET_QEMU_I486_PC
+#error "bad target configuration?"
+#endif
 
-	/* Target Interface Implementation */
-	#include <arch/target/qemu/i486-pc/_i486-pc.h>
+/* Target Interface Implementation */
+#include <arch/target/qemu/i486-pc/_i486-pc.h>
 
 /**
  * @defgroup target-qemu-i486-pc QEMU i486
@@ -40,12 +40,12 @@
  */
 /**@{*/
 
-	#include <arch/target/qemu/i486-pc/stdout.h>
+#include <arch/target/qemu/i486-pc/stdout.h>
 
-	/**
-	 * @brief Frequency (in MHz).
-	 */
-	#define QEMU_X86_FREQUENCY 50
+/**
+ * @brief Frequency (in MHz).
+ */
+#define QEMU_X86_FREQUENCY 50
 
 /**@}*/
 
@@ -57,22 +57,22 @@
  * @cond i486
  */
 
-	/**
-	 * @name Exported Constants
-	 */
-	/**@{*/
-	#define TARGET_FREQUENCY QEMU_X86_FREQUENCY
-	/**@}*/
+/**
+ * @name Exported Constants
+ */
+/**@{*/
+#define TARGET_FREQUENCY QEMU_X86_FREQUENCY
+/**@}*/
 
-	/**
-	 * @name Provided Features
-	 */
-	/**@{*/
-	#define __TARGET_HAS_STDOUT  1 /**< Standard Output feature */
-	#define __TARGET_HAS_SYNC    0 /**< Synchronization feature */
-	#define __TARGET_HAS_MAILBOX 0 /**< Mailbox feature         */
-	#define __TARGET_HAS_PORTAL  0 /**< Portal feature          */
-	/**@}*/
+/**
+ * @name Provided Features
+ */
+/**@{*/
+#define __TARGET_HAS_STDOUT 1  /**< Standard Output feature */
+#define __TARGET_HAS_SYNC 0    /**< Synchronization feature */
+#define __TARGET_HAS_MAILBOX 0 /**< Mailbox feature         */
+#define __TARGET_HAS_PORTAL 0  /**< Portal feature          */
+                               /**@}*/
 
 /**@endcond*/
 

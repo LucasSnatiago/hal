@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,8 +25,8 @@
 /* Must come first. */
 #define __NEED_HAL_CLUSTER
 
-#include <nanvix/hal/cluster.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/cluster.h>
 #include <nanvix/hlib.h>
 
 /**
@@ -45,18 +45,18 @@ PRIVATE struct core_status cores_status[CORES_NUM];
  */
 PUBLIC int core_status_set_mode(int mode)
 {
-	int coreid;
-	int oldmode;
+    int coreid;
+    int oldmode;
 
-	/* Valid mode. */
-	KASSERT(WITHIN(mode, CORE_STATUS_MODE_NORMAL, CORE_STATUS_MODE_LIMIT));
+    /* Valid mode. */
+    KASSERT(WITHIN(mode, CORE_STATUS_MODE_NORMAL, CORE_STATUS_MODE_LIMIT));
 
-	coreid = core_get_id();
+    coreid = core_get_id();
 
-	oldmode = cores_status[coreid].mode;
-	cores_status[coreid].mode = mode;
+    oldmode = cores_status[coreid].mode;
+    cores_status[coreid].mode = mode;
 
-	return (oldmode);
+    return (oldmode);
 }
 
 /*============================================================================*
@@ -68,5 +68,5 @@ PUBLIC int core_status_set_mode(int mode)
  */
 PUBLIC int core_status_get_mode(void)
 {
-	return (cores_status[core_get_id()].mode);
+    return (cores_status[core_get_id()].mode);
 }

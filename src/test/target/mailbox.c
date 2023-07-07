@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
+#include "../test.h"
 #include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
 #include <nanvix/hlib.h>
 #include <posix/errno.h>
-#include "../test.h"
 
 #if (__TARGET_HAS_MAILBOX)
 
@@ -39,10 +39,10 @@
  */
 PRIVATE void test_mailbox_create_unlink(void)
 {
-	int mbxid;
+    int mbxid;
 
-	KASSERT((mbxid = mailbox_create(NODENUM_MASTER)) >= 0);
-	KASSERT(mailbox_unlink(mbxid) == 0);
+    KASSERT((mbxid = mailbox_create(NODENUM_MASTER)) >= 0);
+    KASSERT(mailbox_unlink(mbxid) == 0);
 }
 
 /**
@@ -50,10 +50,10 @@ PRIVATE void test_mailbox_create_unlink(void)
  */
 PRIVATE void test_mailbox_open_close(void)
 {
-	int mbxid;
+    int mbxid;
 
-	KASSERT((mbxid = mailbox_open(NODENUM_SLAVE)) >= 0);
-	KASSERT(mailbox_close(mbxid) == 0);
+    KASSERT((mbxid = mailbox_open(NODENUM_SLAVE)) >= 0);
+    KASSERT(mailbox_close(mbxid) == 0);
 }
 
 /*============================================================================*
@@ -65,8 +65,8 @@ PRIVATE void test_mailbox_open_close(void)
  */
 PRIVATE void test_mailbox_invalid_create(void)
 {
-	KASSERT(mailbox_create(-1) == -EINVAL);
-	KASSERT(mailbox_create(PROCESSOR_NOC_NODES_NUM) == -EINVAL);
+    KASSERT(mailbox_create(-1) == -EINVAL);
+    KASSERT(mailbox_create(PROCESSOR_NOC_NODES_NUM) == -EINVAL);
 }
 
 /**
@@ -74,8 +74,8 @@ PRIVATE void test_mailbox_invalid_create(void)
  */
 PRIVATE void test_mailbox_invalid_open(void)
 {
-	KASSERT(mailbox_open(-1) == -EINVAL);
-	KASSERT(mailbox_open(PROCESSOR_NOC_NODES_NUM) == -EINVAL);
+    KASSERT(mailbox_open(-1) == -EINVAL);
+    KASSERT(mailbox_open(PROCESSOR_NOC_NODES_NUM) == -EINVAL);
 }
 
 /**
@@ -83,8 +83,8 @@ PRIVATE void test_mailbox_invalid_open(void)
  */
 PRIVATE void test_mailbox_invalid_unlink(void)
 {
-	KASSERT(mailbox_unlink(-1) == -EBADF);
-	KASSERT(mailbox_unlink(HAL_MAILBOX_CREATE_MAX) == -EBADF);
+    KASSERT(mailbox_unlink(-1) == -EBADF);
+    KASSERT(mailbox_unlink(HAL_MAILBOX_CREATE_MAX) == -EBADF);
 }
 
 /**
@@ -92,8 +92,8 @@ PRIVATE void test_mailbox_invalid_unlink(void)
  */
 PRIVATE void test_mailbox_invalid_close(void)
 {
-	KASSERT(mailbox_close(-1) == -EBADF);
-	KASSERT(mailbox_close(HAL_MAILBOX_OPEN_MAX) == -EBADF);
+    KASSERT(mailbox_close(-1) == -EBADF);
+    KASSERT(mailbox_close(HAL_MAILBOX_OPEN_MAX) == -EBADF);
 }
 
 /**
@@ -101,17 +101,17 @@ PRIVATE void test_mailbox_invalid_close(void)
  */
 PRIVATE void test_mailbox_invalid_read(void)
 {
-	int mbxid;
-	char msg[HAL_MAILBOX_MSG_SIZE];
+    int mbxid;
+    char msg[HAL_MAILBOX_MSG_SIZE];
 
-	KASSERT(mailbox_aread(-1, msg, HAL_MAILBOX_MSG_SIZE) == -EBADF);
+    KASSERT(mailbox_aread(-1, msg, HAL_MAILBOX_MSG_SIZE) == -EBADF);
 
-	KASSERT((mbxid = mailbox_create(NODENUM_MASTER)) >= 0);
+    KASSERT((mbxid = mailbox_create(NODENUM_MASTER)) >= 0);
 
-		KASSERT(mailbox_aread(mbxid, NULL, HAL_MAILBOX_MSG_SIZE) == -EINVAL);
-		KASSERT(mailbox_aread(mbxid, msg, 0) == -EINVAL);
+    KASSERT(mailbox_aread(mbxid, NULL, HAL_MAILBOX_MSG_SIZE) == -EINVAL);
+    KASSERT(mailbox_aread(mbxid, msg, 0) == -EINVAL);
 
-	KASSERT(mailbox_unlink(mbxid) == 0);
+    KASSERT(mailbox_unlink(mbxid) == 0);
 }
 
 /**
@@ -119,17 +119,17 @@ PRIVATE void test_mailbox_invalid_read(void)
  */
 PRIVATE void test_mailbox_invalid_write(void)
 {
-	int mbxid;
-	char msg[HAL_MAILBOX_MSG_SIZE];
+    int mbxid;
+    char msg[HAL_MAILBOX_MSG_SIZE];
 
-	KASSERT(mailbox_awrite(-1, msg, HAL_MAILBOX_MSG_SIZE) == -EBADF);
+    KASSERT(mailbox_awrite(-1, msg, HAL_MAILBOX_MSG_SIZE) == -EBADF);
 
-	KASSERT((mbxid = mailbox_open(NODENUM_SLAVE)) >= 0);
+    KASSERT((mbxid = mailbox_open(NODENUM_SLAVE)) >= 0);
 
-		KASSERT(mailbox_awrite(mbxid, NULL, HAL_MAILBOX_MSG_SIZE) == -EINVAL);
-		KASSERT(mailbox_awrite(mbxid, msg, 0) == -EINVAL);
+    KASSERT(mailbox_awrite(mbxid, NULL, HAL_MAILBOX_MSG_SIZE) == -EINVAL);
+    KASSERT(mailbox_awrite(mbxid, msg, 0) == -EINVAL);
 
-	KASSERT(mailbox_close(mbxid) == 0);
+    KASSERT(mailbox_close(mbxid) == 0);
 }
 
 /**
@@ -137,7 +137,7 @@ PRIVATE void test_mailbox_invalid_write(void)
  */
 PRIVATE void test_mailbox_bad_create(void)
 {
-	KASSERT(mailbox_create(NODENUM_SLAVE) == -EINVAL);
+    KASSERT(mailbox_create(NODENUM_SLAVE) == -EINVAL);
 }
 
 /**
@@ -145,7 +145,7 @@ PRIVATE void test_mailbox_bad_create(void)
  */
 PRIVATE void test_mailbox_bad_open(void)
 {
-	KASSERT(mailbox_open(NODENUM_MASTER) == -EINVAL);
+    KASSERT(mailbox_open(NODENUM_MASTER) == -EINVAL);
 }
 
 /**
@@ -153,8 +153,8 @@ PRIVATE void test_mailbox_bad_open(void)
  */
 PRIVATE void test_mailbox_bad_unlink(void)
 {
-	KASSERT(mailbox_unlink(0) == -EBADF);
-	KASSERT(mailbox_unlink(HAL_MAILBOX_CREATE_MAX - 1) == -EBADF);
+    KASSERT(mailbox_unlink(0) == -EBADF);
+    KASSERT(mailbox_unlink(HAL_MAILBOX_CREATE_MAX - 1) == -EBADF);
 }
 
 /**
@@ -162,8 +162,8 @@ PRIVATE void test_mailbox_bad_unlink(void)
  */
 PRIVATE void test_mailbox_bad_close(void)
 {
-	KASSERT(mailbox_close(0) == -EBADF);
-	KASSERT(mailbox_close(HAL_MAILBOX_OPEN_MAX - 1) == -EBADF);
+    KASSERT(mailbox_close(0) == -EBADF);
+    KASSERT(mailbox_close(HAL_MAILBOX_OPEN_MAX - 1) == -EBADF);
 }
 
 /**
@@ -171,11 +171,11 @@ PRIVATE void test_mailbox_bad_close(void)
  */
 PRIVATE void test_mailbox_double_unlink(void)
 {
-	int mbxid;
+    int mbxid;
 
-	KASSERT((mbxid = mailbox_create(NODENUM_MASTER)) >= 0);
-	KASSERT(mailbox_unlink(mbxid) == 0);
-	KASSERT(mailbox_unlink(mbxid) == -EBADF);
+    KASSERT((mbxid = mailbox_create(NODENUM_MASTER)) >= 0);
+    KASSERT(mailbox_unlink(mbxid) == 0);
+    KASSERT(mailbox_unlink(mbxid) == -EBADF);
 }
 
 /**
@@ -183,11 +183,11 @@ PRIVATE void test_mailbox_double_unlink(void)
  */
 PRIVATE void test_mailbox_double_close(void)
 {
-	int mbxid;
+    int mbxid;
 
-	KASSERT((mbxid = mailbox_open(NODENUM_SLAVE)) >= 0);
-	KASSERT(mailbox_close(mbxid) == 0);
-	KASSERT(mailbox_close(mbxid) == -EBADF);
+    KASSERT((mbxid = mailbox_open(NODENUM_SLAVE)) >= 0);
+    KASSERT(mailbox_close(mbxid) == 0);
+    KASSERT(mailbox_close(mbxid) == -EBADF);
 }
 
 /**
@@ -195,15 +195,15 @@ PRIVATE void test_mailbox_double_close(void)
  */
 PRIVATE void test_mailbox_bad_read(void)
 {
-	int mbxid;
-	char msg[HAL_MAILBOX_MSG_SIZE];
+    int mbxid;
+    char msg[HAL_MAILBOX_MSG_SIZE];
 
-	KASSERT((mbxid = mailbox_create(NODENUM_MASTER)) >= 0);
+    KASSERT((mbxid = mailbox_create(NODENUM_MASTER)) >= 0);
 
-		KASSERT(mailbox_awrite(mbxid, NULL, HAL_MAILBOX_MSG_SIZE) == -EINVAL);
-		KASSERT(mailbox_awrite(mbxid, msg, 0) == -EINVAL);
+    KASSERT(mailbox_awrite(mbxid, NULL, HAL_MAILBOX_MSG_SIZE) == -EINVAL);
+    KASSERT(mailbox_awrite(mbxid, msg, 0) == -EINVAL);
 
-	KASSERT(mailbox_unlink(mbxid) == 0);
+    KASSERT(mailbox_unlink(mbxid) == 0);
 }
 
 /**
@@ -211,15 +211,15 @@ PRIVATE void test_mailbox_bad_read(void)
  */
 PRIVATE void test_mailbox_bad_write(void)
 {
-	int mbxid;
-	char msg[HAL_MAILBOX_MSG_SIZE];
+    int mbxid;
+    char msg[HAL_MAILBOX_MSG_SIZE];
 
-	KASSERT((mbxid = mailbox_open(NODENUM_SLAVE)) >= 0);
+    KASSERT((mbxid = mailbox_open(NODENUM_SLAVE)) >= 0);
 
-		KASSERT(mailbox_aread(mbxid, NULL, HAL_MAILBOX_MSG_SIZE) == -EINVAL);
-		KASSERT(mailbox_aread(mbxid, msg, 0) == -EINVAL);
+    KASSERT(mailbox_aread(mbxid, NULL, HAL_MAILBOX_MSG_SIZE) == -EINVAL);
+    KASSERT(mailbox_aread(mbxid, msg, 0) == -EINVAL);
 
-	KASSERT(mailbox_close(mbxid) == 0);
+    KASSERT(mailbox_close(mbxid) == 0);
 }
 
 /*============================================================================*
@@ -230,31 +230,31 @@ PRIVATE void test_mailbox_bad_write(void)
  * @brief Unit tests.
  */
 PRIVATE struct test mailbox_tests_api[] = {
-	/* Intra-Cluster API Tests */
-	{ test_mailbox_create_unlink, "create unlink" },
-	{ test_mailbox_open_close,    "open close   " },
-	{ NULL,                        NULL           },
+    /* Intra-Cluster API Tests */
+    {test_mailbox_create_unlink, "create unlink"},
+    {test_mailbox_open_close, "open close   "},
+    {NULL, NULL},
 };
 
 /**
  * @brief Unit tests.
  */
 PRIVATE struct test mailbox_tests_fault[] = {
-	{ test_mailbox_invalid_create, "invalid create" },
-	{ test_mailbox_invalid_open,   "invalid open  " },
-	{ test_mailbox_invalid_unlink, "invalid unlink" },
-	{ test_mailbox_invalid_close,  "invalid close " },
-	{ test_mailbox_invalid_read,   "invalid read  " },
-	{ test_mailbox_invalid_write,  "invalid write " },
-	{ test_mailbox_bad_create,     "bad create    " },
-	{ test_mailbox_bad_open,       "bad open      " },
-	{ test_mailbox_bad_unlink,     "bad unlink    " },
-	{ test_mailbox_bad_close,      "bad close     " },
-	{ test_mailbox_double_unlink,  "double unlink " },
-	{ test_mailbox_double_close,   "double close  " },
-	{ test_mailbox_bad_read,       "bad read      " },
-	{ test_mailbox_bad_write,      "bad write     " },
-	{ NULL,                         NULL            },
+    {test_mailbox_invalid_create, "invalid create"},
+    {test_mailbox_invalid_open, "invalid open  "},
+    {test_mailbox_invalid_unlink, "invalid unlink"},
+    {test_mailbox_invalid_close, "invalid close "},
+    {test_mailbox_invalid_read, "invalid read  "},
+    {test_mailbox_invalid_write, "invalid write "},
+    {test_mailbox_bad_create, "bad create    "},
+    {test_mailbox_bad_open, "bad open      "},
+    {test_mailbox_bad_unlink, "bad unlink    "},
+    {test_mailbox_bad_close, "bad close     "},
+    {test_mailbox_double_unlink, "double unlink "},
+    {test_mailbox_double_close, "double close  "},
+    {test_mailbox_bad_read, "bad read      "},
+    {test_mailbox_bad_write, "bad write     "},
+    {NULL, NULL},
 };
 
 /**
@@ -265,21 +265,20 @@ PRIVATE struct test mailbox_tests_fault[] = {
  */
 PUBLIC void test_mailbox(void)
 {
-	/* API Tests */
-	kprintf(HLINE);
-	for (int i = 0; mailbox_tests_api[i].test_fn != NULL; i++)
-	{
-		mailbox_tests_api[i].test_fn();
-		kprintf("[test][api][mailbox] %s [passed]", mailbox_tests_api[i].name);
-	}
+    /* API Tests */
+    kprintf(HLINE);
+    for (int i = 0; mailbox_tests_api[i].test_fn != NULL; i++) {
+        mailbox_tests_api[i].test_fn();
+        kprintf("[test][api][mailbox] %s [passed]", mailbox_tests_api[i].name);
+    }
 
-	/* FAULT Tests */
-	kprintf(HLINE);
-	for (int i = 0; mailbox_tests_fault[i].test_fn != NULL; i++)
-	{
-		mailbox_tests_fault[i].test_fn();
-		kprintf("[test][fault][mailbox] %s [passed]", mailbox_tests_fault[i].name);
-	}
+    /* FAULT Tests */
+    kprintf(HLINE);
+    for (int i = 0; mailbox_tests_fault[i].test_fn != NULL; i++) {
+        mailbox_tests_fault[i].test_fn();
+        kprintf("[test][fault][mailbox] %s [passed]",
+                mailbox_tests_fault[i].name);
+    }
 }
 
 #endif /* __TARGET_HAS_MAILBOX */

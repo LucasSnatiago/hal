@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/core/exception.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/core/exception.h>
 #include <nanvix/hlib.h>
 
 /**
@@ -34,22 +34,21 @@
  * @endcond
  */
 PUBLIC struct exception_info exceptions[OR1K_EXCP_NUM] = {
-	{ NULL, "reset exception"           },
-	{ NULL, "bus error"                 },
-	{ NULL, "page fault"                },
-	{ NULL, "alignment check exception" },
-	{ NULL, "illegal instruction"       },
-	{ NULL, "data tlb fault"            },
-	{ NULL, "instruction tlb fault"     },
-	{ NULL, "data out of range"         },
-	{ NULL, "float point exception"     },
-	{ NULL, "trap exception"            }
-};
+    {NULL, "reset exception"},
+    {NULL, "bus error"},
+    {NULL, "page fault"},
+    {NULL, "alignment check exception"},
+    {NULL, "illegal instruction"},
+    {NULL, "data tlb fault"},
+    {NULL, "instruction tlb fault"},
+    {NULL, "data out of range"},
+    {NULL, "float point exception"},
+    {NULL, "trap exception"}};
 
 /**
  * @todo TODO provide a detailed description for this function.
  */
 PUBLIC void or1k_excp_dump(const struct exception *excp)
 {
-	kprintf("%s", exceptions[excp->num].name);
+    kprintf("%s", exceptions[excp->num].name);
 }

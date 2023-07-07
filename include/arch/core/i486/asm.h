@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,38 +25,38 @@
 #ifndef ARCH_CORE_I486_ASM_H_
 #define ARCH_CORE_I486_ASM_H_
 
-	#ifndef _ASM_FILE_
-		#error "do not include this header in C files"
-	#endif
+#ifndef _ASM_FILE_
+#error "do not include this header in C files"
+#endif
 
-	/* Must come first. */
-	#define __NEED_CORE_CONTEXT
+/* Must come first. */
+#define __NEED_CORE_CONTEXT
 
-	#include <arch/core/i486/ctx.h>
+#include <arch/core/i486/ctx.h>
 
 /*============================================================================*
  * Procedure Linkage                                                          *
  *============================================================================*/
 
-	/**
-	 * @brief Stack frame size for slow call.
-	 */
-	#define SLOW_CALL_STACK_FRAME_SIZE 16
+/**
+ * @brief Stack frame size for slow call.
+ */
+#define SLOW_CALL_STACK_FRAME_SIZE 16
 
-	/**
-	* @brief Offsets to Stack Frame
-	*/
-	/**@{*/
-	#define STACK_FRAME_EBX 0  /**< ebx */
-	#define STACK_FRAME_ESI 4  /**< esi */
-	#define STACK_FRAME_EDI 8  /**< edi */
-	#define STACK_FRAME_EBP 12 /**< ebp */
-	/**@}*/
+/**
+ * @brief Offsets to Stack Frame
+ */
+/**@{*/
+#define STACK_FRAME_EBX 0  /**< ebx */
+#define STACK_FRAME_ESI 4  /**< esi */
+#define STACK_FRAME_EDI 8  /**< edi */
+#define STACK_FRAME_EBP 12 /**< ebp */
+/**@}*/
 
-	/*
-	 * @brief Saves preserved registers.
-	 */
-	.macro _do_prologue_slow
+/*
+ * @brief Saves preserved registers.
+ */
+.macro _do_prologue_slow
 
 		push  %ebp
 		movl  %esp, %ebp

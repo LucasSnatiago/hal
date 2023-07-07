@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,9 +25,9 @@
 /* Must come first. */
 #define __NEED_HAL_CLUSTER
 
+#include <nanvix/const.h>
 #include <nanvix/hal/cluster.h>
 #include <nanvix/hal/target/stdout.h>
-#include <nanvix/const.h>
 #include <nanvix/hlib.h>
 
 /* Import definitions. */
@@ -36,9 +36,10 @@ EXTERN NORETURN void kmain(int, const char *[]);
 /**
  * @brief Cores table.
  */
-PUBLIC struct coreinfo  ALIGN(OR1K_CACHE_LINE_SIZE) cores[OR1K_CLUSTER_NUM_CORES] = {
-	{ true,  CORE_RUNNING,   0, NULL, OR1K_SPINLOCK_UNLOCKED }, /* Master Core   */
-	{ false, CORE_RESETTING, 0, NULL, OR1K_SPINLOCK_LOCKED   }, /* Slave Core 1  */
+PUBLIC struct coreinfo ALIGN(
+    OR1K_CACHE_LINE_SIZE) cores[OR1K_CLUSTER_NUM_CORES] = {
+    {true, CORE_RUNNING, 0, NULL, OR1K_SPINLOCK_UNLOCKED},  /* Master Core   */
+    {false, CORE_RESETTING, 0, NULL, OR1K_SPINLOCK_LOCKED}, /* Slave Core 1  */
 };
 
 /*============================================================================*
@@ -50,27 +51,27 @@ PUBLIC struct coreinfo  ALIGN(OR1K_CACHE_LINE_SIZE) cores[OR1K_CLUSTER_NUM_CORES
  */
 PUBLIC void or1k_cluster_setup(void)
 {
-	int coreid;
+    int coreid;
 
-	coreid = or1k_core_get_id();
+    coreid = or1k_core_get_id();
 
-	if (coreid == OR1K_CLUSTER_COREID_MASTER)
-		kprintf("[hal] booting up cluster...");
+    if (coreid == OR1K_CLUSTER_COREID_MASTER)
+        kprintf("[hal] booting up cluster...");
 
-	/* Configure Memory Layout. */
-	mem_setup();
+    /* Configure Memory Layout. */
+    mem_setup();
 
-	/* Setup MMU. */
-	core_setup(NULL);
+    /* Setup MMU. */
+    core_setup(NULL);
 
-	/* Setup IPI. */
-	/*
-	#if (CLUSTER_HAS_IPI)
-		or1k_cluster_ompic_init();
-		or1k_pic_unmask(OR1K_INT_OMPIC);
-		or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR) | OR1K_SPR_SR_IEE);
-	#endif
-	*/
+    /* Setup IPI. */
+    /*
+    #if (CLUSTER_HAS_IPI)
+        or1k_cluster_ompic_init();
+        or1k_pic_unmask(OR1K_INT_OMPIC);
+        or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR) | OR1K_SPR_SR_IEE);
+    #endif
+    */
 }
 
 /*============================================================================*
@@ -93,15 +94,14 @@ PUBLIC void or1k_cluster_setup(void)
  */
 PUBLIC NORETURN void or1k_cluster_slave_setup(void)
 {
-	cluster_fence_wait();
+    cluster_fence_wait();
 
-	or1k_cluster_setup();
+    or1k_cluster_setup();
 
-	while (true)
-	{
-		core_idle();
-		core_run();
-	}
+    while (true) {
+        core_idle();
+        core_run();
+    }
 }
 
 /*============================================================================*
@@ -121,19 +121,19 @@ PUBLIC NORETURN void or1k_cluster_slave_setup(void)
  */
 PUBLIC NORETURN void or1k_cluster_master_setup(void)
 {
-	/* Clear BSS section. */
-	kmemset(&__BSS_START, 0, &__BSS_END - &__BSS_START);
+    /* Clear BSS section. */
+    kmemset(&__BSS_START, 0, &__BSS_END - &__BSS_START);
 
-	/*
-	 * Early initialization of
-	 * stdout to help us debugging.
-	 */
-	stdout_init();
+    /*
+     * Early initialization of
+     * stdout to help us debugging.
+     */
+    stdout_init();
 
-	or1k_cluster_setup();
+    or1k_cluster_setup();
 
-	cluster_fence_release();
+    cluster_fence_release();
 
-	/* Kernel main. */
-	kmain(0, NULL);
+    /* Kernel main. */
+    kmain(0, NULL);
 }

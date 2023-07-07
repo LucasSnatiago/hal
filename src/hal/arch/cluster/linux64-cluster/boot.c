@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,8 +25,8 @@
 /* Must come fist. */
 #define __NEED_HAL_CLUSTER
 
-#include <nanvix/hal/cluster.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/cluster.h>
 #include <pthread.h>
 
 /**
@@ -39,8 +39,8 @@ PUBLIC pthread_t linux64_cores_tab[LINUX64_CLUSTER_NUM_CORES];
  */
 PRIVATE void *linux64_do_slave(void *args)
 {
-	UNUSED(args);
-	linux64_cluster_setup();
+    UNUSED(args);
+    linux64_cluster_setup();
 }
 
 /**
@@ -48,18 +48,17 @@ PRIVATE void *linux64_do_slave(void *args)
  */
 PUBLIC int linux64_cluster_boot(void)
 {
-	kprintf("[hal][cluster] powering on cluster...");
+    kprintf("[hal][cluster] powering on cluster...");
 
-	linux64_cluster_memory_boot();
+    linux64_cluster_memory_boot();
 
-	/* Save ID of master core. */
-	linux64_cores_tab[0] = pthread_self();
+    /* Save ID of master core. */
+    linux64_cores_tab[0] = pthread_self();
 
-	for (int i = 1; i < LINUX64_CLUSTER_NUM_CORES; i++)
-	{
-		if (pthread_create(&linux64_cores_tab[i], NULL, linux64_do_slave, NULL))
-			return (-EINVAL);
-	}
+    for (int i = 1; i < LINUX64_CLUSTER_NUM_CORES; i++) {
+        if (pthread_create(&linux64_cores_tab[i], NULL, linux64_do_slave, NULL))
+            return (-EINVAL);
+    }
 
-	return (0);
+    return (0);
 }

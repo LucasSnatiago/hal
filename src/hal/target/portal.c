@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -47,13 +47,9 @@
  */
 PRIVATE int portal_rx_is_valid(int portalid)
 {
-	return (
-		WITHIN(
-			portalid,
-			HAL_PORTAL_CREATE_OFFSET,
-			HAL_PORTAL_CREATE_OFFSET + HAL_PORTAL_CREATE_MAX
-		)
-	);
+    return (WITHIN(portalid,
+                   HAL_PORTAL_CREATE_OFFSET,
+                   HAL_PORTAL_CREATE_OFFSET + HAL_PORTAL_CREATE_MAX));
 }
 
 #endif
@@ -78,13 +74,9 @@ PRIVATE int portal_rx_is_valid(int portalid)
  */
 PRIVATE int portal_tx_is_valid(int portalid)
 {
-	return (
-		WITHIN(
-			portalid,
-			HAL_PORTAL_OPEN_OFFSET,
-			HAL_PORTAL_OPEN_OFFSET + HAL_PORTAL_OPEN_MAX
-		)
-	);
+    return (WITHIN(portalid,
+                   HAL_PORTAL_OPEN_OFFSET,
+                   HAL_PORTAL_OPEN_OFFSET + HAL_PORTAL_OPEN_MAX));
 }
 
 #endif
@@ -100,20 +92,20 @@ PUBLIC int portal_create(int nodenum)
 {
 #if (__TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
-	/* Is local valid? */
-	if (!node_is_valid(nodenum))
-		return (-EINVAL);
+    /* Is local valid? */
+    if (!node_is_valid(nodenum))
+        return (-EINVAL);
 
-	/* Bad local NoC node. */
-	if (!node_is_local(nodenum))
-		return (-EINVAL);
+    /* Bad local NoC node. */
+    if (!node_is_local(nodenum))
+        return (-EINVAL);
 
-	return (__portal_create(nodenum));
+    return (__portal_create(nodenum));
 
 #else
-	UNUSED(nodenum);
+    UNUSED(nodenum);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -128,29 +120,29 @@ PUBLIC int portal_open(int localnum, int remotenum)
 {
 #if (__TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
-	/* Invalid local NoC node. */
-	if (!node_is_valid(localnum))
-		return (-EINVAL);
+    /* Invalid local NoC node. */
+    if (!node_is_valid(localnum))
+        return (-EINVAL);
 
-	/* Invalid remote NoC node. */
-	if (!node_is_valid(remotenum))
-		return (-EINVAL);
+    /* Invalid remote NoC node. */
+    if (!node_is_valid(remotenum))
+        return (-EINVAL);
 
-	/* Invalid NoC node ID. */
-	if (localnum == remotenum)
-		return (-EINVAL);
+    /* Invalid NoC node ID. */
+    if (localnum == remotenum)
+        return (-EINVAL);
 
-	/* Bad local NoC node. */
-	if (node_is_local(remotenum))
-		return (-EINVAL);
+    /* Bad local NoC node. */
+    if (node_is_local(remotenum))
+        return (-EINVAL);
 
-	return (__portal_open(localnum, remotenum));
+    return (__portal_open(localnum, remotenum));
 
 #else
-	UNUSED(localnum);
-	UNUSED(remotenum);
+    UNUSED(localnum);
+    UNUSED(remotenum);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -165,25 +157,25 @@ PUBLIC int portal_allow(int portalid, int nodenum)
 {
 #if (__TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
-	/* Is nodenum valid? */
-	if (!node_is_valid(nodenum))
-		return (-EINVAL);
+    /* Is nodenum valid? */
+    if (!node_is_valid(nodenum))
+        return (-EINVAL);
 
-	/* Invalid portal.*/
-	if (!portal_rx_is_valid(portalid))
-		return (-EBADF);
+    /* Invalid portal.*/
+    if (!portal_rx_is_valid(portalid))
+        return (-EBADF);
 
-	/* Bad local NoC node. */
-	if (node_is_local(nodenum))
-		return (-EINVAL);
+    /* Bad local NoC node. */
+    if (node_is_local(nodenum))
+        return (-EINVAL);
 
-	return (__portal_allow(portalid, nodenum));
+    return (__portal_allow(portalid, nodenum));
 
 #else
-	UNUSED(portalid);
-	UNUSED(nodenum);
+    UNUSED(portalid);
+    UNUSED(nodenum);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -198,16 +190,16 @@ PUBLIC int portal_unlink(int portalid)
 {
 #if (__TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
-	/* Invalid portal. */
-	if (!portal_rx_is_valid(portalid))
-		return (-EBADF);
+    /* Invalid portal. */
+    if (!portal_rx_is_valid(portalid))
+        return (-EBADF);
 
-	return (__portal_unlink(portalid));
+    return (__portal_unlink(portalid));
 
 #else
-	UNUSED(portalid);
+    UNUSED(portalid);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -222,16 +214,16 @@ PUBLIC int portal_close(int portalid)
 {
 #if (__TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
-	/* Invalid portal. */
-	if (!portal_tx_is_valid(portalid))
-		return (-EBADF);
+    /* Invalid portal. */
+    if (!portal_tx_is_valid(portalid))
+        return (-EBADF);
 
-	return (__portal_close(portalid));
+    return (__portal_close(portalid));
 
 #else
-	UNUSED(portalid);
+    UNUSED(portalid);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -246,26 +238,26 @@ PUBLIC ssize_t portal_awrite(int portalid, const void *buffer, uint64_t size)
 {
 #if (__TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
-	/* Invalid NoC node ID. */
-	if (!portal_tx_is_valid(portalid))
-		return (-EBADF);
+    /* Invalid NoC node ID. */
+    if (!portal_tx_is_valid(portalid))
+        return (-EBADF);
 
-	/* Bad buffer*/
-	if (buffer == NULL)
-		return (-EINVAL);
+    /* Bad buffer*/
+    if (buffer == NULL)
+        return (-EINVAL);
 
-	/* Bad size. */
-	if (size == 0 || size > HAL_PORTAL_MAX_SIZE)
-		return (-EINVAL);
+    /* Bad size. */
+    if (size == 0 || size > HAL_PORTAL_MAX_SIZE)
+        return (-EINVAL);
 
-	return (__portal_awrite(portalid, buffer, size));
+    return (__portal_awrite(portalid, buffer, size));
 
 #else
-	UNUSED(portalid);
-	UNUSED(buffer);
-	UNUSED(size);
+    UNUSED(portalid);
+    UNUSED(buffer);
+    UNUSED(size);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -280,26 +272,26 @@ PUBLIC ssize_t portal_aread(int portalid, void *buffer, uint64_t size)
 {
 #if (__TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
-	/* Invalid NoC node ID. */
-	if (!portal_rx_is_valid(portalid))
-		return (-EBADF);
+    /* Invalid NoC node ID. */
+    if (!portal_rx_is_valid(portalid))
+        return (-EBADF);
 
-	/* Bad buffer*/
-	if (buffer == NULL)
-		return (-EINVAL);
+    /* Bad buffer*/
+    if (buffer == NULL)
+        return (-EINVAL);
 
-	/* Bad size. */
-	if (size == 0 || size > HAL_PORTAL_MAX_SIZE)
-		return (-EINVAL);
+    /* Bad size. */
+    if (size == 0 || size > HAL_PORTAL_MAX_SIZE)
+        return (-EINVAL);
 
-	return (__portal_aread(portalid, buffer, size));
+    return (__portal_aread(portalid, buffer, size));
 
 #else
-	UNUSED(portalid);
-	UNUSED(buffer);
-	UNUSED(size);
+    UNUSED(portalid);
+    UNUSED(buffer);
+    UNUSED(size);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -314,16 +306,16 @@ PUBLIC int portal_wait(int portalid)
 {
 #if (__TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
-	/* Invalid mailbox. */
-	if (!(portal_rx_is_valid(portalid) || portal_tx_is_valid(portalid)))
-		return (-EBADF);
+    /* Invalid mailbox. */
+    if (!(portal_rx_is_valid(portalid) || portal_tx_is_valid(portalid)))
+        return (-EBADF);
 
-	return (__portal_wait(portalid));
+    return (__portal_wait(portalid));
 
 #else
-	UNUSED(portalid);
+    UNUSED(portalid);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -337,34 +329,30 @@ PUBLIC int portal_wait(int portalid)
 PUBLIC int portal_ioctl(int portalid, unsigned request, ...)
 {
 #if (__TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX)
-	int ret;
-	va_list args;
+    int ret;
+    va_list args;
 
-	/* Invalid portal. */
-	if (!portal_rx_is_valid(portalid) && !portal_tx_is_valid(portalid))
-		return (-EBADF);
+    /* Invalid portal. */
+    if (!portal_rx_is_valid(portalid) && !portal_tx_is_valid(portalid))
+        return (-EBADF);
 
-	va_start(args, request);
+    va_start(args, request);
 
-		dcache_invalidate();
+    dcache_invalidate();
 
-		ret = __portal_ioctl(
-			portalid,
-			request,
-			args
-		);
+    ret = __portal_ioctl(portalid, request, args);
 
-		dcache_invalidate();
+    dcache_invalidate();
 
-	va_end(args);
+    va_end(args);
 
-	return (ret);
+    return (ret);
 
-#else /* __TARGET_HAS_PORTAL */
-	UNUSED(portalid);
-	UNUSED(request);
+#else  /* __TARGET_HAS_PORTAL */
+    UNUSED(portalid);
+    UNUSED(request);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif /* __TARGET_HAS_PORTAL */
 }
 
@@ -378,6 +366,6 @@ PUBLIC int portal_ioctl(int portalid, unsigned request, ...)
 PUBLIC void portal_setup(void)
 {
 #if (__TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX)
-	__portal_setup();
+    __portal_setup();
 #endif /* __TARGET_HAS_PORTAL */
 }

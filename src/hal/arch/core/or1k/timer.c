@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -58,12 +58,12 @@ PRIVATE uint32_t timer_delay = 0;
  */
 PRIVATE uint32_t or1k_timer_calibrate(void)
 {
-	uint32_t t0, t1;
+    uint32_t t0, t1;
 
-	t0 = or1k_mfspr(OR1K_SPR_TTCR);
-	t1 = or1k_mfspr(OR1K_SPR_TTCR);
+    t0 = or1k_mfspr(OR1K_SPR_TTCR);
+    t1 = or1k_mfspr(OR1K_SPR_TTCR);
 
-	return (t1 - t0);
+    return (t1 - t0);
 }
 
 /**
@@ -72,15 +72,16 @@ PRIVATE uint32_t or1k_timer_calibrate(void)
  */
 PUBLIC void or1k_timer_reset(void)
 {
-	/* Ack. */
-	or1k_mtspr(OR1K_SPR_TTMR, OR1K_SPR_TTMR_DI);
+    /* Ack. */
+    or1k_mtspr(OR1K_SPR_TTMR, OR1K_SPR_TTMR_DI);
 
-	/* Reenable timer. */
-	or1k_mtspr(OR1K_SPR_TTMR, OR1K_SPR_TTMR_SR | OR1K_SPR_TTMR_IE |
-		(timer_delta + timer_delay));
+    /* Reenable timer. */
+    or1k_mtspr(OR1K_SPR_TTMR,
+               OR1K_SPR_TTMR_SR | OR1K_SPR_TTMR_IE |
+                   (timer_delta + timer_delay));
 
-	/* Reset counter. */
-	or1k_mtspr(OR1K_SPR_TTCR, 0);
+    /* Reset counter. */
+    or1k_mtspr(OR1K_SPR_TTCR, 0);
 }
 
 /**
@@ -90,49 +91,49 @@ PUBLIC void or1k_timer_reset(void)
  */
 PUBLIC void or1k_timer_init(unsigned freq)
 {
-	unsigned upr;  /* Unit Present Register. */
+    unsigned upr; /* Unit Present Register. */
 
-	/* Nothing to do. */
-	if (initialized)
-		return;
+    /* Nothing to do. */
+    if (initialized)
+        return;
 
-	/* Checks if Timer available. */
-	upr = or1k_mfspr(OR1K_SPR_UPR);
-	if (!(upr & OR1K_SPR_UPR_TTP))
-		while (1);
+    /* Checks if Timer available. */
+    upr = or1k_mfspr(OR1K_SPR_UPR);
+    if (!(upr & OR1K_SPR_UPR_TTP))
+        while (1)
+            ;
 
-	/* Timer rate. */
+            /* Timer rate. */
 #if (__HAS_HW_DIVISION)
-	timer_delta = (OR1K_CORE_FREQUENCY/freq);
+    timer_delta = (OR1K_CORE_FREQUENCY / freq);
 #else
-	timer_delta = OR1K_CORE_FREQUENCY;
-	while (freq > 0)
-	{
-		timer_delta >>= 1;
-		freq >>= 1;
-	}
+    timer_delta = OR1K_CORE_FREQUENCY;
+    while (freq > 0) {
+        timer_delta >>= 1;
+        freq >>= 1;
+    }
 #endif
 
-	/*
-	 * Timer calibrate.
-	 *
-	 * Since the timer is disabled by default, its necessary to
-	 * temporarily enable the timer (with interrupts disabled)
-	 * to get the minimal timer variation between two consecutive
-	 * reads.
-	 */
-	or1k_mtspr(OR1K_SPR_TTMR, OR1K_SPR_TTMR_SR | timer_delta);
-	or1k_mtspr(OR1K_SPR_TTCR, 0);
-	timer_delay = or1k_timer_calibrate();
-	initialized = true;
+    /*
+     * Timer calibrate.
+     *
+     * Since the timer is disabled by default, its necessary to
+     * temporarily enable the timer (with interrupts disabled)
+     * to get the minimal timer variation between two consecutive
+     * reads.
+     */
+    or1k_mtspr(OR1K_SPR_TTMR, OR1K_SPR_TTMR_SR | timer_delta);
+    or1k_mtspr(OR1K_SPR_TTCR, 0);
+    timer_delay = or1k_timer_calibrate();
+    initialized = true;
 
-	/* Print some info. */
-	kprintf("[hal] timer delay is %d ticks", timer_delay);
-	kprintf("[hal] timer delta is %d ticks", timer_delta);
+    /* Print some info. */
+    kprintf("[hal] timer delay is %d ticks", timer_delay);
+    kprintf("[hal] timer delta is %d ticks", timer_delta);
 
-	/*
-	 * Reset the timer for the first
-	 * time, so that it starts working.
-	 */
-	or1k_timer_reset();
+    /*
+     * Reset the timer for the first
+     * time, so that it starts working.
+     */
+    or1k_timer_reset();
 }

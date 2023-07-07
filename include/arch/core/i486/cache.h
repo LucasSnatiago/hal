@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -33,49 +33,49 @@
  */
 /**@{*/
 
-	/**
-	 * @name Provided Interface
-	 */
-	/**@{*/
-	#define __dcache_invalidate_fn
-	#define __icache_invalidate_fn
-	/**@}*/
+/**
+ * @name Provided Interface
+ */
+/**@{*/
+#define __dcache_invalidate_fn
+#define __icache_invalidate_fn
+/**@}*/
 
-	/**
-	 * @brief Cache line size (in bytes).
-	 *
-	 * @bug The cache line size of i486 may change.
-	 */
-	#define I486_CACHE_LINE_SIZE 64
+/**
+ * @brief Cache line size (in bytes).
+ *
+ * @bug The cache line size of i486 may change.
+ */
+#define I486_CACHE_LINE_SIZE 64
 
-	/**
-	 * @see I486_CACHE_LINE_SIZE
-	 */
-	#define CACHE_LINE_SIZE I486_CACHE_LINE_SIZE
+/**
+ * @see I486_CACHE_LINE_SIZE
+ */
+#define CACHE_LINE_SIZE I486_CACHE_LINE_SIZE
 
 #ifndef _ASM_FILE_
 
-	/**
-	 * @brief Flushes the data cache.
-	 *
-	 * @note The i486 target features cache coherency.
-	 */
-	static inline void dcache_invalidate(void)
-	{
-		asm volatile ("wbinvd" ::: "memory");
-		asm volatile ("invd" ::: "memory");
-	}
+/**
+ * @brief Flushes the data cache.
+ *
+ * @note The i486 target features cache coherency.
+ */
+static inline void dcache_invalidate(void)
+{
+    asm volatile("wbinvd" ::: "memory");
+    asm volatile("invd" ::: "memory");
+}
 
-	/**
-	 * @brief Flushes the instruction cache.
-	 *
-	 * @note The i486 target features cache coherency.
-	 */
-	static inline void icache_invalidate(void)
-	{
-		asm volatile ("wbinvd" ::: "memory");
-		asm volatile ("invd" ::: "memory");
-	}
+/**
+ * @brief Flushes the instruction cache.
+ *
+ * @note The i486 target features cache coherency.
+ */
+static inline void icache_invalidate(void)
+{
+    asm volatile("wbinvd" ::: "memory");
+    asm volatile("invd" ::: "memory");
+}
 
 #endif /* _ASM_FILE_ */
 

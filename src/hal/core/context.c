@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,8 +25,8 @@
 /* Must come first. */
 #define __NEED_HAL_CORE
 
-#include <nanvix/hal/core.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/core.h>
 #include <nanvix/hlib.h>
 #include <posix/errno.h>
 
@@ -45,19 +45,16 @@
  *
  * @author João Vicente Souto
  */
-PUBLIC struct context * context_create(
-	void (* start)(void),
-	struct stack * ustack,
-	struct stack * kstack
-)
+PUBLIC struct context *context_create(void (*start)(void), struct stack *ustack,
+                                      struct stack *kstack)
 {
-	if ((start == NULL) || (ustack == NULL) || (kstack == NULL))
-		return (NULL);
+    if ((start == NULL) || (ustack == NULL) || (kstack == NULL))
+        return (NULL);
 
 #if CORE_SUPPORTS_MULTITHREADING
-	return (__context_create(start, ustack, kstack));
+    return (__context_create(start, ustack, kstack));
 #else
-	return (NULL);
+    return (NULL);
 #endif
 }
 
@@ -80,25 +77,24 @@ PUBLIC struct context * context_create(
  *
  * @author João Vicente Souto
  */
-PUBLIC int context_switch_to(struct context ** previous, struct context ** next)
+PUBLIC int context_switch_to(struct context **previous, struct context **next)
 {
-	/* Is the previous pointer invalid? */
-	if (previous == NULL)
-		return (-EINVAL);
+    /* Is the previous pointer invalid? */
+    if (previous == NULL)
+        return (-EINVAL);
 
-	/* Is the next pointer invalid? */
-	if (next == NULL || (*next) == NULL)
-		return (-EINVAL);
+    /* Is the next pointer invalid? */
+    if (next == NULL || (*next) == NULL)
+        return (-EINVAL);
 
 #if CORE_SUPPORTS_MULTITHREADING
 
-	/* Restore contex. */
-	__context_switch_to(previous, next);
+    /* Restore contex. */
+    __context_switch_to(previous, next);
 
-	return (0);
+    return (0);
 
 #else
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
-

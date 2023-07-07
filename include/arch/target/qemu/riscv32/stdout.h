@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,8 +25,8 @@
 #ifndef TARGET_QEMU_RISCV32_STDOUT_H_
 #define TARGET_QEMU_RISCV32_STDOUT_H_
 
-	/* Target Interface Implementation */
-	#include <arch/target/qemu/riscv32/_riscv32.h>
+/* Target Interface Implementation */
+#include <arch/target/qemu/riscv32/_riscv32.h>
 
 /**
  * @defgroup target-qemu-riscv32-stdout Standard Output
@@ -36,24 +36,24 @@
  */
 /**@{*/
 
-	#include <arch/stdout/16550a.h>
-	#include <posix/sys/types.h>
+#include <arch/stdout/16550a.h>
+#include <posix/sys/types.h>
 
-	/**
-	 * @see uart8250_init()
-	 */
-	static inline void qemu_riscv32_stdout_init(void)
-	{
-		uart_16550a_init();
-	}
+/**
+ * @see uart8250_init()
+ */
+static inline void qemu_riscv32_stdout_init(void)
+{
+    uart_16550a_init();
+}
 
-	/**
-	 * @see uart8250_write()
-	 */
-	static inline void qemu_riscv32_stdout_write(const char *buf, size_t n)
-	{
-		uart_16550a_write(buf, n);
-	}
+/**
+ * @see uart8250_write()
+ */
+static inline void qemu_riscv32_stdout_write(const char *buf, size_t n)
+{
+    uart_16550a_write(buf, n);
+}
 
 /**@}*/
 
@@ -65,29 +65,29 @@
  * @cond or1k
  */
 
-	/**
-	 * @name Provided Interface
-	 */
-	/**@{*/
-	#define __stdout_init_fn  /**< stdout_init()  */
-	#define __stdout_write_fn /**< stdout_write() */
-	/**@}*/
+/**
+ * @name Provided Interface
+ */
+/**@{*/
+#define __stdout_init_fn  /**< stdout_init()  */
+#define __stdout_write_fn /**< stdout_write() */
+/**@}*/
 
-	/**
-	 * @see qemu_riscv32_stdout_init().
-	 */
-	static inline void stdout_init(void)
-	{
-		qemu_riscv32_stdout_init();
-	}
+/**
+ * @see qemu_riscv32_stdout_init().
+ */
+static inline void stdout_init(void)
+{
+    qemu_riscv32_stdout_init();
+}
 
-	/**
-	 * @see qemu_riscv32_stdout_write().
-	 */
-	static inline void stdout_write(const char *buf, size_t n)
-	{
-		qemu_riscv32_stdout_write(buf, n);
-	}
+/**
+ * @see qemu_riscv32_stdout_write().
+ */
+static inline void stdout_write(const char *buf, size_t n)
+{
+    qemu_riscv32_stdout_write(buf, n);
+}
 
 /**@endcond*/
 

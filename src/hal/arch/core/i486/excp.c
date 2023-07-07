@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/core/exception.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/core/exception.h>
 #include <nanvix/hlib.h>
 
 /**
@@ -34,27 +34,27 @@
  * @endcond
  */
 PUBLIC struct exception_info exceptions[I486_EXCP_NUM] = {
-	{ NULL, "division-by-zero error"        },
-	{ NULL, "debug exception"               },
-	{ NULL, "non-maskable interrupt"        },
-	{ NULL, "breakpoint exception"          },
-	{ NULL, "overflow exception"            },
-	{ NULL, "bounds check exception"        },
-	{ NULL, "invalid opcode exception"      },
-	{ NULL, "coprocessor not available"     },
-	{ NULL, "double fault"                  },
-	{ NULL, "coprocessor segment overrun"   },
-	{ NULL, "invalid task state segment"    },
-	{ NULL, "segment not present"           },
-	{ NULL, "static segment fault"          },
-	{ NULL, "general protection fault"      },
-	{ NULL, "page fault"                    },
-	{ NULL, "floating point unit exception" },
-	{ NULL, "alignment check"               },
-	{ NULL, "machine exception"             },
-	{ NULL, "smid unit exception"           },
-	{ NULL, "virtual exception"             },
-	{ NULL, "security exception"            },
+    {NULL, "division-by-zero error"},
+    {NULL, "debug exception"},
+    {NULL, "non-maskable interrupt"},
+    {NULL, "breakpoint exception"},
+    {NULL, "overflow exception"},
+    {NULL, "bounds check exception"},
+    {NULL, "invalid opcode exception"},
+    {NULL, "coprocessor not available"},
+    {NULL, "double fault"},
+    {NULL, "coprocessor segment overrun"},
+    {NULL, "invalid task state segment"},
+    {NULL, "segment not present"},
+    {NULL, "static segment fault"},
+    {NULL, "general protection fault"},
+    {NULL, "page fault"},
+    {NULL, "floating point unit exception"},
+    {NULL, "alignment check"},
+    {NULL, "machine exception"},
+    {NULL, "smid unit exception"},
+    {NULL, "virtual exception"},
+    {NULL, "security exception"},
 };
 
 /**
@@ -62,5 +62,5 @@ PUBLIC struct exception_info exceptions[I486_EXCP_NUM] = {
  */
 PUBLIC void i486_excp_dump(const struct exception *excp)
 {
-	kprintf("%s", exceptions[excp->num].name);
+    kprintf("%s", exceptions[excp->num].name);
 }

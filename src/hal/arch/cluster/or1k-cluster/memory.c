@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-#include <arch/cluster/or1k-cluster/memory.h>
 #include <arch/cluster/or1k-cluster/cores.h>
+#include <arch/cluster/or1k-cluster/memory.h>
+#include <nanvix/const.h>
 #include <nanvix/hal/cluster/memory.h>
 #include <nanvix/hal/core/exception.h>
 #include <nanvix/hlib.h>
-#include <nanvix/const.h>
 
 /**
  * @brief Memory layout.
@@ -37,63 +37,53 @@
  * positions left are intended for other devices.
  */
 PUBLIC struct memory_region mem_layout[OR1K_CLUSTER_MEM_REGIONS] = {
-	{
-		.pbase = OR1K_CLUSTER_KERNEL_BASE_PHYS,
-		.vbase = OR1K_CLUSTER_KERNEL_BASE_VIRT,
-		.pend  = OR1K_CLUSTER_KERNEL_END_PHYS,
-		.vend  = OR1K_CLUSTER_KERNEL_END_VIRT,
-		.size  = OR1K_CLUSTER_KMEM_SIZE,
-		.writable = true,
-		.executable = true,
-		.root_pgtab_num = 0,
-		.desc = "kernel"
-	},
-	{
-		.pbase = OR1K_CLUSTER_KPOOL_BASE_PHYS,
-		.vbase = OR1K_CLUSTER_KPOOL_BASE_VIRT,
-		.pend  = OR1K_CLUSTER_KPOOL_END_PHYS,
-		.vend  = OR1K_CLUSTER_KPOOL_END_VIRT,
-		.size  = OR1K_CLUSTER_KPOOL_SIZE,
-		.writable = true,
-		.executable = false,
-		.root_pgtab_num = 1,
-		.desc = "kpool"
-	},
-	{
-		.pbase = OR1K_CLUSTER_OMPIC_BASE_PHYS,
-		.vbase = OR1K_CLUSTER_OMPIC_BASE_VIRT,
-		.pend  = OR1K_CLUSTER_OMPIC_END_PHYS,
-		.vend  = OR1K_CLUSTER_OMPIC_END_VIRT,
-		.size  = OR1K_CLUSTER_OMPIC_MEM_SIZE,
-		.writable = true,
-		.executable = false,
-		.root_pgtab_num = 2,
-		.desc = "ompic"
-	},
+    {.pbase = OR1K_CLUSTER_KERNEL_BASE_PHYS,
+     .vbase = OR1K_CLUSTER_KERNEL_BASE_VIRT,
+     .pend = OR1K_CLUSTER_KERNEL_END_PHYS,
+     .vend = OR1K_CLUSTER_KERNEL_END_VIRT,
+     .size = OR1K_CLUSTER_KMEM_SIZE,
+     .writable = true,
+     .executable = true,
+     .root_pgtab_num = 0,
+     .desc = "kernel"},
+    {.pbase = OR1K_CLUSTER_KPOOL_BASE_PHYS,
+     .vbase = OR1K_CLUSTER_KPOOL_BASE_VIRT,
+     .pend = OR1K_CLUSTER_KPOOL_END_PHYS,
+     .vend = OR1K_CLUSTER_KPOOL_END_VIRT,
+     .size = OR1K_CLUSTER_KPOOL_SIZE,
+     .writable = true,
+     .executable = false,
+     .root_pgtab_num = 1,
+     .desc = "kpool"},
+    {.pbase = OR1K_CLUSTER_OMPIC_BASE_PHYS,
+     .vbase = OR1K_CLUSTER_OMPIC_BASE_VIRT,
+     .pend = OR1K_CLUSTER_OMPIC_END_PHYS,
+     .vend = OR1K_CLUSTER_OMPIC_END_VIRT,
+     .size = OR1K_CLUSTER_OMPIC_MEM_SIZE,
+     .writable = true,
+     .executable = false,
+     .root_pgtab_num = 2,
+     .desc = "ompic"},
 
 #if (defined(__or1k_cluster__))
-	{
-		.pbase = OR1K_CLUSTER_UART_BASE_PHYS,
-		.vbase = OR1K_CLUSTER_UART_BASE_VIRT,
-		.pend  = OR1K_CLUSTER_UART_END_PHYS,
-		.vend  = OR1K_CLUSTER_UART_END_VIRT,
-		.size  = OR1K_CLUSTER_UART_MEM_SIZE,
-		.writable = true,
-		.executable = false,
-		.root_pgtab_num = 3,
-		.desc = "uart"
-	},
-	{
-		.pbase = OR1K_CLUSTER_ETH_BASE_PHYS,
-		.vbase = OR1K_CLUSTER_ETH_BASE_VIRT,
-		.pend  = OR1K_CLUSTER_ETH_END_PHYS,
-		.vend  = OR1K_CLUSTER_ETH_END_VIRT,
-		.size  = OR1K_CLUSTER_ETH_MEM_SIZE,
-		.writable = true,
-		.executable = false,
-		.root_pgtab_num = 4,
-		.desc = "eth"
-	},
+    {.pbase = OR1K_CLUSTER_UART_BASE_PHYS,
+     .vbase = OR1K_CLUSTER_UART_BASE_VIRT,
+     .pend = OR1K_CLUSTER_UART_END_PHYS,
+     .vend = OR1K_CLUSTER_UART_END_VIRT,
+     .size = OR1K_CLUSTER_UART_MEM_SIZE,
+     .writable = true,
+     .executable = false,
+     .root_pgtab_num = 3,
+     .desc = "uart"},
+    {.pbase = OR1K_CLUSTER_ETH_BASE_PHYS,
+     .vbase = OR1K_CLUSTER_ETH_BASE_VIRT,
+     .pend = OR1K_CLUSTER_ETH_END_PHYS,
+     .vend = OR1K_CLUSTER_ETH_END_VIRT,
+     .size = OR1K_CLUSTER_ETH_MEM_SIZE,
+     .writable = true,
+     .executable = false,
+     .root_pgtab_num = 4,
+     .desc = "eth"},
 #endif
 };
 
@@ -104,17 +94,16 @@ PUBLIC struct memory_region mem_layout[OR1K_CLUSTER_MEM_REGIONS] = {
  *
  * @author Davidson Francis
  */
-PRIVATE struct
-{
-	/**
-	 * @brief Data TLB.
-	 */
-	struct tlbe dtlb[OR1K_TLB_LENGTH];
+PRIVATE struct {
+    /**
+     * @brief Data TLB.
+     */
+    struct tlbe dtlb[OR1K_TLB_LENGTH];
 
-	/**
-	 * @brief Instruction TLB.
-	 */
-	struct tlbe itlb[OR1K_TLB_LENGTH];
+    /**
+     * @brief Instruction TLB.
+     */
+    struct tlbe itlb[OR1K_TLB_LENGTH];
 } or1k_tlb[OR1K_CLUSTER_NUM_CORES];
 
 /*============================================================================*
@@ -136,14 +125,14 @@ PRIVATE struct
  */
 PUBLIC struct tlbe *or1k_cluster_tlb_get_utlb(int tlb_type)
 {
-	int coreid;
+    int coreid;
 
-	coreid = core_get_id();
+    coreid = core_get_id();
 
-	if (tlb_type == OR1K_TLB_INSTRUCTION)
-		return (or1k_tlb[coreid].itlb);
-	else
-		return (or1k_tlb[coreid].dtlb);
+    if (tlb_type == OR1K_TLB_INSTRUCTION)
+        return (or1k_tlb[coreid].itlb);
+    else
+        return (or1k_tlb[coreid].dtlb);
 }
 
 /*============================================================================*
@@ -159,36 +148,34 @@ PUBLIC struct tlbe *or1k_cluster_tlb_get_utlb(int tlb_type)
  */
 PUBLIC int or1k_cluster_tlb_get_vaddr_info(vaddr_t vaddr)
 {
-	volatile vaddr_t kcode; /* Kernel text start address. */
-	volatile vaddr_t kdata; /* Kernel data start address. */
-	int info;               /* User address.              */
+    volatile vaddr_t kcode; /* Kernel text start address. */
+    volatile vaddr_t kdata; /* Kernel data start address. */
+    int info;               /* User address.              */
 
-	kcode = (vaddr_t)&KERNEL_CODE_START;
-	kdata = (vaddr_t)&KERNEL_DATA_START;
+    kcode = (vaddr_t)&KERNEL_CODE_START;
+    kdata = (vaddr_t)&KERNEL_DATA_START;
 
-	/* Kernel address. */
-	if (WITHIN(vaddr, kcode, KMEM_SIZE))
-	{
-		info = OR1K_KERNEL_VADDR;
+    /* Kernel address. */
+    if (WITHIN(vaddr, kcode, KMEM_SIZE)) {
+        info = OR1K_KERNEL_VADDR;
 
-		if (WITHIN(vaddr, kcode, kdata))
-			info |= OR1K_CODE_VADDR;
-		else
-			info |= OR1K_DATA_VADDR;
-	}
+        if (WITHIN(vaddr, kcode, kdata))
+            info |= OR1K_CODE_VADDR;
+        else
+            info |= OR1K_DATA_VADDR;
+    }
 
-	/* User address. */
-	else
-	{
-		info = OR1K_USER_VADDR;
+    /* User address. */
+    else {
+        info = OR1K_USER_VADDR;
 
-		if (WITHIN(vaddr, UBASE_VIRT, USTACK_VIRT))
-			info |= OR1K_CODE_VADDR;
-		else
-			info |= OR1K_DATA_VADDR;
-	}
+        if (WITHIN(vaddr, UBASE_VIRT, USTACK_VIRT))
+            info |= OR1K_CODE_VADDR;
+        else
+            info |= OR1K_DATA_VADDR;
+    }
 
-	return info;
+    return info;
 }
 
 /*============================================================================*
@@ -201,20 +188,19 @@ PUBLIC int or1k_cluster_tlb_get_vaddr_info(vaddr_t vaddr)
  */
 PUBLIC int or1k_cluster_tlb_flush(void)
 {
-	int coreid;       /* Core ID.   */
+    int coreid; /* Core ID.   */
 
-	coreid = or1k_core_get_id();
+    coreid = or1k_core_get_id();
 
-	for (int i = 0; i < OR1K_TLB_LENGTH; i++)
-	{
-		/* Instruction TLB. */
-		or1k_tlbe_update(OR1K_TLB_INSTRUCTION, i, &or1k_tlb[coreid].itlb[i]);
+    for (int i = 0; i < OR1K_TLB_LENGTH; i++) {
+        /* Instruction TLB. */
+        or1k_tlbe_update(OR1K_TLB_INSTRUCTION, i, &or1k_tlb[coreid].itlb[i]);
 
-		/* Data TLB. */
-		or1k_tlbe_update(OR1K_TLB_DATA, i, &or1k_tlb[coreid].dtlb[i]);
-	}
+        /* Data TLB. */
+        or1k_tlbe_update(OR1K_TLB_DATA, i, &or1k_tlb[coreid].dtlb[i]);
+    }
 
-	return (0);
+    return (0);
 }
 
 /*============================================================================*
@@ -226,37 +212,34 @@ PUBLIC int or1k_cluster_tlb_flush(void)
  */
 PUBLIC void or1k_cluster_tlb_init(void)
 {
-	unsigned dtlbtr; /* Data TLB Translate Register.         */
-	unsigned itlbtr; /* Instruction TLB Translate Register.  */
-	unsigned xtlbmr; /* Data/Instruction TLB Match Register. */
-	int coreid;      /* Core ID.                             */
+    unsigned dtlbtr; /* Data TLB Translate Register.         */
+    unsigned itlbtr; /* Instruction TLB Translate Register.  */
+    unsigned xtlbmr; /* Data/Instruction TLB Match Register. */
+    int coreid;      /* Core ID.                             */
 
-	dtlbtr = (OR1K_SPR_DTLBTR_CC | OR1K_SPR_DTLBTR_WBC | OR1K_SPR_DTLBTR_SRE
-			| OR1K_SPR_DTLBTR_SWE);
+    dtlbtr = (OR1K_SPR_DTLBTR_CC | OR1K_SPR_DTLBTR_WBC | OR1K_SPR_DTLBTR_SRE |
+              OR1K_SPR_DTLBTR_SWE);
 
-	itlbtr = (OR1K_SPR_ITLBTR_CC | OR1K_SPR_ITLBTR_WBC | OR1K_SPR_ITLBTR_SXE);
-	xtlbmr = 1;
-	coreid = or1k_core_get_id();
+    itlbtr = (OR1K_SPR_ITLBTR_CC | OR1K_SPR_ITLBTR_WBC | OR1K_SPR_ITLBTR_SXE);
+    xtlbmr = 1;
+    coreid = or1k_core_get_id();
 
-	if (!coreid)
-		kprintf("[hal] initializing tlb");
+    if (!coreid)
+        kprintf("[hal] initializing tlb");
 
-	/* Write into DTLB/ITLB. */
-	for (int i = 0; i < OR1K_TLB_LENGTH; i++)
-	{
-		or1k_tlbe_init(
-			i,
-			dtlbtr,
-			itlbtr,
-			xtlbmr,
-			&or1k_tlb[coreid].dtlb[i],
-			&or1k_tlb[coreid].itlb[i]
-		);
+    /* Write into DTLB/ITLB. */
+    for (int i = 0; i < OR1K_TLB_LENGTH; i++) {
+        or1k_tlbe_init(i,
+                       dtlbtr,
+                       itlbtr,
+                       xtlbmr,
+                       &or1k_tlb[coreid].dtlb[i],
+                       &or1k_tlb[coreid].itlb[i]);
 
-		dtlbtr += OR1K_PAGE_SIZE;
-		itlbtr += OR1K_PAGE_SIZE;
-		xtlbmr += OR1K_PAGE_SIZE;
-	}
+        dtlbtr += OR1K_PAGE_SIZE;
+        itlbtr += OR1K_PAGE_SIZE;
+        xtlbmr += OR1K_PAGE_SIZE;
+    }
 }
 
 /*============================================================================*
@@ -278,47 +261,43 @@ PUBLIC void or1k_cluster_tlb_init(void)
  * @author Davidson Francis
  * @author Pedro Henrique Penna
  */
-PRIVATE void or1k_cluster_do_tlb_fault(
-	const struct exception *excp,
-	const struct context *ctx
-)
+PRIVATE void or1k_cluster_do_tlb_fault(const struct exception *excp,
+                                       const struct context *ctx)
 {
-	int tlb_type;      /* Target TLB.                     */
-	paddr_t paddr;     /* Physical address.               */
-	vaddr_t vaddr;     /* Faulting address.               */
-	struct pte *pte;   /* Working page table table entry. */
-	struct pde *pde;   /* Working page directory entry.   */
-	struct pte *pgtab; /* Working page table.             */
+    int tlb_type;      /* Target TLB.                     */
+    paddr_t paddr;     /* Physical address.               */
+    vaddr_t vaddr;     /* Faulting address.               */
+    struct pte *pte;   /* Working page table table entry. */
+    struct pde *pde;   /* Working page directory entry.   */
+    struct pte *pgtab; /* Working page table.             */
 
-	/* Get page address of faulting address. */
-	vaddr = or1k_excp_get_addr(excp);
-	vaddr &= OR1K_PAGE_MASK;
+    /* Get page address of faulting address. */
+    vaddr = or1k_excp_get_addr(excp);
+    vaddr &= OR1K_PAGE_MASK;
 
-	/* Lookup PDE. */
-	pde = pde_get(root_pgdir, vaddr);
-	if (!pde_is_present(pde))
-	{
-		or1k_context_dump(ctx);
-		kpanic("[hal] page fault at %x", exception_get_addr(excp));
-	}
+    /* Lookup PDE. */
+    pde = pde_get(root_pgdir, vaddr);
+    if (!pde_is_present(pde)) {
+        or1k_context_dump(ctx);
+        kpanic("[hal] page fault at %x", exception_get_addr(excp));
+    }
 
-	/* Lookup PTE. */
-	pgtab = (struct pte *)(pde_frame_get(pde) << OR1K_PAGE_SHIFT);
-	pte = pte_get(pgtab, vaddr);
-	if (!pte_is_present(pte))
-	{
-		or1k_context_dump(ctx);
-		kpanic("[hal] page fault at %x", exception_get_addr(excp));
-	}
+    /* Lookup PTE. */
+    pgtab = (struct pte *)(pde_frame_get(pde) << OR1K_PAGE_SHIFT);
+    pte = pte_get(pgtab, vaddr);
+    if (!pte_is_present(pte)) {
+        or1k_context_dump(ctx);
+        kpanic("[hal] page fault at %x", exception_get_addr(excp));
+    }
 
-	/* Writing mapping to TLB. */
-	paddr = pte_frame_get(pte) << OR1K_PAGE_SHIFT;
+    /* Writing mapping to TLB. */
+    paddr = pte_frame_get(pte) << OR1K_PAGE_SHIFT;
 
-	tlb_type = (excp->num == OR1K_EXCP_ITLB_FAULT) ?
-		OR1K_TLB_INSTRUCTION : OR1K_TLB_DATA;
+    tlb_type = (excp->num == OR1K_EXCP_ITLB_FAULT) ? OR1K_TLB_INSTRUCTION
+                                                   : OR1K_TLB_DATA;
 
-	if (tlb_write(tlb_type, vaddr, paddr) < 0)
-		kpanic("[hal] cannot write to tlb");
+    if (tlb_write(tlb_type, vaddr, paddr) < 0)
+        kpanic("[hal] cannot write to tlb");
 }
 
 /*============================================================================*
@@ -331,8 +310,8 @@ PRIVATE void or1k_cluster_do_tlb_fault(
  */
 PUBLIC void or1k_enable_mmu(void)
 {
-	or1k_mtspr(OR1K_SPR_SR, or1k_mfspr(OR1K_SPR_SR)
-		| OR1K_SPR_SR_DME | OR1K_SPR_SR_IME);
+    or1k_mtspr(OR1K_SPR_SR,
+               or1k_mfspr(OR1K_SPR_SR) | OR1K_SPR_SR_DME | OR1K_SPR_SR_IME);
 }
 
 /*============================================================================*
@@ -345,13 +324,12 @@ PUBLIC void or1k_enable_mmu(void)
  */
 PUBLIC void or1k_mmu_setup(void)
 {
-	/* TLB Handler. */
-	if (core_get_id() == OR1K_CLUSTER_COREID_MASTER)
-	{
-		exception_register(EXCEPTION_DTLB_FAULT, or1k_cluster_do_tlb_fault);
-		exception_register(EXCEPTION_ITLB_FAULT, or1k_cluster_do_tlb_fault);
-	}
+    /* TLB Handler. */
+    if (core_get_id() == OR1K_CLUSTER_COREID_MASTER) {
+        exception_register(EXCEPTION_DTLB_FAULT, or1k_cluster_do_tlb_fault);
+        exception_register(EXCEPTION_ITLB_FAULT, or1k_cluster_do_tlb_fault);
+    }
 
-	/* Enable MMU. */
-	or1k_enable_mmu();
+    /* Enable MMU. */
+    or1k_enable_mmu();
 }

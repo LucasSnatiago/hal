@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,41 +25,41 @@
 #ifndef _NANVIX_HAL_CLUSTER_CLUSTER_H_
 #define _NANVIX_HAL_CLUSTER_CLUSTER_H_
 
-	/**
-	 * @defgroup clusters Clusters
-	 */
-	#if (defined(__x86_cluster__))
+/**
+ * @defgroup clusters Clusters
+ */
+#if (defined(__x86_cluster__))
 
-		#undef  __NEED_CLUSTER_X86
-		#define __NEED_CLUSTER_X86
-		#include <arch/cluster/x86-cluster.h>
+#undef __NEED_CLUSTER_X86
+#define __NEED_CLUSTER_X86
+#include <arch/cluster/x86-cluster.h>
 
-	#elif (defined(__or1k_cluster__))
+#elif (defined(__or1k_cluster__))
 
-		#undef  __NEED_CLUSTER_OR1K
-		#define __NEED_CLUSTER_OR1K
-		#include <arch/cluster/or1k-cluster.h>
+#undef __NEED_CLUSTER_OR1K
+#define __NEED_CLUSTER_OR1K
+#include <arch/cluster/or1k-cluster.h>
 
-	#elif (defined(__riscv32_cluster__))
+#elif (defined(__riscv32_cluster__))
 
-		#undef  __NEED_CLUSTER_RISCV32
-		#define __NEED_CLUSTER_RISCV32
-		#include <arch/cluster/riscv32-cluster.h>
+#undef __NEED_CLUSTER_RISCV32
+#define __NEED_CLUSTER_RISCV32
+#include <arch/cluster/riscv32-cluster.h>
 
-	#elif (defined(__linux64_cluster__))
+#elif (defined(__linux64_cluster__))
 
-		#undef  __NEED_CLUSTER_LINUX64
-		#define __NEED_CLUSTER_LINUX64
-		#include <arch/cluster/linux64-cluster.h>
+#undef __NEED_CLUSTER_LINUX64
+#define __NEED_CLUSTER_LINUX64
+#include <arch/cluster/linux64-cluster.h>
 
-	#else
+#else
 
-		#error "unkonwn cluster"
+#error "unkonwn cluster"
 
-	#endif
+#endif
 
-	#undef  __NEED_HAL_CORE
-	#define __NEED_HAL_CORE
-	#include <nanvix/hal/core.h>
+#undef __NEED_HAL_CORE
+#define __NEED_HAL_CORE
+#include <nanvix/hal/core.h>
 
 #endif /* _NANVIX_HAL_CLUSTER_CLUSTER_H_ */

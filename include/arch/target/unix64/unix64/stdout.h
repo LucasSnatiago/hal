@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,8 +25,8 @@
 #ifndef TARGET_UNIX64_STDOUT_H_
 #define TARGET_UNIX64_STDOUT_H_
 
-	/* Target Interface Implementation */
-	#include <arch/target/unix64/unix64/_unix64.h>
+/* Target Interface Implementation */
+#include <arch/target/unix64/unix64/_unix64.h>
 
 /**
  * @defgroup target-qemu-unix64-pc-stdout Standard Output
@@ -36,25 +36,25 @@
  */
 /**@{*/
 
-	#include <nanvix/const.h>
-	#include <nanvix/hlib.h>
-	#include <arch/stdout/tty-virt.h>
+#include <nanvix/const.h>
+#include <nanvix/hlib.h>
+#include <arch/stdout/tty-virt.h>
 
-	/**
-	 * @see systrace_init()
-	 */
-	static inline void unix64_stdout_init(void)
-	{
-		tty_virt_init();
-	}
+/**
+ * @see systrace_init()
+ */
+static inline void unix64_stdout_init(void)
+{
+    tty_virt_init();
+}
 
-	/**
-	 * @see systrace_write()
-	 */
-	static inline void unix64_stdout_write(const char *buf, size_t n)
-	{
-		tty_virt_write(buf,n);
-	}
+/**
+ * @see systrace_write()
+ */
+static inline void unix64_stdout_write(const char *buf, size_t n)
+{
+    tty_virt_write(buf, n);
+}
 
 /**@}*/
 
@@ -66,29 +66,29 @@
  * @cond unix64
  */
 
-	/**
-	 * @name Provided Interface
-	 */
-	/**@{*/
-	#define __stdout_init_fn  /**< stdout_init()  */
-	#define __stdout_write_fn /**< stdout_write() */
-	/**@}*/
+/**
+ * @name Provided Interface
+ */
+/**@{*/
+#define __stdout_init_fn  /**< stdout_init()  */
+#define __stdout_write_fn /**< stdout_write() */
+/**@}*/
 
-	/**
-	 * @see unix64_stdout_init().
-	 */
-	static inline void stdout_init(void)
-	{
-		unix64_stdout_init();
-	}
+/**
+ * @see unix64_stdout_init().
+ */
+static inline void stdout_init(void)
+{
+    unix64_stdout_init();
+}
 
-	/**
-	 * @see unix64_stdout_write().
-	 */
-	static inline void stdout_write(const char *buf, size_t n)
-	{
-		unix64_stdout_write(buf, n);
-	}
+/**
+ * @see unix64_stdout_write().
+ */
+static inline void stdout_write(const char *buf, size_t n)
+{
+    unix64_stdout_write(buf, n);
+}
 
 /**@endcond*/
 

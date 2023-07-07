@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
+#include "../test.h"
 #include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
 #include <nanvix/hlib.h>
 #include <posix/errno.h>
-#include "../test.h"
 
 /**
  * @brief Verbose interrupt test?
@@ -43,10 +43,10 @@ PRIVATE volatile int ncalls = 0;
  */
 PRIVATE void dummy_handler(int num)
 {
-	UNUSED(num);
+    UNUSED(num);
 
-	ncalls++;
-	dcache_invalidate();
+    ncalls++;
+    dcache_invalidate();
 }
 
 /*============================================================================*
@@ -64,8 +64,8 @@ PRIVATE void dummy_handler(int num)
  */
 PRIVATE void test_interrupt_register_unregister(void)
 {
-	KASSERT(interrupt_register(INTERRUPT_TIMER, dummy_handler) == 0);
-	KASSERT(interrupt_unregister(INTERRUPT_TIMER) == 0);
+    KASSERT(interrupt_register(INTERRUPT_TIMER, dummy_handler) == 0);
+    KASSERT(interrupt_unregister(INTERRUPT_TIMER) == 0);
 }
 
 /*----------------------------------------------------------------------------*
@@ -80,34 +80,33 @@ PRIVATE void test_interrupt_register_unregister(void)
 PRIVATE void test_interrupt_enable_disable(void)
 {
 #ifndef __unix64__
-	const int ntrials = 1000000;
+    const int ntrials = 1000000;
 
-	ncalls = 0;
-	dcache_invalidate();
+    ncalls = 0;
+    dcache_invalidate();
 
-	KASSERT(interrupt_register(INTERRUPT_TIMER, dummy_handler) == 0);
+    KASSERT(interrupt_register(INTERRUPT_TIMER, dummy_handler) == 0);
 
-	interrupts_enable();
+    interrupts_enable();
 
-		do
-			dcache_invalidate();
-		while (ncalls == 0);
+    do
+        dcache_invalidate();
+    while (ncalls == 0);
 
-	interrupts_disable();
+    interrupts_disable();
 
-	KASSERT(interrupt_unregister(INTERRUPT_TIMER) == 0);
+    KASSERT(interrupt_unregister(INTERRUPT_TIMER) == 0);
 
-	/*
-	 * Ensure that the handler is not
-	 * longer called.
-	 */
-	ncalls = 0;
-	dcache_invalidate();
-	for (int i = 0; i < ntrials; i++)
-	{
-		noop();
-		KASSERT(ncalls == 0);
-	}
+    /*
+     * Ensure that the handler is not
+     * longer called.
+     */
+    ncalls = 0;
+    dcache_invalidate();
+    for (int i = 0; i < ntrials; i++) {
+        noop();
+        KASSERT(ncalls == 0);
+    }
 #endif
 }
 
@@ -126,8 +125,8 @@ PRIVATE void test_interrupt_enable_disable(void)
  */
 PRIVATE void test_interrupt_register_handler_inval(void)
 {
-	KASSERT(interrupt_register(-1, dummy_handler) == -EINVAL);
-	KASSERT(interrupt_register(INTERRUPTS_NUM + 1, dummy_handler) == -EINVAL);
+    KASSERT(interrupt_register(-1, dummy_handler) == -EINVAL);
+    KASSERT(interrupt_register(INTERRUPTS_NUM + 1, dummy_handler) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -141,8 +140,8 @@ PRIVATE void test_interrupt_register_handler_inval(void)
  */
 PRIVATE void test_interrupt_unregister_handler_inval(void)
 {
-	KASSERT(interrupt_unregister(-1) == -EINVAL);
-	KASSERT(interrupt_unregister(INTERRUPTS_NUM + 1) == -EINVAL);
+    KASSERT(interrupt_unregister(-1) == -EINVAL);
+    KASSERT(interrupt_unregister(INTERRUPTS_NUM + 1) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -156,9 +155,9 @@ PRIVATE void test_interrupt_unregister_handler_inval(void)
  */
 PRIVATE void test_interrupt_register_handler_bad(void)
 {
-	KASSERT(interrupt_register(INTERRUPT_TIMER, dummy_handler) == 0);
-	KASSERT(interrupt_register(INTERRUPT_TIMER, dummy_handler) == -EBUSY);
-	KASSERT(interrupt_unregister(INTERRUPT_TIMER) == 0);
+    KASSERT(interrupt_register(INTERRUPT_TIMER, dummy_handler) == 0);
+    KASSERT(interrupt_register(INTERRUPT_TIMER, dummy_handler) == -EBUSY);
+    KASSERT(interrupt_unregister(INTERRUPT_TIMER) == 0);
 }
 
 /*----------------------------------------------------------------------------*
@@ -172,7 +171,7 @@ PRIVATE void test_interrupt_register_handler_bad(void)
  */
 PRIVATE void test_interrupt_unregister_handler_bad(void)
 {
-	KASSERT(interrupt_unregister(INTERRUPT_TIMER) == -EINVAL);
+    KASSERT(interrupt_unregister(INTERRUPT_TIMER) == -EINVAL);
 }
 
 /*============================================================================*
@@ -183,20 +182,24 @@ PRIVATE void test_interrupt_unregister_handler_bad(void)
  * @brief Unit tests.
  */
 PRIVATE struct test interrupt_tests_api[] = {
-	{ test_interrupt_register_unregister, "register and unregister a handler" },
-	{ test_interrupt_enable_disable,      "enable and disable interrupts    " },
-	{ NULL,                                NULL                               },
+    {test_interrupt_register_unregister, "register and unregister a handler"},
+    {test_interrupt_enable_disable, "enable and disable interrupts    "},
+    {NULL, NULL},
 };
 
 /**
  * @brief Unit tests.
  */
 PRIVATE struct test interrupt_tests_fault_injection[] = {
-	{ test_interrupt_register_handler_inval,   "register handler for invalid interrupt  " },
-	{ test_interrupt_unregister_handler_inval, "unregister handler for invalid interrupt" },
-	{ test_interrupt_register_handler_bad,     "register handler for bad interrupt      " },
-	{ test_interrupt_unregister_handler_bad,   "unregister handler for bad interrupt    " },
-	{ NULL,                                     NULL                                      },
+    {test_interrupt_register_handler_inval,
+     "register handler for invalid interrupt  "},
+    {test_interrupt_unregister_handler_inval,
+     "unregister handler for invalid interrupt"},
+    {test_interrupt_register_handler_bad,
+     "register handler for bad interrupt      "},
+    {test_interrupt_unregister_handler_bad,
+     "unregister handler for bad interrupt    "},
+    {NULL, NULL},
 };
 
 /**
@@ -207,18 +210,18 @@ PRIVATE struct test interrupt_tests_fault_injection[] = {
  */
 PUBLIC void test_interrupt(void)
 {
-	CLUSTER_KPRINTF(HLINE);
-	for (int i = 0; interrupt_tests_api[i].test_fn != NULL; i++)
-	{
-		interrupt_tests_api[i].test_fn();
-		CLUSTER_KPRINTF("[test][api][interrupt] %s [passed]", interrupt_tests_api[i].name);
-	}
+    CLUSTER_KPRINTF(HLINE);
+    for (int i = 0; interrupt_tests_api[i].test_fn != NULL; i++) {
+        interrupt_tests_api[i].test_fn();
+        CLUSTER_KPRINTF("[test][api][interrupt] %s [passed]",
+                        interrupt_tests_api[i].name);
+    }
 
-	/* Fault Tests */
-	CLUSTER_KPRINTF(HLINE);
-	for (int i = 0; interrupt_tests_fault_injection[i].test_fn != NULL; i++)
-	{
-		interrupt_tests_fault_injection[i].test_fn();
-		CLUSTER_KPRINTF("[test][fault][interrupt] %s [passed]", interrupt_tests_fault_injection[i].name);
-	}
+    /* Fault Tests */
+    CLUSTER_KPRINTF(HLINE);
+    for (int i = 0; interrupt_tests_fault_injection[i].test_fn != NULL; i++) {
+        interrupt_tests_fault_injection[i].test_fn();
+        CLUSTER_KPRINTF("[test][fault][interrupt] %s [passed]",
+                        interrupt_tests_fault_injection[i].name);
+    }
 }

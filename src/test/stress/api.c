@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,14 +22,15 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
-#include <posix/errno.h>
 #include "../test.h"
 #include "stress.h"
+#include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
+#include <nanvix/hlib.h>
+#include <posix/errno.h>
 
-#if (__TARGET_HAS_SYNC && __TARGET_HAS_MAILBOX && __TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX)
+#if (__TARGET_HAS_SYNC && __TARGET_HAS_MAILBOX && __TARGET_HAS_PORTAL &&       \
+     !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
 /**
  * @brief Stress core fence.
@@ -41,19 +42,19 @@ PRIVATE struct fence stress_fence;
  */
 PRIVATE void do_test_stress_al(void)
 {
-	test_stress_setup();
+    test_stress_setup();
 
-		test_stress_mailbox();
-		test_stress_portal();
-		test_stress_combination();
+    test_stress_mailbox();
+    test_stress_portal();
+    test_stress_combination();
 
-	test_stress_cleanup();
+    test_stress_cleanup();
 
-	vsys_exit();
-	fence_join(&stress_fence);
+    vsys_exit();
+    fence_join(&stress_fence);
 
-	KASSERT(core_release() == 0);
-	core_reset();
+    KASSERT(core_release() == 0);
+    core_reset();
 }
 
 /**
@@ -64,24 +65,22 @@ PRIVATE void do_test_stress_al(void)
  */
 PUBLIC void test_stress_al(void)
 {
-	vsys_setup();
-	test_stress_interrupt_setup();
-	fence_init(&stress_fence, 1);
+    vsys_setup();
+    test_stress_interrupt_setup();
+    fence_init(&stress_fence, 1);
 
-		/* Start a slave core. */
-		for (int i = 0; i < CORES_NUM; ++i)
-		{
-			if (i != COREID_MASTER)
-			{
-				KASSERT(core_start(i, do_test_stress_al) == 0);
-				break;
-			}
-		}
+    /* Start a slave core. */
+    for (int i = 0; i < CORES_NUM; ++i) {
+        if (i != COREID_MASTER) {
+            KASSERT(core_start(i, do_test_stress_al) == 0);
+            break;
+        }
+    }
 
-		vsys_loop();
+    vsys_loop();
 
     fence_wait(&stress_fence);
-	test_stress_interrupt_cleanup();
+    test_stress_interrupt_cleanup();
 }
 
 #else
@@ -94,7 +93,7 @@ PUBLIC void test_stress_al(void)
  */
 PUBLIC void test_stress_al(void)
 {
-
 }
 
-#endif /* __TARGET_HAS_SYNC && __TARGET_HAS_MAILBOX && __TARGET_HAS_PORTAL && !__NANVIX_IKC_USES_ONLY_MAILBOX */
+#endif /* __TARGET_HAS_SYNC && __TARGET_HAS_MAILBOX && __TARGET_HAS_PORTAL &&  \
+          !__NANVIX_IKC_USES_ONLY_MAILBOX */

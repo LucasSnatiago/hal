@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -40,36 +40,37 @@
  *
  * @author Davidson Francis
  */
-PUBLIC int or1k_page_map(struct pte *pgtab, paddr_t paddr, vaddr_t vaddr, int w, int x)
+PUBLIC int or1k_page_map(struct pte *pgtab, paddr_t paddr, vaddr_t vaddr, int w,
+                         int x)
 {
-	int idx;
+    int idx;
 
-	/* Invalid page table. */
-	if (UNLIKELY(pgtab == NULL))
-		return (-EINVAL);
+    /* Invalid page table. */
+    if (UNLIKELY(pgtab == NULL))
+        return (-EINVAL);
 
-	idx = pte_idx_get(vaddr);
+    idx = pte_idx_get(vaddr);
 
-	pgtab[idx].cc = 1;
-	pgtab[idx].present = 1;
-	pgtab[idx].wbc = 1;
-	pgtab[idx].wom = 0;
-	pgtab[idx].accessed = 0;
-	pgtab[idx].dirty = 0;
-	pgtab[idx].last = 1;
-	pgtab[idx].frame = OR1K_FRAME(paddr >> OR1K_PAGE_SHIFT);
+    pgtab[idx].cc = 1;
+    pgtab[idx].present = 1;
+    pgtab[idx].wbc = 1;
+    pgtab[idx].wom = 0;
+    pgtab[idx].accessed = 0;
+    pgtab[idx].dirty = 0;
+    pgtab[idx].last = 1;
+    pgtab[idx].frame = OR1K_FRAME(paddr >> OR1K_PAGE_SHIFT);
 
-	/* Permissions. */
-	pgtab[idx].ppi = 0;
+    /* Permissions. */
+    pgtab[idx].ppi = 0;
 
-	if (w)
-		pgtab[idx].ppi  = (OR1K_PT_PPI_USR_RDWR >> OR1K_PT_PPI_OFFSET);
+    if (w)
+        pgtab[idx].ppi = (OR1K_PT_PPI_USR_RDWR >> OR1K_PT_PPI_OFFSET);
 
-	if (x)
-		pgtab[idx].ppi |= ((OR1K_PT_PPI_USR_EX | OR1K_PT_PPI_SPV_EX)
-			>> OR1K_PT_PPI_OFFSET);
+    if (x)
+        pgtab[idx].ppi |=
+            ((OR1K_PT_PPI_USR_EX | OR1K_PT_PPI_SPV_EX) >> OR1K_PT_PPI_OFFSET);
 
-	return (0);
+    return (0);
 }
 
 /**
@@ -86,36 +87,37 @@ PUBLIC int or1k_page_map(struct pte *pgtab, paddr_t paddr, vaddr_t vaddr, int w,
  *
  * @author Davidson Francis
  */
-PUBLIC int or1k_huge_page_map(struct pte *pgdir, paddr_t paddr, vaddr_t vaddr, int w, int x)
+PUBLIC int or1k_huge_page_map(struct pte *pgdir, paddr_t paddr, vaddr_t vaddr,
+                              int w, int x)
 {
-	int idx;
+    int idx;
 
-	/* Invalid page table. */
-	if (UNLIKELY(pgdir == NULL))
-		return (-EINVAL);
+    /* Invalid page table. */
+    if (UNLIKELY(pgdir == NULL))
+        return (-EINVAL);
 
-	idx = pde_idx_get(vaddr);
+    idx = pde_idx_get(vaddr);
 
-	pgdir[idx].cc = 1;
-	pgdir[idx].present = 1;
-	pgdir[idx].wbc = 1;
-	pgdir[idx].wom = 0;
-	pgdir[idx].accessed = 0;
-	pgdir[idx].dirty = 0;
-	pgdir[idx].last = 1;
-	pgdir[idx].frame = OR1K_FRAME(paddr >> OR1K_PAGE_SHIFT);
+    pgdir[idx].cc = 1;
+    pgdir[idx].present = 1;
+    pgdir[idx].wbc = 1;
+    pgdir[idx].wom = 0;
+    pgdir[idx].accessed = 0;
+    pgdir[idx].dirty = 0;
+    pgdir[idx].last = 1;
+    pgdir[idx].frame = OR1K_FRAME(paddr >> OR1K_PAGE_SHIFT);
 
-	/* Permissions. */
-	pgdir[idx].ppi = 0;
+    /* Permissions. */
+    pgdir[idx].ppi = 0;
 
-	if (w)
-		pgdir[idx].ppi  = (OR1K_PT_PPI_USR_RDWR >> OR1K_PT_PPI_OFFSET);
+    if (w)
+        pgdir[idx].ppi = (OR1K_PT_PPI_USR_RDWR >> OR1K_PT_PPI_OFFSET);
 
-	if (x)
-		pgdir[idx].ppi |= ((OR1K_PT_PPI_USR_EX | OR1K_PT_PPI_SPV_EX)
-			>> OR1K_PT_PPI_OFFSET);
+    if (x)
+        pgdir[idx].ppi |=
+            ((OR1K_PT_PPI_USR_EX | OR1K_PT_PPI_SPV_EX) >> OR1K_PT_PPI_OFFSET);
 
-	return (0);
+    return (0);
 }
 
 /**
@@ -130,25 +132,25 @@ PUBLIC int or1k_huge_page_map(struct pte *pgdir, paddr_t paddr, vaddr_t vaddr, i
  */
 PUBLIC int or1k_pgtab_map(struct pde *pgdir, paddr_t paddr, vaddr_t vaddr)
 {
-	int idx;
+    int idx;
 
-	/* Invalid page directory. */
-	if (UNLIKELY(pgdir == NULL))
-		return (-EINVAL);
+    /* Invalid page directory. */
+    if (UNLIKELY(pgdir == NULL))
+        return (-EINVAL);
 
-	idx = pde_idx_get(vaddr);
+    idx = pde_idx_get(vaddr);
 
-	pgdir[idx].cc = 1;
-	pgdir[idx].present = 1;
-	pgdir[idx].wbc = 1;
-	pgdir[idx].wom = 0;
-	pgdir[idx].accessed = 0;
-	pgdir[idx].dirty = 0;
-	pgdir[idx].last = 0;
-	pgdir[idx].frame = OR1K_FRAME(paddr >> OR1K_PAGE_SHIFT);
+    pgdir[idx].cc = 1;
+    pgdir[idx].present = 1;
+    pgdir[idx].wbc = 1;
+    pgdir[idx].wom = 0;
+    pgdir[idx].accessed = 0;
+    pgdir[idx].dirty = 0;
+    pgdir[idx].last = 0;
+    pgdir[idx].frame = OR1K_FRAME(paddr >> OR1K_PAGE_SHIFT);
 
-	/* Permissions. */
-	pgdir[idx].ppi = 0;
+    /* Permissions. */
+    pgdir[idx].ppi = 0;
 
-	return (0);
+    return (0);
 }

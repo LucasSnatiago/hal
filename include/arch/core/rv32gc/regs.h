@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,9 +25,9 @@
 #ifndef ARCH_CORE_RV32GC_REGS_H_
 #define ARCH_CORE_RV32GC_REGS_H_
 
-	#ifndef __NEED_CORE_REGS
-		#error "do not include this file"
-	#endif
+#ifndef __NEED_CORE_REGS
+#error "do not include this file"
+#endif
 
 /**
  * @addtogroup rv32gc-core-regs CSRs
@@ -37,12 +37,12 @@
  */
 /**@{*/
 
-	/* Must come first. */
-	#define __NEED_CORE_MREGS
-	#define __NEED_CORE_SREGS
+/* Must come first. */
+#define __NEED_CORE_MREGS
+#define __NEED_CORE_SREGS
 
-	#include <arch/core/rv32gc/sregs.h>
-	#include <arch/core/rv32gc/mregs.h>
+#include <arch/core/rv32gc/sregs.h>
+#include <arch/core/rv32gc/mregs.h>
 
 /**@}*/
 

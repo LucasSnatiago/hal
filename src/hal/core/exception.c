@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
+#include <nanvix/const.h>
 #include <nanvix/hal/core/exception.h>
 #include <nanvix/hal/core/status.h>
-#include <nanvix/const.h>
 #include <nanvix/hlib.h>
 #include <posix/errno.h>
 
@@ -38,16 +38,15 @@
  * @param excp Exception information.
  * @param ctx  Interrupted context.
  */
-PRIVATE NORETURN void default_handler(
-	const struct exception *excp,
-	const struct context *ctx)
+PRIVATE NORETURN void default_handler(const struct exception *excp,
+                                      const struct context *ctx)
 {
-	context_dump(ctx);
-	exception_dump(excp);
+    context_dump(ctx);
+    exception_dump(excp);
 
-	kpanic("unhandled exception");
+    kpanic("unhandled exception");
 
-	UNREACHABLE();
+    UNREACHABLE();
 }
 
 /*===========================================================================*
@@ -64,24 +63,25 @@ PRIVATE NORETURN void default_handler(
  *
  * @author Pedro Henrique Penna
  */
-PUBLIC void do_exception(const struct exception *excp, const struct context *ctx)
+PUBLIC void do_exception(const struct exception *excp,
+                         const struct context *ctx)
 {
-	int excpnum;
-	int modenum;
-	exception_handler_t handler;
+    int excpnum;
+    int modenum;
+    exception_handler_t handler;
 
-	/* Set exception execution mode. */
-	modenum = core_status_set_mode(CORE_STATUS_MODE_EXCEPTION);
+    /* Set exception execution mode. */
+    modenum = core_status_set_mode(CORE_STATUS_MODE_EXCEPTION);
 
-		/* Nothing to do. */
-		excpnum = exception_get_num(excp);
-		handler = exceptions[excpnum].handler;
+    /* Nothing to do. */
+    excpnum = exception_get_num(excp);
+    handler = exceptions[excpnum].handler;
 
-		/* Call handler. */
-		handler(excp, ctx);
+    /* Call handler. */
+    handler(excp, ctx);
 
-	/* Reset exception execution mode. */
-	core_status_set_mode(modenum);
+    /* Reset exception execution mode. */
+    core_status_set_mode(modenum);
 }
 
 /*===========================================================================*
@@ -96,41 +96,35 @@ PUBLIC void do_exception(const struct exception *excp, const struct context *ctx
  */
 PUBLIC int exception_register(int excpnum, exception_handler_t handler)
 {
-	/* Invalid exception number. */
-	if ((excpnum < 0) || (excpnum >= EXCEPTIONS_NUM))
-	{
-		kprintf("[hal][core] invalid exception number");
-		return (-EINVAL);
-	}
+    /* Invalid exception number. */
+    if ((excpnum < 0) || (excpnum >= EXCEPTIONS_NUM)) {
+        kprintf("[hal][core] invalid exception number");
+        return (-EINVAL);
+    }
 
-	/* Invalid handler. */
-	if (handler == NULL)
-	{
-		kprintf("[hal][core] invalid exception handler");
-		return (-EINVAL);
-	}
+    /* Invalid handler. */
+    if (handler == NULL) {
+        kprintf("[hal][core] invalid exception handler");
+        return (-EINVAL);
+    }
 
-	/* Overwriting handler. */
-	if (exceptions[excpnum].handler != default_handler)
-	{
-		if (exceptions[excpnum].handler != NULL)
-		{
-			kprintf("[hal][core] overwriting handler %x for %s",
-				exceptions[excpnum].handler,
-				exceptions[excpnum].name
-			);
-		}
-	}
+    /* Overwriting handler. */
+    if (exceptions[excpnum].handler != default_handler) {
+        if (exceptions[excpnum].handler != NULL) {
+            kprintf("[hal][core] overwriting handler %x for %s",
+                    exceptions[excpnum].handler,
+                    exceptions[excpnum].name);
+        }
+    }
 
-	exceptions[excpnum].handler = handler;
-	dcache_invalidate();
+    exceptions[excpnum].handler = handler;
+    dcache_invalidate();
 
-	kprintf("[hal][core] exception handler %x registered for %s",
-		exceptions[excpnum].handler,
-		exceptions[excpnum].name
-	);
+    kprintf("[hal][core] exception handler %x registered for %s",
+            exceptions[excpnum].handler,
+            exceptions[excpnum].name);
 
-	return (0);
+    return (0);
 }
 
 /*===========================================================================*
@@ -145,21 +139,20 @@ PUBLIC int exception_register(int excpnum, exception_handler_t handler)
  */
 PUBLIC int exception_unregister(int excpnum)
 {
-	/* Invalid exception number. */
-	if ((excpnum < 0) || (excpnum >= EXCEPTIONS_NUM))
-	{
-		kprintf("[hal][core] invalid exception number");
-		return (-EINVAL);
-	}
+    /* Invalid exception number. */
+    if ((excpnum < 0) || (excpnum >= EXCEPTIONS_NUM)) {
+        kprintf("[hal][core] invalid exception number");
+        return (-EINVAL);
+    }
 
-	/* Bad exception number. */
-	if (exceptions[excpnum].handler == default_handler)
-		return (-EINVAL);
+    /* Bad exception number. */
+    if (exceptions[excpnum].handler == default_handler)
+        return (-EINVAL);
 
-	exceptions[excpnum].handler = default_handler;
-	dcache_invalidate();
+    exceptions[excpnum].handler = default_handler;
+    dcache_invalidate();
 
-	return (0);
+    return (0);
 }
 
 /*===========================================================================*
@@ -172,17 +165,14 @@ PUBLIC int exception_unregister(int excpnum)
  *
  * @author Pedro Henrique Penna
  */
-PUBLIC void exception_forward(
-	int excpnum,
-	const struct exception *excp,
-	const struct context *ctx
-)
+PUBLIC void exception_forward(int excpnum, const struct exception *excp,
+                              const struct context *ctx)
 {
-	struct exception *_excp = (struct exception *) excp;
+    struct exception *_excp = (struct exception *)excp;
 
-	_excp->num = excpnum;
+    _excp->num = excpnum;
 
-	do_exception(_excp, ctx);
+    do_exception(_excp, ctx);
 }
 
 /*===========================================================================*
@@ -196,14 +186,13 @@ PUBLIC void exception_forward(
  */
 PUBLIC void exception_setup(void)
 {
-	for (int i = 0; i < EXCEPTIONS_NUM; i++)
-	{
-		/* Skip early registered handlers. */
-		if (exceptions[i].handler != NULL)
-			continue;
+    for (int i = 0; i < EXCEPTIONS_NUM; i++) {
+        /* Skip early registered handlers. */
+        if (exceptions[i].handler != NULL)
+            continue;
 
-		exceptions[i].handler = default_handler;
-	}
+        exceptions[i].handler = default_handler;
+    }
 
-	dcache_invalidate();
+    dcache_invalidate();
 }

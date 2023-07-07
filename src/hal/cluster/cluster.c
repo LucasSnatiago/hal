@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,8 +25,8 @@
 /* Must come first. */
 #define __NEED_HAL_CLUSTER
 
-#include <nanvix/hal/cluster.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/cluster.h>
 #include <nanvix/hlib.h>
 
 /*============================================================================*
@@ -36,20 +36,19 @@
 /**
  * @brief Startup fence.
  */
-PRIVATE struct
-{
-	bool master_alive;
-	spinlock_t lock;
-} fence = { false , SPINLOCK_UNLOCKED};
+PRIVATE struct {
+    bool master_alive;
+    spinlock_t lock;
+} fence = {false, SPINLOCK_UNLOCKED};
 
 /**
  * @brief Releases the startup fence.
  */
 PUBLIC void cluster_fence_release(void)
 {
-	spinlock_lock(&fence.lock);
-		fence.master_alive = true;
-	spinlock_unlock(&fence.lock);
+    spinlock_lock(&fence.lock);
+    fence.master_alive = true;
+    spinlock_unlock(&fence.lock);
 }
 
 /**
@@ -57,26 +56,24 @@ PUBLIC void cluster_fence_release(void)
  */
 PUBLIC void cluster_fence_wait(void)
 {
-	while (true)
-	{
-		/* TODO: Master core cannot acquire the lock in some runs. (BUG) */
-		dcache_invalidate();
+    while (true) {
+        /* TODO: Master core cannot acquire the lock in some runs. (BUG) */
+        dcache_invalidate();
 
-		spinlock_lock(&fence.lock);
+        spinlock_lock(&fence.lock);
 
-			/* Fence is released. */
-			if (fence.master_alive)
-			{
-				spinlock_unlock(&fence.lock);
-				break;
-			}
+        /* Fence is released. */
+        if (fence.master_alive) {
+            spinlock_unlock(&fence.lock);
+            break;
+        }
 
-			noop();
-		spinlock_unlock(&fence.lock);
+        noop();
+        spinlock_unlock(&fence.lock);
 
-		/* TODO: Master core cannot acquire the lock in some runs. (BUG) */
-		dcache_invalidate();
-	}
+        /* TODO: Master core cannot acquire the lock in some runs. (BUG) */
+        dcache_invalidate();
+    }
 }
 
 /*============================================================================*
@@ -104,40 +101,38 @@ PUBLIC void cluster_fence_wait(void)
  */
 PUBLIC void core_idle(void)
 {
-		int coreid = core_get_id();
+    int coreid = core_get_id();
 
-		cores[coreid].state = CORE_IDLE;
-		dcache_invalidate();
+    cores[coreid].state = CORE_IDLE;
+    dcache_invalidate();
 
-		/*
-		 * The lock of this core was
-		 * acquired when resetting, in
-		 * core_reset().
-		 */
+    /*
+     * The lock of this core was
+     * acquired when resetting, in
+     * core_reset().
+     */
 
-	spinlock_unlock(&cores[coreid].lock);
+    spinlock_unlock(&cores[coreid].lock);
 
-	interrupts_set_level(INTERRUPT_LEVEL_LOW);
-	interrupt_unmask(INTERRUPT_IPI);
+    interrupts_set_level(INTERRUPT_LEVEL_LOW);
+    interrupt_unmask(INTERRUPT_IPI);
 
-	while (true)
-	{
-		spinlock_lock(&cores[coreid].lock);
-		dcache_invalidate();
+    while (true) {
+        spinlock_lock(&cores[coreid].lock);
+        dcache_invalidate();
 
-			/* Awaken. */
-			if (cores[coreid].state != CORE_IDLE)
-			{
-				event_drop();
-				spinlock_unlock(&cores[coreid].lock);
-				break;
-			}
+        /* Awaken. */
+        if (cores[coreid].state != CORE_IDLE) {
+            event_drop();
+            spinlock_unlock(&cores[coreid].lock);
+            break;
+        }
 
-		dcache_invalidate();
-		spinlock_unlock(&cores[coreid].lock);
+        dcache_invalidate();
+        spinlock_unlock(&cores[coreid].lock);
 
-		event_wait();
-	}
+        event_wait();
+    }
 }
 
 /*----------------------------------------------------------------------------*
@@ -156,42 +151,40 @@ PUBLIC void core_idle(void)
  */
 PUBLIC void core_sleep(void)
 {
-	int state;
-	int coreid;
+    int state;
+    int coreid;
 
-	coreid = core_get_id();
+    coreid = core_get_id();
 
-	/* Stores the current state. (RUNNING or ZOMBIE). */
-	spinlock_lock(&cores[coreid].lock);
-	dcache_invalidate();
-		state = cores[coreid].state;
-	spinlock_unlock(&cores[coreid].lock);
+    /* Stores the current state. (RUNNING or ZOMBIE). */
+    spinlock_lock(&cores[coreid].lock);
+    dcache_invalidate();
+    state = cores[coreid].state;
+    spinlock_unlock(&cores[coreid].lock);
 
-	while (true)
-	{
-		spinlock_lock(&cores[coreid].lock);
-		dcache_invalidate();
+    while (true) {
+        spinlock_lock(&cores[coreid].lock);
+        dcache_invalidate();
 
-			/* Awaken. */
-			if (cores[coreid].wakeups > 0)
-			{
-				/* Restores the previous state. */
-				cores[coreid].state = state;
-				cores[coreid].wakeups--;
+        /* Awaken. */
+        if (cores[coreid].wakeups > 0) {
+            /* Restores the previous state. */
+            cores[coreid].state = state;
+            cores[coreid].wakeups--;
 
-				dcache_invalidate();
-				spinlock_unlock(&cores[coreid].lock);
+            dcache_invalidate();
+            spinlock_unlock(&cores[coreid].lock);
 
-				break;
-			}
+            break;
+        }
 
-			cores[coreid].state = CORE_SLEEPING;
+        cores[coreid].state = CORE_SLEEPING;
 
-		dcache_invalidate();
-		spinlock_unlock(&cores[coreid].lock);
+        dcache_invalidate();
+        spinlock_unlock(&cores[coreid].lock);
 
-		event_wait();
-	}
+        event_wait();
+    }
 }
 
 /*----------------------------------------------------------------------------*
@@ -213,27 +206,26 @@ PUBLIC void core_sleep(void)
  */
 PUBLIC int core_wakeup(int coreid)
 {
-	/* Invalid core. */
-	if ((coreid < 0) || (coreid >= CORES_NUM))
-		return (-EINVAL);
+    /* Invalid core. */
+    if ((coreid < 0) || (coreid >= CORES_NUM))
+        return (-EINVAL);
 
-	spinlock_lock(&cores[coreid].lock);
-	dcache_invalidate();
+    spinlock_lock(&cores[coreid].lock);
+    dcache_invalidate();
 
-		/* Bad Core. */
-		if (cores[coreid].state == CORE_IDLE)
-		{
-			spinlock_unlock(&cores[coreid].lock);
-			return (-EINVAL);
-		}
+    /* Bad Core. */
+    if (cores[coreid].state == CORE_IDLE) {
+        spinlock_unlock(&cores[coreid].lock);
+        return (-EINVAL);
+    }
 
-		/* Wakeup target core. */
-		cores[coreid].wakeups++;
-		event_notify(coreid);
+    /* Wakeup target core. */
+    cores[coreid].wakeups++;
+    event_notify(coreid);
 
-	dcache_invalidate();
-	spinlock_unlock(&cores[coreid].lock);
-	return (0);
+    dcache_invalidate();
+    spinlock_unlock(&cores[coreid].lock);
+    return (0);
 }
 
 /*----------------------------------------------------------------------------*
@@ -256,62 +248,59 @@ PUBLIC int core_wakeup(int coreid)
  */
 PUBLIC int core_start(int coreid, void (*start)(void))
 {
-	int ntrials = 0;
+    int ntrials = 0;
 
-	/* Invalid core. */
-	if ((coreid < 0) || (coreid >= CORES_NUM))
-		return (-EINVAL);
+    /* Invalid core. */
+    if ((coreid < 0) || (coreid >= CORES_NUM))
+        return (-EINVAL);
 
-	/* Bad core. */
-	if (coreid == core_get_id())
-		return (-EINVAL);
+    /* Bad core. */
+    if (coreid == core_get_id())
+        return (-EINVAL);
 
-	/* Bad start routine. */
-	if (start == NULL)
-		return (-EINVAL);
+    /* Bad start routine. */
+    if (start == NULL)
+        return (-EINVAL);
 
 again:
 
-	spinlock_lock(&cores[coreid].lock);
-	dcache_invalidate();
+    spinlock_lock(&cores[coreid].lock);
+    dcache_invalidate();
 
-		/* Wait for resetting state. */
-		if (cores[coreid].state == CORE_ZOMBIE)
-		{
-			spinlock_unlock(&cores[coreid].lock);
-			goto again;
-		}
+    /* Wait for resetting state. */
+    if (cores[coreid].state == CORE_ZOMBIE) {
+        spinlock_unlock(&cores[coreid].lock);
+        goto again;
+    }
 
-		/* Wait for reset. */
-		if (cores[coreid].state == CORE_RESETTING)
-		{
-			spinlock_unlock(&cores[coreid].lock);
+    /* Wait for reset. */
+    if (cores[coreid].state == CORE_RESETTING) {
+        spinlock_unlock(&cores[coreid].lock);
 
-			if (ntrials++ < CORE_START_NTRIALS)
-				goto again;
+        if (ntrials++ < CORE_START_NTRIALS)
+            goto again;
 
-			kprintf("[hal][cluster] failed to start core");
-			goto error;
-		}
+        kprintf("[hal][cluster] failed to start core");
+        goto error;
+    }
 
-		/* Wakeup target core. */
-		if (cores[coreid].state == CORE_IDLE)
-		{
-			cores[coreid].state = CORE_RUNNING;
-			cores[coreid].start = start;
-			cores[coreid].wakeups = 0;
-			dcache_invalidate();
+    /* Wakeup target core. */
+    if (cores[coreid].state == CORE_IDLE) {
+        cores[coreid].state = CORE_RUNNING;
+        cores[coreid].start = start;
+        cores[coreid].wakeups = 0;
+        dcache_invalidate();
 
-			event_notify(coreid);
+        event_notify(coreid);
 
-			spinlock_unlock(&cores[coreid].lock);
-			return (0);
-		}
+        spinlock_unlock(&cores[coreid].lock);
+        return (0);
+    }
 
-	spinlock_unlock(&cores[coreid].lock);
+    spinlock_unlock(&cores[coreid].lock);
 
 error:
-	return (-EBUSY);
+    return (-EBUSY);
 }
 
 /*----------------------------------------------------------------------------*
@@ -331,21 +320,20 @@ error:
  */
 PUBLIC void core_run(void)
 {
-	int coreid = core_get_id();
+    int coreid = core_get_id();
 
-	spinlock_lock(&cores[coreid].lock);
-	dcache_invalidate();
+    spinlock_lock(&cores[coreid].lock);
+    dcache_invalidate();
 
-		/* Initialize core. */
-		if (!cores[coreid].initialized)
-		{
-			cores[coreid].initialized = true;
-			dcache_invalidate();
-		}
+    /* Initialize core. */
+    if (!cores[coreid].initialized) {
+        cores[coreid].initialized = true;
+        dcache_invalidate();
+    }
 
-	spinlock_unlock(&cores[coreid].lock);
+    spinlock_unlock(&cores[coreid].lock);
 
-	cores[coreid].start();
+    cores[coreid].start();
 }
 
 /*----------------------------------------------------------------------------*
@@ -363,28 +351,28 @@ PUBLIC void core_run(void)
  * @see core_reset()
  * @see core_start()
  *
- * @author João Vicente Souto 
+ * @author João Vicente Souto
  */
 PUBLIC int core_release(void)
 {
-	int coreid = core_get_id();
+    int coreid = core_get_id();
 
-	/*
-	 * The Master core is not allowed to reset, thus
-	 * this function will return an error code. If
-	 * invoked by a slave, no value will be returned.
-	 */
-	if (coreid == COREID_MASTER)
-		return (-EINVAL);
+    /*
+     * The Master core is not allowed to reset, thus
+     * this function will return an error code. If
+     * invoked by a slave, no value will be returned.
+     */
+    if (coreid == COREID_MASTER)
+        return (-EINVAL);
 
-	spinlock_lock(&cores[coreid].lock);
+    spinlock_lock(&cores[coreid].lock);
 
-		cores[coreid].state = CORE_ZOMBIE;
+    cores[coreid].state = CORE_ZOMBIE;
 
-	dcache_invalidate();
-	spinlock_unlock(&cores[coreid].lock);
+    dcache_invalidate();
+    spinlock_unlock(&cores[coreid].lock);
 
-	return (0);
+    return (0);
 }
 
 /*----------------------------------------------------------------------------*
@@ -405,39 +393,39 @@ PUBLIC int core_release(void)
  */
 PUBLIC int core_reset(void)
 {
-	int coreid = core_get_id();
+    int coreid = core_get_id();
 
-	/*
-	 * The Master core is not allowed to reset, thus
-	 * this function will return an error code. If
-	 * invoked by a slave, no value will be returned.
-	 */
-	if (coreid == COREID_MASTER)
-		return (-EINVAL);
+    /*
+     * The Master core is not allowed to reset, thus
+     * this function will return an error code. If
+     * invoked by a slave, no value will be returned.
+     */
+    if (coreid == COREID_MASTER)
+        return (-EINVAL);
 
-	interrupt_mask(INTERRUPT_IPI);
-	interrupts_set_level(INTERRUPT_LEVEL_NONE);
+    interrupt_mask(INTERRUPT_IPI);
+    interrupts_set_level(INTERRUPT_LEVEL_NONE);
 
-	spinlock_lock(&cores[coreid].lock);
-	dcache_invalidate();
+    spinlock_lock(&cores[coreid].lock);
+    dcache_invalidate();
 
-		/* Ensures that core has signaled that it will reset. */
-		KASSERT(cores[coreid].state == CORE_ZOMBIE);
+    /* Ensures that core has signaled that it will reset. */
+    KASSERT(cores[coreid].state == CORE_ZOMBIE);
 
-		cores[coreid].state = CORE_RESETTING;
-		dcache_invalidate();
+    cores[coreid].state = CORE_RESETTING;
+    dcache_invalidate();
 
-		_core_reset();
+    _core_reset();
 
-		/*
-		 * The lock of this core will
-		 * be released when resetting
-		 * is completed, in core_idle().
-		 */
+    /*
+     * The lock of this core will
+     * be released when resetting
+     * is completed, in core_idle().
+     */
 
-	/* Never gets here. */
-	UNREACHABLE();
-	return (0);
+    /* Never gets here. */
+    UNREACHABLE();
+    return (0);
 }
 
 /*----------------------------------------------------------------------------*
@@ -454,15 +442,14 @@ PUBLIC int core_reset(void)
  */
 PUBLIC NORETURN void core_shutdown(void)
 {
-	int coreid = core_get_id();
+    int coreid = core_get_id();
 
-	spinlock_lock(&cores[coreid].lock);
+    spinlock_lock(&cores[coreid].lock);
 
-		cores[coreid].state = CORE_OFFLINE;
+    cores[coreid].state = CORE_OFFLINE;
 
-	dcache_invalidate();
-	spinlock_unlock(&cores[coreid].lock);
+    dcache_invalidate();
+    spinlock_unlock(&cores[coreid].lock);
 
-	core_poweroff();
+    core_poweroff();
 }
-

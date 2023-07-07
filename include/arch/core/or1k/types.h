@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -27,11 +27,11 @@
  */
 
 #if (!defined(__NEED_CORE_TYPES) && !defined(__NEED_MEMORY_TYPES))
-	#error "do not include this file"
+#error "do not include this file"
 #endif
 
 #ifndef _ASM_FILE_
-	#include <posix/stdint.h>
+#include <posix/stdint.h>
 #endif
 
 /**
@@ -43,25 +43,25 @@
 #ifndef __CORE_CONSTANTS
 #define __CORE_CONSTANTS
 
-	/**
-	 * @name Bit-Length of Core Types
-	 */
-	/**@{*/
-	#define OR1K_BYTE_BIT    8 /**< Byte        */
-	#define OR1K_HWORD_BIT  16 /**< Half Word   */
-	#define OR1K_WORD_BIT   32 /**< Word        */
-	#define OR1K_DWORD_BIT  64 /**< Double Word */
-	/**@}*/
+/**
+ * @name Bit-Length of Core Types
+ */
+/**@{*/
+#define OR1K_BYTE_BIT 8   /**< Byte        */
+#define OR1K_HWORD_BIT 16 /**< Half Word   */
+#define OR1K_WORD_BIT 32  /**< Word        */
+#define OR1K_DWORD_BIT 64 /**< Double Word */
+/**@}*/
 
-	/**
-	 * @name Byte-Length of Core Types
-	 */
-	/**@{*/
-	#define OR1K_BYTE_SIZE   1 /**< Byte        */
-	#define OR1K_HWORD_SIZE  2 /**< Half Word   */
-	#define OR1K_WORD_SIZE   4 /**< Word        */
-	#define OR1K_DWORD_SIZE  8 /**< Double Word */
-	/**@}*/
+/**
+ * @name Byte-Length of Core Types
+ */
+/**@{*/
+#define OR1K_BYTE_SIZE 1  /**< Byte        */
+#define OR1K_HWORD_SIZE 2 /**< Half Word   */
+#define OR1K_WORD_SIZE 4  /**< Word        */
+#define OR1K_DWORD_SIZE 8 /**< Double Word */
+                          /**@}*/
 
 #endif
 #endif
@@ -77,21 +77,21 @@
 #ifndef __MEMORY_CONSTANTS
 #define __MEMORY_CONSTANTS
 
-	/**
-	 * @name Bit-Length of Memory Types
-	 */
-	/**@{*/
-	#define OR1K_PADDR_BIT  32 /**< Physical Address */
-	#define OR1K_VADDR_BIT  32 /**< Virtual Address  */
-	/**@}*/
+/**
+ * @name Bit-Length of Memory Types
+ */
+/**@{*/
+#define OR1K_PADDR_BIT 32 /**< Physical Address */
+#define OR1K_VADDR_BIT 32 /**< Virtual Address  */
+/**@}*/
 
-	/**
-	 * @name Byte-Length of Memory Types
-	 */
-	/**@{*/
-	#define OR1K_PADDR_BYTE 4 /**< Physical Address */
-	#define OR1K_VADDR_BYTE 4 /**< Virtual Address  */
-	/**@}*/
+/**
+ * @name Byte-Length of Memory Types
+ */
+/**@{*/
+#define OR1K_PADDR_BYTE 4 /**< Physical Address */
+#define OR1K_VADDR_BYTE 4 /**< Virtual Address  */
+                          /**@}*/
 
 #endif
 #endif
@@ -100,67 +100,67 @@
 
 #ifndef _ASM_FILE_
 
-	/**
-	 * @addtogroup or1k-core-mmu
-	 */
-	/**@{*/
+/**
+ * @addtogroup or1k-core-mmu
+ */
+/**@{*/
 
-	#ifdef __NEED_MEMORY_TYPES
-	#ifndef __MEMORY_TYPES
-	#define __MEMORY_TYPES
+#ifdef __NEED_MEMORY_TYPES
+#ifndef __MEMORY_TYPES
+#define __MEMORY_TYPES
 
-		/**
-		 * @name Casters for Memory Types
-		 */
-		/**@{*/
-		#define OR1K_PADDR(x) ((paddr_t)(x)) /**< To Physical Address */
-		#define OR1K_VADDR(x) ((vaddr_t)(x)) /**< To Virtual Address  */
-		#define OR1K_FRAME(x) ((frame_t)(x)) /**< To Frame Number     */
-		/**@}*/
+/**
+ * @name Casters for Memory Types
+ */
+/**@{*/
+#define OR1K_PADDR(x) ((paddr_t)(x)) /**< To Physical Address */
+#define OR1K_VADDR(x) ((vaddr_t)(x)) /**< To Virtual Address  */
+#define OR1K_FRAME(x) ((frame_t)(x)) /**< To Frame Number     */
+/**@}*/
 
-		/**
-		 * @brief Virtual address.
-		 */
-		typedef uint32_t vaddr_t;
+/**
+ * @brief Virtual address.
+ */
+typedef uint32_t vaddr_t;
 
-		/**
-		 * @brief Physical address.
-		 */
-		typedef uint32_t paddr_t;
+/**
+ * @brief Physical address.
+ */
+typedef uint32_t paddr_t;
 
-		/**
-		 * @brief Frame number.
-		 */
-		typedef uint32_t frame_t;
+/**
+ * @brief Frame number.
+ */
+typedef uint32_t frame_t;
 
-	#endif
-	#endif
+#endif
+#endif
 
-	/**@}*/
+/**@}*/
 
-	/**
-	 * @addtogroup or1k-core
-	 */
-	/**@{*/
+/**
+ * @addtogroup or1k-core
+ */
+/**@{*/
 
-	#ifdef __NEED_CORE_TYPES
-	#ifndef __CORE_TYPES
-	#define __CORE_TYPES
+#ifdef __NEED_CORE_TYPES
+#ifndef __CORE_TYPES
+#define __CORE_TYPES
 
-		/**
-		 * @name Core Types
-		 */
-		/**@{*/
-		typedef uint8_t or1k_byte_t;   /**< Byte        */
-		typedef uint16_t or1k_hword_t; /**< Half Word   */
-		typedef uint32_t or1k_word_t;  /**< Word        */
-		typedef uint64_t or1k_dword_t; /**< Double Word */
-		/**@}*/
+/**
+ * @name Core Types
+ */
+/**@{*/
+typedef uint8_t or1k_byte_t;   /**< Byte        */
+typedef uint16_t or1k_hword_t; /**< Half Word   */
+typedef uint32_t or1k_word_t;  /**< Word        */
+typedef uint64_t or1k_dword_t; /**< Double Word */
+                               /**@}*/
 
-	#endif
-	#endif
+#endif
+#endif
 
-	/**@}*/
+/**@}*/
 
 #endif
 

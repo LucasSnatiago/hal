@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,8 +25,8 @@
 /* Must come first. */
 #define __NEED_HAL_CLUSTER
 
-#include <nanvix/hal/cluster.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/cluster.h>
 
 /**
  * @cond x86_cluster
@@ -35,10 +35,9 @@
  *
  * @endcond
  */
-PUBLIC struct
-{
-	unsigned pending;
-	i486_spinlock_t lock;
+PUBLIC struct {
+    unsigned pending;
+    i486_spinlock_t lock;
 } events[X86_CLUSTER_NUM_CORES] ALIGN(I486_CACHE_LINE_SIZE) = {
-	{ 0, I486_SPINLOCK_UNLOCKED }, /* Master Core  */
+    {0, I486_SPINLOCK_UNLOCKED}, /* Master Core  */
 };

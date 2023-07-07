@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
-#include <posix/errno.h>
 #include "../test.h"
 #include "stress.h"
+#include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
+#include <nanvix/hlib.h>
+#include <posix/errno.h>
 
 #if (__TARGET_HAS_MAILBOX)
 
@@ -42,18 +42,13 @@
 /**
  * @name Possible value returned by aread/awrite.
  */
- /**@{*/
-#define AREAD_CHECKS(_ret)             \
-	  ((_ret == -ETIMEDOUT)            \
-	|| (_ret == -EAGAIN)               \
-	|| (_ret == -EBUSY)                \
-	|| (_ret == -ENOMSG)               \
-	|| (_ret == HAL_MAILBOX_MSG_SIZE))
-#define AWRITE_CHECKS(_ret)            \
-	  ((_ret == -ETIMEDOUT)            \
-	|| (_ret == -EAGAIN)               \
-	|| (_ret == -EBUSY)                \
-	|| (_ret == HAL_MAILBOX_MSG_SIZE))
+/**@{*/
+#define AREAD_CHECKS(_ret)                                                     \
+    ((_ret == -ETIMEDOUT) || (_ret == -EAGAIN) || (_ret == -EBUSY) ||          \
+     (_ret == -ENOMSG) || (_ret == HAL_MAILBOX_MSG_SIZE))
+#define AWRITE_CHECKS(_ret)                                                    \
+    ((_ret == -ETIMEDOUT) || (_ret == -EAGAIN) || (_ret == -EBUSY) ||          \
+     (_ret == HAL_MAILBOX_MSG_SIZE))
 /**@}*/
 
 /*============================================================================*
@@ -65,16 +60,15 @@
  */
 PRIVATE void stress_mailbox_create_unlink(void)
 {
-	int mbxid;
-	int local;
+    int mbxid;
+    int local;
 
-	local = processor_node_get_num();
+    local = processor_node_get_num();
 
-	for (unsigned int i = 0; i < NSETUPS; ++i)
-	{
-		KASSERT((mbxid = vsys_mailbox_create(local)) >= 0);
-		KASSERT(vsys_mailbox_unlink(mbxid) == 0);
-	}
+    for (unsigned int i = 0; i < NSETUPS; ++i) {
+        KASSERT((mbxid = vsys_mailbox_create(local)) >= 0);
+        KASSERT(vsys_mailbox_unlink(mbxid) == 0);
+    }
 }
 
 /**
@@ -82,16 +76,16 @@ PRIVATE void stress_mailbox_create_unlink(void)
  */
 PRIVATE void stress_mailbox_open_close(void)
 {
-	int mbxid;
-	int remote;
+    int mbxid;
+    int remote;
 
-	remote = processor_node_get_num() == NODENUM_MASTER ? NODENUM_SLAVE : NODENUM_MASTER;
+    remote = processor_node_get_num() == NODENUM_MASTER ? NODENUM_SLAVE
+                                                        : NODENUM_MASTER;
 
-	for (unsigned int i = 0; i < NSETUPS; ++i)
-	{
-		KASSERT((mbxid = vsys_mailbox_open(remote)) >= 0);
-		KASSERT(vsys_mailbox_close(mbxid) == 0);
-	}
+    for (unsigned int i = 0; i < NSETUPS; ++i) {
+        KASSERT((mbxid = vsys_mailbox_open(remote)) >= 0);
+        KASSERT(vsys_mailbox_close(mbxid) == 0);
+    }
 }
 
 /**
@@ -99,31 +93,28 @@ PRIVATE void stress_mailbox_open_close(void)
  */
 PRIVATE void do_sender(int remote)
 {
-	int ret;
-	int mbxid;
-	char message[HAL_MAILBOX_MSG_SIZE];
+    int ret;
+    int mbxid;
+    char message[HAL_MAILBOX_MSG_SIZE];
 
-	for (unsigned int i = 0; i < NSETUPS; ++i)
-	{
-		KASSERT((mbxid = vsys_mailbox_open(remote)) >= 0);
+    for (unsigned int i = 0; i < NSETUPS; ++i) {
+        KASSERT((mbxid = vsys_mailbox_open(remote)) >= 0);
 
-		test_stress_barrier();
+        test_stress_barrier();
 
-			for (int j = 0; j < NCOMMUNICATIONS; ++j)
-			{
-				message[0] = (j % sizeof(char));
-				do
-				{
-					ret = vsys_mailbox_awrite(mbxid, message, HAL_MAILBOX_MSG_SIZE);
-					KASSERT(AWRITE_CHECKS(ret));
-				} while (ret != HAL_MAILBOX_MSG_SIZE);
-				KASSERT(vsys_mailbox_wait(mbxid) == 0);
-			}
+        for (int j = 0; j < NCOMMUNICATIONS; ++j) {
+            message[0] = (j % sizeof(char));
+            do {
+                ret = vsys_mailbox_awrite(mbxid, message, HAL_MAILBOX_MSG_SIZE);
+                KASSERT(AWRITE_CHECKS(ret));
+            } while (ret != HAL_MAILBOX_MSG_SIZE);
+            KASSERT(vsys_mailbox_wait(mbxid) == 0);
+        }
 
-		KASSERT(vsys_mailbox_close(mbxid) == 0);
+        KASSERT(vsys_mailbox_close(mbxid) == 0);
 
-		test_stress_barrier();
-	}
+        test_stress_barrier();
+    }
 }
 
 /**
@@ -131,33 +122,30 @@ PRIVATE void do_sender(int remote)
  */
 PRIVATE void do_receiver(int local)
 {
-	int ret;
-	int mbxid;
-	char message[HAL_MAILBOX_MSG_SIZE];
+    int ret;
+    int mbxid;
+    char message[HAL_MAILBOX_MSG_SIZE];
 
-	for (unsigned int i = 0; i < NSETUPS; ++i)
-	{
-		KASSERT((mbxid = vsys_mailbox_create(local)) >= 0);
+    for (unsigned int i = 0; i < NSETUPS; ++i) {
+        KASSERT((mbxid = vsys_mailbox_create(local)) >= 0);
 
-		test_stress_barrier();
+        test_stress_barrier();
 
-			for (int j = 0; j < NCOMMUNICATIONS; ++j)
-			{
-				message[0] = -1;
-				do
-				{
-					ret = vsys_mailbox_aread(mbxid, message, HAL_MAILBOX_MSG_SIZE);
-					KASSERT(AREAD_CHECKS(ret));
-				} while (ret != HAL_MAILBOX_MSG_SIZE);
-				KASSERT(vsys_mailbox_wait(mbxid) == 0);
+        for (int j = 0; j < NCOMMUNICATIONS; ++j) {
+            message[0] = -1;
+            do {
+                ret = vsys_mailbox_aread(mbxid, message, HAL_MAILBOX_MSG_SIZE);
+                KASSERT(AREAD_CHECKS(ret));
+            } while (ret != HAL_MAILBOX_MSG_SIZE);
+            KASSERT(vsys_mailbox_wait(mbxid) == 0);
 
-				KASSERT(message[0] == (j % sizeof(char)));
-			}
+            KASSERT(message[0] == (j % sizeof(char)));
+        }
 
-		KASSERT(vsys_mailbox_unlink(mbxid) == 0);
+        KASSERT(vsys_mailbox_unlink(mbxid) == 0);
 
-		test_stress_barrier();
-	}
+        test_stress_barrier();
+    }
 }
 
 /**
@@ -165,10 +153,10 @@ PRIVATE void do_receiver(int local)
  */
 PRIVATE void stress_mailbox_broadcast(void)
 {
-	if (processor_node_get_num() == NODENUM_MASTER)
-		do_sender(NODENUM_SLAVE);
-	else
-		do_receiver(NODENUM_SLAVE);
+    if (processor_node_get_num() == NODENUM_MASTER)
+        do_sender(NODENUM_SLAVE);
+    else
+        do_receiver(NODENUM_SLAVE);
 }
 
 /**
@@ -176,10 +164,10 @@ PRIVATE void stress_mailbox_broadcast(void)
  */
 PRIVATE void stress_mailbox_gather(void)
 {
-	if (processor_node_get_num() == NODENUM_MASTER)
-		do_receiver(NODENUM_MASTER);
-	else
-		do_sender(NODENUM_MASTER);
+    if (processor_node_get_num() == NODENUM_MASTER)
+        do_receiver(NODENUM_MASTER);
+    else
+        do_sender(NODENUM_MASTER);
 }
 
 /**
@@ -187,75 +175,69 @@ PRIVATE void stress_mailbox_gather(void)
  */
 PRIVATE void stress_mailbox_pingpong(void)
 {
-	int ret;
-	int local;
-	int remote;
-	int inbox;
-	int outbox;
-	char message[HAL_MAILBOX_MSG_SIZE];
+    int ret;
+    int local;
+    int remote;
+    int inbox;
+    int outbox;
+    char message[HAL_MAILBOX_MSG_SIZE];
 
-	local = processor_node_get_num();
-	remote = local == NODENUM_MASTER ? NODENUM_SLAVE : NODENUM_MASTER;
+    local = processor_node_get_num();
+    remote = local == NODENUM_MASTER ? NODENUM_SLAVE : NODENUM_MASTER;
 
-	for (unsigned int i = 0; i < NSETUPS; ++i)
-	{
-		KASSERT((inbox = vsys_mailbox_create(local)) >= 0);
-		KASSERT((outbox = vsys_mailbox_open(remote)) >= 0);
+    for (unsigned int i = 0; i < NSETUPS; ++i) {
+        KASSERT((inbox = vsys_mailbox_create(local)) >= 0);
+        KASSERT((outbox = vsys_mailbox_open(remote)) >= 0);
 
-		test_stress_barrier();
+        test_stress_barrier();
 
-		if (local == NODENUM_SLAVE)
-		{
-			for (int j = 0; j < NCOMMUNICATIONS; ++j)
-			{
-				message[0]  = (-1);
-				do
-				{
-					ret = vsys_mailbox_aread(inbox, message, HAL_MAILBOX_MSG_SIZE);
-					KASSERT(AREAD_CHECKS(ret));
-				} while (ret != HAL_MAILBOX_MSG_SIZE);
-				KASSERT(vsys_mailbox_wait(inbox) == 0);
+        if (local == NODENUM_SLAVE) {
+            for (int j = 0; j < NCOMMUNICATIONS; ++j) {
+                message[0] = (-1);
+                do {
+                    ret = vsys_mailbox_aread(
+                        inbox, message, HAL_MAILBOX_MSG_SIZE);
+                    KASSERT(AREAD_CHECKS(ret));
+                } while (ret != HAL_MAILBOX_MSG_SIZE);
+                KASSERT(vsys_mailbox_wait(inbox) == 0);
 
-				KASSERT(message[0] == (j % sizeof(char)));
+                KASSERT(message[0] == (j % sizeof(char)));
 
-				message[0] = ((j + 1) % sizeof(char));
-				do
-				{
-					ret = vsys_mailbox_awrite(outbox, message, HAL_MAILBOX_MSG_SIZE);
-					KASSERT(AWRITE_CHECKS(ret));
-				} while (ret != HAL_MAILBOX_MSG_SIZE);
-				KASSERT(vsys_mailbox_wait(outbox) == 0);
-			}
-		}
-		else
-		{
-			for (int j = 0; j < NCOMMUNICATIONS; ++j)
-			{
-				message[0] = (j % sizeof(char));
-				do
-				{
-					ret = vsys_mailbox_awrite(outbox, message, HAL_MAILBOX_MSG_SIZE);
-					KASSERT(AWRITE_CHECKS(ret));
-				} while (ret != HAL_MAILBOX_MSG_SIZE);
-				KASSERT(vsys_mailbox_wait(outbox) == 0);
+                message[0] = ((j + 1) % sizeof(char));
+                do {
+                    ret = vsys_mailbox_awrite(
+                        outbox, message, HAL_MAILBOX_MSG_SIZE);
+                    KASSERT(AWRITE_CHECKS(ret));
+                } while (ret != HAL_MAILBOX_MSG_SIZE);
+                KASSERT(vsys_mailbox_wait(outbox) == 0);
+            }
+        } else {
+            for (int j = 0; j < NCOMMUNICATIONS; ++j) {
+                message[0] = (j % sizeof(char));
+                do {
+                    ret = vsys_mailbox_awrite(
+                        outbox, message, HAL_MAILBOX_MSG_SIZE);
+                    KASSERT(AWRITE_CHECKS(ret));
+                } while (ret != HAL_MAILBOX_MSG_SIZE);
+                KASSERT(vsys_mailbox_wait(outbox) == 0);
 
-				message[0]  = (-1);
-				do
-				{
-					ret = vsys_mailbox_aread(inbox, message, HAL_MAILBOX_MSG_SIZE);
-					KASSERT(AREAD_CHECKS(ret));
-				} while (ret != HAL_MAILBOX_MSG_SIZE);
-				KASSERT(vsys_mailbox_wait(inbox) == 0);
+                message[0] = (-1);
+                do {
+                    ret = vsys_mailbox_aread(
+                        inbox, message, HAL_MAILBOX_MSG_SIZE);
+                    KASSERT(AREAD_CHECKS(ret));
+                } while (ret != HAL_MAILBOX_MSG_SIZE);
+                KASSERT(vsys_mailbox_wait(inbox) == 0);
 
-				KASSERT(message[0] == ((j + 1) % sizeof(char)));
-			}
-		}
+                KASSERT(message[0] == ((j + 1) % sizeof(char)));
+            }
+        }
 
-		KASSERT(vsys_mailbox_close(outbox) == 0);
-		KASSERT(vsys_mailbox_unlink(inbox) == 0);
+        KASSERT(vsys_mailbox_close(outbox) == 0);
+        KASSERT(vsys_mailbox_unlink(inbox) == 0);
 
-		test_stress_barrier();
-	}
+        test_stress_barrier();
+    }
 }
 
 /*============================================================================*
@@ -266,13 +248,13 @@ PRIVATE void stress_mailbox_pingpong(void)
  * @brief Unit tests.
  */
 PRIVATE struct test stress_mailbox_tests[] = {
-	/* Intra-Cluster API Tests */
-	{ stress_mailbox_create_unlink, "create unlink" },
-	{ stress_mailbox_open_close,    "open close   " },
-	{ stress_mailbox_broadcast,     "broadcast    " },
-	{ stress_mailbox_gather,        "gather       " },
-	{ stress_mailbox_pingpong,      "ping-pong    " },
-	{ NULL,                          NULL           },
+    /* Intra-Cluster API Tests */
+    {stress_mailbox_create_unlink, "create unlink"},
+    {stress_mailbox_open_close, "open close   "},
+    {stress_mailbox_broadcast, "broadcast    "},
+    {stress_mailbox_gather, "gather       "},
+    {stress_mailbox_pingpong, "ping-pong    "},
+    {NULL, NULL},
 };
 
 /**
@@ -283,18 +265,18 @@ PRIVATE struct test stress_mailbox_tests[] = {
  */
 PUBLIC void test_stress_mailbox(void)
 {
-	test_stress_barrier();
+    test_stress_barrier();
 
-	/* API Tests */
-	CLUSTER_KPRINTF(HLINE);
-	for (int i = 0; stress_mailbox_tests[i].test_fn != NULL; i++)
-	{
-		stress_mailbox_tests[i].test_fn();
+    /* API Tests */
+    CLUSTER_KPRINTF(HLINE);
+    for (int i = 0; stress_mailbox_tests[i].test_fn != NULL; i++) {
+        stress_mailbox_tests[i].test_fn();
 
-		CLUSTER_KPRINTF("[test][stress][mailbox] %s [passed]", stress_mailbox_tests[i].name);
+        CLUSTER_KPRINTF("[test][stress][mailbox] %s [passed]",
+                        stress_mailbox_tests[i].name);
 
-		test_stress_barrier();
-	}
+        test_stress_barrier();
+    }
 }
 
 #endif /* __TARGET_HAS_MAILBOX */

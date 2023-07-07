@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -46,13 +46,9 @@
  */
 PRIVATE int mailbox_rx_is_valid(int mbxid)
 {
-	return (
-		WITHIN(
-			mbxid,
-			HAL_MAILBOX_CREATE_OFFSET,
-			(HAL_MAILBOX_CREATE_OFFSET + HAL_MAILBOX_CREATE_MAX)
-		)
-	);
+    return (WITHIN(mbxid,
+                   HAL_MAILBOX_CREATE_OFFSET,
+                   (HAL_MAILBOX_CREATE_OFFSET + HAL_MAILBOX_CREATE_MAX)));
 }
 
 #endif
@@ -76,13 +72,9 @@ PRIVATE int mailbox_rx_is_valid(int mbxid)
  */
 PRIVATE int mailbox_tx_is_valid(int mbxid)
 {
-	return (
-		WITHIN(
-			mbxid,
-			HAL_MAILBOX_OPEN_OFFSET,
-			HAL_MAILBOX_OPEN_OFFSET + HAL_MAILBOX_OPEN_MAX
-		)
-	);
+    return (WITHIN(mbxid,
+                   HAL_MAILBOX_OPEN_OFFSET,
+                   HAL_MAILBOX_OPEN_OFFSET + HAL_MAILBOX_OPEN_MAX));
 }
 
 #endif
@@ -98,20 +90,20 @@ PUBLIC int mailbox_create(int local)
 {
 #if (__TARGET_HAS_MAILBOX)
 
-	/* Invalid NoC node. */
-	if (!node_is_valid(local))
-		return (-EINVAL);
+    /* Invalid NoC node. */
+    if (!node_is_valid(local))
+        return (-EINVAL);
 
-	/* Invalid NoC node is local. */
-	if (!node_is_local(local))
-		return (-EINVAL);
+    /* Invalid NoC node is local. */
+    if (!node_is_local(local))
+        return (-EINVAL);
 
-	return (__mailbox_create(local));
+    return (__mailbox_create(local));
 
 #else
-	UNUSED(local);
+    UNUSED(local);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -126,20 +118,20 @@ PUBLIC int mailbox_open(int remote)
 {
 #if (__TARGET_HAS_MAILBOX)
 
-	/* Invalid NoC node. */
-	if (!node_is_valid(remote))
-		return (-EINVAL);
+    /* Invalid NoC node. */
+    if (!node_is_valid(remote))
+        return (-EINVAL);
 
-	/* Is remote in the local cluster? */
-	if (node_is_local(remote))
-		return (-EINVAL);
+    /* Is remote in the local cluster? */
+    if (node_is_local(remote))
+        return (-EINVAL);
 
-	return (__mailbox_open(remote));
+    return (__mailbox_open(remote));
 
 #else
-	UNUSED(remote);
+    UNUSED(remote);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -154,16 +146,15 @@ PUBLIC int mailbox_unlink(int mbxid)
 {
 #if (__TARGET_HAS_MAILBOX)
 
-	/* Invalid mailbox. */
-	if (!mailbox_rx_is_valid(mbxid))
-		return (-EBADF);
+    /* Invalid mailbox. */
+    if (!mailbox_rx_is_valid(mbxid))
+        return (-EBADF);
 
-
-	return (__mailbox_unlink(mbxid));
+    return (__mailbox_unlink(mbxid));
 #else
-	UNUSED(mbxid);
+    UNUSED(mbxid);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -178,15 +169,15 @@ PUBLIC int mailbox_close(int mbxid)
 {
 #if (__TARGET_HAS_MAILBOX)
 
-	/* Invalid mailbox. */
-	if (!mailbox_tx_is_valid(mbxid))
-		return (-EBADF);
+    /* Invalid mailbox. */
+    if (!mailbox_tx_is_valid(mbxid))
+        return (-EBADF);
 
-	return (__mailbox_close(mbxid));
+    return (__mailbox_close(mbxid));
 #else
-	UNUSED(mbxid);
+    UNUSED(mbxid);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -201,26 +192,26 @@ PUBLIC ssize_t mailbox_aread(int mbxid, void *buffer, uint64_t size)
 {
 #if (__TARGET_HAS_MAILBOX)
 
-	/* Invalid buffer. */
-	if (buffer == NULL)
-		return (-EINVAL);
+    /* Invalid buffer. */
+    if (buffer == NULL)
+        return (-EINVAL);
 
-	/* Invalid read size. */
-	if (size != HAL_MAILBOX_MSG_SIZE)
-		return (-EINVAL);
+    /* Invalid read size. */
+    if (size != HAL_MAILBOX_MSG_SIZE)
+        return (-EINVAL);
 
-	/* Invalid mailbox. */
-	if (!mailbox_rx_is_valid(mbxid))
-		return (-EBADF);
+    /* Invalid mailbox. */
+    if (!mailbox_rx_is_valid(mbxid))
+        return (-EBADF);
 
-	return (__mailbox_aread(mbxid, buffer, size));
+    return (__mailbox_aread(mbxid, buffer, size));
 
 #else
-	UNUSED(mbxid);
-	UNUSED(buffer);
-	UNUSED(size);
+    UNUSED(mbxid);
+    UNUSED(buffer);
+    UNUSED(size);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -235,26 +226,26 @@ PUBLIC ssize_t mailbox_awrite(int mbxid, const void *buffer, uint64_t size)
 {
 #if (__TARGET_HAS_MAILBOX)
 
-	/* Invalid buffer. */
-	if (buffer == NULL)
-		return (-EINVAL);
+    /* Invalid buffer. */
+    if (buffer == NULL)
+        return (-EINVAL);
 
-	/* Invalid write size. */
-	if (size != HAL_MAILBOX_MSG_SIZE)
-		return (-EINVAL);
+    /* Invalid write size. */
+    if (size != HAL_MAILBOX_MSG_SIZE)
+        return (-EINVAL);
 
-	/* Invalid mailbox. */
-	if (!mailbox_tx_is_valid(mbxid))
-		return (-EBADF);
+    /* Invalid mailbox. */
+    if (!mailbox_tx_is_valid(mbxid))
+        return (-EBADF);
 
-	return (__mailbox_awrite(mbxid, buffer, size));
+    return (__mailbox_awrite(mbxid, buffer, size));
 
 #else
-	UNUSED(mbxid);
-	UNUSED(buffer);
-	UNUSED(size);
+    UNUSED(mbxid);
+    UNUSED(buffer);
+    UNUSED(size);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -269,15 +260,15 @@ PUBLIC int mailbox_wait(int mbxid)
 {
 #if (__TARGET_HAS_MAILBOX)
 
-	/* Invalid mailbox. */
-	if (!(mailbox_rx_is_valid(mbxid) || mailbox_tx_is_valid(mbxid)))
-		return (-EBADF);
+    /* Invalid mailbox. */
+    if (!(mailbox_rx_is_valid(mbxid) || mailbox_tx_is_valid(mbxid)))
+        return (-EBADF);
 
-	return (__mailbox_wait(mbxid));
+    return (__mailbox_wait(mbxid));
 #else
-	UNUSED(mbxid);
+    UNUSED(mbxid);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif
 }
 
@@ -291,37 +282,32 @@ PUBLIC int mailbox_wait(int mbxid)
 PUBLIC int mailbox_ioctl(int mbxid, unsigned request, ...)
 {
 #if (__TARGET_HAS_MAILBOX)
-	int ret;
-	va_list args;
+    int ret;
+    va_list args;
 
-	/* Invalid mailbox. */
-	if (!mailbox_rx_is_valid(mbxid) && !mailbox_tx_is_valid(mbxid))
-		return (-EBADF);
+    /* Invalid mailbox. */
+    if (!mailbox_rx_is_valid(mbxid) && !mailbox_tx_is_valid(mbxid))
+        return (-EBADF);
 
-	va_start(args, request);
+    va_start(args, request);
 
-		dcache_invalidate();
+    dcache_invalidate();
 
-		ret = __mailbox_ioctl(
-			mbxid,
-			request,
-			args
-		);
+    ret = __mailbox_ioctl(mbxid, request, args);
 
-		dcache_invalidate();
+    dcache_invalidate();
 
-	va_end(args);
+    va_end(args);
 
-	return (ret);
+    return (ret);
 
-#else /* __TARGET_HAS_MAILBOX */
-	UNUSED(mbxid);
-	UNUSED(request);
+#else  /* __TARGET_HAS_MAILBOX */
+    UNUSED(mbxid);
+    UNUSED(request);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif /* __TARGET_HAS_MAILBOX */
 }
-
 
 /*============================================================================*
  * mailbox_setup()                                                            *
@@ -333,6 +319,6 @@ PUBLIC int mailbox_ioctl(int mbxid, unsigned request, ...)
 PUBLIC void mailbox_setup(void)
 {
 #if (__TARGET_HAS_MAILBOX)
-	__mailbox_setup();
+    __mailbox_setup();
 #endif /* __TARGET_HAS_MAILBOX */
 }

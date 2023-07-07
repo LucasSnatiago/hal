@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -33,66 +33,66 @@
  */
 /**@{*/
 
-	#include <pthread.h>
+#include <pthread.h>
 
-	/**
-	 * @name Spinlock State
-	 *
-	 * @bug: We should wrap these.
-	 */
-	/**@{*/
-	#define LINUX64_SPINLOCK_UNLOCKED PTHREAD_MUTEX_INITIALIZER /**< Unlocked */
-	/**@}*/
+/**
+ * @name Spinlock State
+ *
+ * @bug: We should wrap these.
+ */
+/**@{*/
+#define LINUX64_SPINLOCK_UNLOCKED PTHREAD_MUTEX_INITIALIZER /**< Unlocked */
+/**@}*/
 
-	/**
-	 * @brief Spinlock.
-	 */
-	typedef pthread_mutex_t linux64_spinlock_t;
+/**
+ * @brief Spinlock.
+ */
+typedef pthread_mutex_t linux64_spinlock_t;
 
-	/**
-	 * @brief Initializes a spinlock.
-	 *
-	 * @param lock Target spinlock.
-	 */
-	static inline void linux64_spinlock_init(linux64_spinlock_t *lock)
-	{
-		pthread_mutex_init(lock, NULL);
-	}
+/**
+ * @brief Initializes a spinlock.
+ *
+ * @param lock Target spinlock.
+ */
+static inline void linux64_spinlock_init(linux64_spinlock_t *lock)
+{
+    pthread_mutex_init(lock, NULL);
+}
 
-	/**
-	 * @brief Locks a spinlock.
-	 *
-	 * @param lock Target spinlock.
-	 */
-	static inline void linux64_spinlock_lock(linux64_spinlock_t *lock)
-	{
-		pthread_mutex_lock(lock);
-	}
+/**
+ * @brief Locks a spinlock.
+ *
+ * @param lock Target spinlock.
+ */
+static inline void linux64_spinlock_lock(linux64_spinlock_t *lock)
+{
+    pthread_mutex_lock(lock);
+}
 
-	/**
-	 * @brief Attempts to lock a spinlock.
-	 *
-	 * @param lock Target spinlock.
-	 *
-	 * @returns Upon successful completion, the spinlock pointed to by
-	 * @p lock is locked and non-zero is returned. Upon failure, zero
-	 * is returned instead, and the lock is not acquired by the
-	 * caller.
-	 */
-	static inline int linux64_spinlock_trylock(linux64_spinlock_t *lock)
-	{
-		return (!pthread_mutex_trylock(lock));
-	}
+/**
+ * @brief Attempts to lock a spinlock.
+ *
+ * @param lock Target spinlock.
+ *
+ * @returns Upon successful completion, the spinlock pointed to by
+ * @p lock is locked and non-zero is returned. Upon failure, zero
+ * is returned instead, and the lock is not acquired by the
+ * caller.
+ */
+static inline int linux64_spinlock_trylock(linux64_spinlock_t *lock)
+{
+    return (!pthread_mutex_trylock(lock));
+}
 
-	/**
-	 * @brief Unlocks a spinlock.
-	 *
-	 * @param lock Target spinlock.
-	 */
-	static inline void linux64_spinlock_unlock(linux64_spinlock_t *lock)
-	{
-		pthread_mutex_unlock(lock);
-	}
+/**
+ * @brief Unlocks a spinlock.
+ *
+ * @param lock Target spinlock.
+ */
+static inline void linux64_spinlock_unlock(linux64_spinlock_t *lock)
+{
+    pthread_mutex_unlock(lock);
+}
 
 /**@}*/
 
@@ -104,73 +104,74 @@
  * @cond linux64
  */
 
-	/**
-	 * @name Exported Types
-	 */
-	/**@{*/
-	#define __spinlock_t          /**< @see spinlock_t */
-	#define __spinlock_init_fn    /**< spinlock_init()    */
-	#define __spinlock_lock_fn    /**< spinlock_lock()    */
-	#define __spinlock_trylock_fn /**< spinlock_trylock() */
-	#define __spinlock_unlock_fn  /**< spinlock_unlock()  */
-	/**@}*/
+/**
+ * @name Exported Types
+ */
+/**@{*/
+#define __spinlock_t          /**< @see spinlock_t */
+#define __spinlock_init_fn    /**< spinlock_init()    */
+#define __spinlock_lock_fn    /**< spinlock_lock()    */
+#define __spinlock_trylock_fn /**< spinlock_trylock() */
+#define __spinlock_unlock_fn  /**< spinlock_unlock()  */
+/**@}*/
 
-	/**
-	 * @name Spinlock State
-	 */
-	/**@{*/
-	#define SPINLOCK_UNLOCKED LINUX64_SPINLOCK_UNLOCKED /**< @see LINUX64_SPINLOCK_UNLOCKED */
-	/**@}*/
+/**
+ * @name Spinlock State
+ */
+/**@{*/
+#define SPINLOCK_UNLOCKED                                                      \
+    LINUX64_SPINLOCK_UNLOCKED /**< @see LINUX64_SPINLOCK_UNLOCKED */
+/**@}*/
 
-	/**
-	 * @see linux64_spinlock_t
-	 */
-	typedef linux64_spinlock_t spinlock_t;
+/**
+ * @see linux64_spinlock_t
+ */
+typedef linux64_spinlock_t spinlock_t;
 
-	/**
-	 * @see linux64_spinlock_init().
-	 */
-	static inline void spinlock_init(spinlock_t *lock)
-	{
-		linux64_spinlock_init(lock);
-	}
+/**
+ * @see linux64_spinlock_init().
+ */
+static inline void spinlock_init(spinlock_t *lock)
+{
+    linux64_spinlock_init(lock);
+}
 
-	/**
-	 * @see linux64_spinlock_trylock().
-	 *
-	 * @note This operation performs a full data-cache flush in non-cache
-	 * coherent processors.
-	 */
-	static inline int spinlock_trylock(spinlock_t *lock)
-	{
-		int ret = linux64_spinlock_trylock(lock);
+/**
+ * @see linux64_spinlock_trylock().
+ *
+ * @note This operation performs a full data-cache flush in non-cache
+ * coherent processors.
+ */
+static inline int spinlock_trylock(spinlock_t *lock)
+{
+    int ret = linux64_spinlock_trylock(lock);
 
-		linux64_core_dcache_invalidate();
+    linux64_core_dcache_invalidate();
 
-		return (ret);
-	}
+    return (ret);
+}
 
-	/**
-	 * @see linux64_spinlock_lock().
-	 *
-	 * @note This operation performs a full data-cache flush in non-cache
-	 * coherent processors.
-	 */
-	static inline void spinlock_lock(spinlock_t *lock)
-	{
-		linux64_spinlock_lock(lock);
-	}
+/**
+ * @see linux64_spinlock_lock().
+ *
+ * @note This operation performs a full data-cache flush in non-cache
+ * coherent processors.
+ */
+static inline void spinlock_lock(spinlock_t *lock)
+{
+    linux64_spinlock_lock(lock);
+}
 
-	/**
-	 * @see linux64_spinlock_unlock().
-	 *
-	 * @note This operation performs a full data-cache flush in non-cache
-	 * coherent processors.
-	 */
-	static inline void spinlock_unlock(spinlock_t *lock)
-	{
-		linux64_spinlock_unlock(lock);
-	}
+/**
+ * @see linux64_spinlock_unlock().
+ *
+ * @note This operation performs a full data-cache flush in non-cache
+ * coherent processors.
+ */
+static inline void spinlock_unlock(spinlock_t *lock)
+{
+    linux64_spinlock_unlock(lock);
+}
 
 /**@endcond*/
 

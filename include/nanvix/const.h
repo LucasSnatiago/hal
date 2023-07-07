@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -26,8 +26,8 @@
 #define NANVIX_CONST_H_
 #ifndef _ASM_FILE_
 
-	/* Must come first. */
-	#define __NEED_CC
+/* Must come first. */
+#define __NEED_CC
 
 /**
  * @defgroup kernel Nanvix Kernel
@@ -39,28 +39,28 @@
  */
 /**@{*/
 
-	#include <nanvix/cc.h>
+#include <nanvix/cc.h>
 
-	#include <posix/stdbool.h>
-	#include <posix/stddef.h>
+#include <posix/stdbool.h>
+#include <posix/stddef.h>
 
-	/**
-	 * @name Scope Constants
-	 */
-	/**@{*/
-	#define PUBLIC         /**< Global scope       */
-	#define PRIVATE static /**< File scope.        */
-	#define EXTERN extern  /**< Defined elsewhere. */
-	/**@}*/
+/**
+ * @name Scope Constants
+ */
+/**@{*/
+#define PUBLIC         /**< Global scope       */
+#define PRIVATE static /**< File scope.        */
+#define EXTERN extern  /**< Defined elsewhere. */
+/**@}*/
 
-	/**
-	 * @name Common Sizes
-	 */
-	/**@{*/
-	#define KB 1024       /**< Kilobyte */
-	#define MB (KB*KB)    /**< Megabyte */
-	#define GB (KB*KB*KB) /**< Gigabyte */
-	/**@}*/
+/**
+ * @name Common Sizes
+ */
+/**@{*/
+#define KB 1024           /**< Kilobyte */
+#define MB (KB * KB)      /**< Megabyte */
+#define GB (KB * KB * KB) /**< Gigabyte */
+                          /**@}*/
 
 /**@}*/
 

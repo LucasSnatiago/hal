@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
 #include <arch/core/i486/gdt.h>
 #include <arch/core/i486/tss.h>
+#include <nanvix/const.h>
+#include <nanvix/hlib.h>
 
 /**
  * @brief Global Descriptor Table (GDT).
@@ -46,20 +46,20 @@ PRIVATE struct gdtptr gdtptr;
  * @param granularity Granularity of segment.
  * @param access      Access permissions.
  */
-PRIVATE void set_gdte
-(int n, unsigned base, unsigned limit, unsigned granularity, unsigned access)
+PRIVATE void set_gdte(int n, unsigned base, unsigned limit,
+                      unsigned granularity, unsigned access)
 {
-	/* Set segment base address. */
-	gdt[n].base_low = (base & 0xffffff);
-	gdt[n].base_high = (base >> 24) & 0xff;
+    /* Set segment base address. */
+    gdt[n].base_low = (base & 0xffffff);
+    gdt[n].base_high = (base >> 24) & 0xff;
 
-	/* Set segment limit. */
-	gdt[n].limit_low = (limit & 0xffff);
-	gdt[n].limit_high = (limit >> 16) & 0xf;
+    /* Set segment limit. */
+    gdt[n].limit_low = (limit & 0xffff);
+    gdt[n].limit_high = (limit >> 16) & 0xf;
 
-	/* Set granularity and access. */
-	gdt[n].granularity = granularity;
-	gdt[n].access = access;
+    /* Set granularity and access. */
+    gdt[n].granularity = granularity;
+    gdt[n].access = access;
 }
 
 /*
@@ -67,26 +67,26 @@ PRIVATE void set_gdte
  */
 PUBLIC void gdt_setup(void)
 {
-	/* Size-error checking. */
-	KASSERT_SIZE(sizeof(struct gdte), GDTE_SIZE);
-	KASSERT_SIZE(sizeof(struct gdtptr), GDTPTR_SIZE);
+    /* Size-error checking. */
+    KASSERT_SIZE(sizeof(struct gdte), GDTE_SIZE);
+    KASSERT_SIZE(sizeof(struct gdtptr), GDTPTR_SIZE);
 
-	/* Blank GDT and GDT pointer. */
-	kmemset(gdt, 0, sizeof(gdt));
-	kmemset(&gdtptr, 0, GDTPTR_SIZE);
+    /* Blank GDT and GDT pointer. */
+    kmemset(gdt, 0, sizeof(gdt));
+    kmemset(&gdtptr, 0, GDTPTR_SIZE);
 
-	/* Set GDT entries. */
-	set_gdte(GDT_NULL, 0, 0x00000, 0x0, 0x00);
-	set_gdte(GDT_CODE_DPL0, 0, 0xfffff, 0xc, 0x9a);
-	set_gdte(GDT_DATA_DPL0, 0, 0xfffff, 0xc, 0x92);
-	set_gdte(GDT_CODE_DPL3, 0, 0xfffff, 0xc, 0xfa);
-	set_gdte(GDT_DATA_DPL3, 0, 0xfffff, 0xc, 0xf2);
-	set_gdte(GDT_TSS, (unsigned) &tss, (unsigned)&tss + TSS_SIZE, 0x0, 0xe9);
+    /* Set GDT entries. */
+    set_gdte(GDT_NULL, 0, 0x00000, 0x0, 0x00);
+    set_gdte(GDT_CODE_DPL0, 0, 0xfffff, 0xc, 0x9a);
+    set_gdte(GDT_DATA_DPL0, 0, 0xfffff, 0xc, 0x92);
+    set_gdte(GDT_CODE_DPL3, 0, 0xfffff, 0xc, 0xfa);
+    set_gdte(GDT_DATA_DPL3, 0, 0xfffff, 0xc, 0xf2);
+    set_gdte(GDT_TSS, (unsigned)&tss, (unsigned)&tss + TSS_SIZE, 0x0, 0xe9);
 
-	/* Set GDT pointer. */
-	gdtptr.size = sizeof(gdt) - 1;
-	gdtptr.ptr = (unsigned) gdt;
+    /* Set GDT pointer. */
+    gdtptr.size = sizeof(gdt) - 1;
+    gdtptr.ptr = (unsigned)gdt;
 
-	/* Flush GDT. */
-	gdt_flush(&gdtptr);
+    /* Flush GDT. */
+    gdt_flush(&gdtptr);
 }

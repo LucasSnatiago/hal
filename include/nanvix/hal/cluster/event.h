@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,26 +25,27 @@
 #ifndef NANVIX_HAL_CLUSTER_EVENT_H_
 #define NANVIX_HAL_CLUSTER_EVENT_H_
 
-	/* Cluster Interface Implementation */
-	#include <nanvix/hal/cluster/_cluster.h>
+/* Cluster Interface Implementation */
+#include <nanvix/hal/cluster/_cluster.h>
 
 /*============================================================================*
  * Interface Implementation Checking                                          *
  *============================================================================*/
 
 #if (CLUSTER_HAS_EVENTS)
-#if defined(__INTERFACE_CHECK) || defined(__INTERFACE_CHECK_CLUSTER_AL) || defined(__INTERFACE_CHECK_EVENT)
+#if defined(__INTERFACE_CHECK) || defined(__INTERFACE_CHECK_CLUSTER_AL) ||     \
+    defined(__INTERFACE_CHECK_EVENT)
 
-	/* Functions */
-	#ifndef __event_notify_fn
-	#error "event_notify() not defined?"
-	#endif
-	#ifndef __event_wait_fn
-	#error "event_wait() not defined?"
-	#endif
-	#ifndef __event_reset_fn
-	#error "event_reset() not defined?"
-	#endif
+/* Functions */
+#ifndef __event_notify_fn
+#error "event_notify() not defined?"
+#endif
+#ifndef __event_wait_fn
+#error "event_wait() not defined?"
+#endif
+#ifndef __event_reset_fn
+#error "event_reset() not defined?"
+#endif
 
 #endif
 #endif
@@ -61,62 +62,61 @@
  */
 /**@{*/
 
-	/**
-	 * @brief Hardware interrupt handler.
-	 */
-	typedef void (*event_handler_t)(void);
+/**
+ * @brief Hardware interrupt handler.
+ */
+typedef void (*event_handler_t)(void);
 
-	/**
-	 * @brief Notifies a local core about an event.
-	 *
-	 * @param coreid ID of target core.
-	 */
-	EXTERN int event_notify(int coreid);
+/**
+ * @brief Notifies a local core about an event.
+ *
+ * @param coreid ID of target core.
+ */
+EXTERN int event_notify(int coreid);
 
-	/**
-	 * @brief Waits for an event.
-	 */
-	EXTERN void event_wait(void);
+/**
+ * @brief Waits for an event.
+ */
+EXTERN void event_wait(void);
 
-	/**
-	 * @brief Drops any pending events in the local core.
-	 */
-	EXTERN void event_drop(void);
+/**
+ * @brief Drops any pending events in the local core.
+ */
+EXTERN void event_drop(void);
 
-	/**
-	 * @brief Resets the pending IPI interrupt.
-	 *
-	 * If the current architecture have events and have a valid
-	 * interrupt number for the IPI handler, exports the function,
-	 * otherwise, defines a dummy reset function.
-	 */
-	static inline void event_reset(void)
-	{
+/**
+ * @brief Resets the pending IPI interrupt.
+ *
+ * If the current architecture have events and have a valid
+ * interrupt number for the IPI handler, exports the function,
+ * otherwise, defines a dummy reset function.
+ */
+static inline void event_reset(void)
+{
 #if (CLUSTER_HAS_EVENTS)
-		__event_reset();
+    __event_reset();
 #endif
-	}
+}
 
-	/**
-	 * @brief Register a event handler.
-	 *
-	 * @param handler Handler function.
-	 *
-	 * @return Zero if successfully register, non-zero otherwize.
-	 */
-	EXTERN int event_register_handler(event_handler_t handler);
+/**
+ * @brief Register a event handler.
+ *
+ * @param handler Handler function.
+ *
+ * @return Zero if successfully register, non-zero otherwize.
+ */
+EXTERN int event_register_handler(event_handler_t handler);
 
-	/**
-	 * @brief Resets event handler.
-	 */
-	EXTERN int event_unregister_handler(void);
+/**
+ * @brief Resets event handler.
+ */
+EXTERN int event_unregister_handler(void);
 
-	/**
-	 * @brief Initializes the events table.
-	 */
-	EXTERN void event_setup(void);
+/**
+ * @brief Initializes the events table.
+ */
+EXTERN void event_setup(void);
 
 /**@}*/
 
 #endif /* NANVIX_HAL_CLUSTER_EVENT_H_ */
-

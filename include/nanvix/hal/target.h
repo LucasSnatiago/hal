@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,12 +25,12 @@
 #ifndef NANVIX_HAL_TARGET_H_
 #define NANVIX_HAL_TARGET_H_
 
-	#ifndef __NEED_HAL_TARGET
-		#error "include <nanvix/hal.h> instead"
-	#endif
+#ifndef __NEED_HAL_TARGET
+#error "include <nanvix/hal.h> instead"
+#endif
 
-	/* Target Interface Implementation */
-	#include <nanvix/hal/target/_target.h>
+/* Target Interface Implementation */
+#include <nanvix/hal/target/_target.h>
 
 /*============================================================================*
  * Interface Implementation Checking                                          *
@@ -38,10 +38,10 @@
 
 #if defined(__INTERFACE_CHECK) || defined(__INTERFACE_CHECK_TARGET_AL)
 
-	/* Constants */
-	#ifndef TARGET_FREQUENCY
-	#error "TARGET_FREQUENCY not defined"
-	#endif
+/* Constants */
+#ifndef TARGET_FREQUENCY
+#error "TARGET_FREQUENCY not defined"
+#endif
 
 #endif
 
@@ -57,30 +57,30 @@
  */
 /**@{*/
 
-	#include <nanvix/hal/target/stdout.h>
-	#include <nanvix/hal/target/sync.h>
-	#include <nanvix/hal/target/mailbox.h>
-	#include <nanvix/hal/target/portal.h>
+#include <nanvix/hal/target/stdout.h>
+#include <nanvix/hal/target/sync.h>
+#include <nanvix/hal/target/mailbox.h>
+#include <nanvix/hal/target/portal.h>
 
-	/**
-	 * @name Functions to wait/wakeup for a comm resource.
-	 */
-	/**{**/
-	typedef void (*target_comm_wait_fn)(int id);
-	typedef void (*target_comm_wakeup_fn)(int id);
-	/**}**/
+/**
+ * @name Functions to wait/wakeup for a comm resource.
+ */
+/**{**/
+typedef void (*target_comm_wait_fn)(int id);
+typedef void (*target_comm_wakeup_fn)(int id);
+/**}**/
 
-	/**
-	 * @brief Powers off the underlying target.
-	 */
-	#ifdef __target_poweroff_fn
-	EXTERN NORETURN void target_poweroff(void);
-	#else
-	static inline NORETURN void target_poweroff(void)
-	{
-		processor_poweroff();
-	}
-	#endif
+/**
+ * @brief Powers off the underlying target.
+ */
+#ifdef __target_poweroff_fn
+EXTERN NORETURN void target_poweroff(void);
+#else
+static inline NORETURN void target_poweroff(void)
+{
+    processor_poweroff();
+}
+#endif
 
 /**@}*/
 

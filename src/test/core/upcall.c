@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
+#include "../test.h"
 #include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
 #include <nanvix/hlib.h>
 #include <posix/stdint.h>
-#include "../test.h"
 
 /**
  * @brief Launch upcall tests? We will probably drop support from upcall due
@@ -53,14 +53,15 @@
 /**
  * @brief Size of fake stack.
  */
-#define FAKE_STACK_SIZE (CONTEXT_SIZE + 2*WORD_SIZE + DWORD_SIZE)
+#define FAKE_STACK_SIZE (CONTEXT_SIZE + 2 * WORD_SIZE + DWORD_SIZE)
 
 /**
  * @name Helpers for Fake Stack
  */
 /**@{*/
-#define FAKE_STACK_BASE (((word_t) &fake_stack) + FAKE_STACK_HALO + FAKE_STACK_SIZE)
-#define FAKE_STACK_TOP (((word_t) &fake_stack) + FAKE_STACK_HALO)
+#define FAKE_STACK_BASE                                                        \
+    (((word_t)&fake_stack) + FAKE_STACK_HALO + FAKE_STACK_SIZE)
+#define FAKE_STACK_TOP (((word_t)&fake_stack) + FAKE_STACK_HALO)
 #define FAKE_STACK(x) (&fake_stack[FAKE_STACK_HALO + (x)])
 /**@}*/
 
@@ -96,7 +97,7 @@ PRIVATE struct context fake_context;
  */
 void dumb_upcall(void *arg)
 {
-	KASSERT(*((word_t*) arg) == MAGIC);
+    KASSERT(*((word_t *)arg) == MAGIC);
 }
 
 /**
@@ -104,56 +105,52 @@ void dumb_upcall(void *arg)
  */
 PRIVATE void test_upcall_forge(void)
 {
-	word_t arg = MAGIC;
+    word_t arg = MAGIC;
 
-	/* These should agree. */
-	KASSERT(FAKE_STACK_SIZE == UPCALL_STACK_FRAME_SIZE(DWORD_SIZE));
+    /* These should agree. */
+    KASSERT(FAKE_STACK_SIZE == UPCALL_STACK_FRAME_SIZE(DWORD_SIZE));
 
-	/* Build fake stack. */
-	kmemset(&fake_stack, 0, FAKE_STACK_SIZE);
+    /* Build fake stack. */
+    kmemset(&fake_stack, 0, FAKE_STACK_SIZE);
 
-	/* Build fake context. */
-	kmemset(&fake_context, 0, sizeof(struct context));
-	for (int i = 0; i < CONTEXT_SIZE/WORD_SIZE; i++)
-		((word_t *)&fake_context)[i] = (word_t) i;
-	context_set_sp(&fake_context, FAKE_STACK_BASE);
-	context_set_pc(&fake_context, ((word_t) &_upcall_issue_ret));
+    /* Build fake context. */
+    kmemset(&fake_context, 0, sizeof(struct context));
+    for (int i = 0; i < CONTEXT_SIZE / WORD_SIZE; i++)
+        ((word_t *)&fake_context)[i] = (word_t)i;
+    context_set_sp(&fake_context, FAKE_STACK_BASE);
+    context_set_pc(&fake_context, ((word_t)&_upcall_issue_ret));
 
-	/* Forge upcall. */
-	upcall_forge(
-		&fake_context,
-		&dumb_upcall,
-		&arg,
-		sizeof(word_t)
-	);
+    /* Forge upcall. */
+    upcall_forge(&fake_context, &dumb_upcall, &arg, sizeof(word_t));
 
 #if (UPCALL_TEST_VERBOSE)
 
-	/* Dump fake stack. */
-	for (int i = 0; i < FAKE_STACK_SIZE; i += WORD_SIZE)
-	{
-		kprintf("%x %x %d[fake_stack]",
-			((word_t *)(&fake_stack[FAKE_STACK_HALO + i])),
-			*((word_t *)(&fake_stack[FAKE_STACK_HALO + i])),
-			FAKE_STACK_SIZE - i - WORD_SIZE
-		);
-	}
+    /* Dump fake stack. */
+    for (int i = 0; i < FAKE_STACK_SIZE; i += WORD_SIZE) {
+        kprintf("%x %x %d[fake_stack]",
+                ((word_t *)(&fake_stack[FAKE_STACK_HALO + i])),
+                *((word_t *)(&fake_stack[FAKE_STACK_HALO + i])),
+                FAKE_STACK_SIZE - i - WORD_SIZE);
+    }
 
-	/* Dump fake stack. */
-	for (int i = 0; i < CONTEXT_SIZE/WORD_SIZE; i++)
-		kprintf("%x %d[fake_context]", ((word_t *)(&fake_context))[i], i);
+    /* Dump fake stack. */
+    for (int i = 0; i < CONTEXT_SIZE / WORD_SIZE; i++)
+        kprintf("%x %d[fake_context]", ((word_t *)(&fake_context))[i], i);
 
 #endif /* UPCAL_TEST_VERBOSE */
 
-	/* Check fake stack. */
-	KASSERT(*((word_t *)FAKE_STACK(UPCALL_STACK_FRAME_ARG_OFF)) == (word_t)MAGIC);
-	KASSERT(*((word_t *)FAKE_STACK(UPCALL_STACK_FRAME_ARGSIZE_OFF)) == (word_t)sizeof(dword_t));
-	KASSERT(*((word_t *)FAKE_STACK(UPCALL_STACK_FRAME_FN_OFF)) == (word_t)&dumb_upcall);
+    /* Check fake stack. */
+    KASSERT(*((word_t *)FAKE_STACK(UPCALL_STACK_FRAME_ARG_OFF)) ==
+            (word_t)MAGIC);
+    KASSERT(*((word_t *)FAKE_STACK(UPCALL_STACK_FRAME_ARGSIZE_OFF)) ==
+            (word_t)sizeof(dword_t));
+    KASSERT(*((word_t *)FAKE_STACK(UPCALL_STACK_FRAME_FN_OFF)) ==
+            (word_t)&dumb_upcall);
 
-	/* Check fake context. */
-	KASSERT((context_get_sp(&fake_context) % 8) == 0);
-	KASSERT(context_get_sp(&fake_context) == FAKE_STACK_TOP);
-	KASSERT(context_get_pc(&fake_context) == ((word_t) &upcall_ret));
+    /* Check fake context. */
+    KASSERT((context_get_sp(&fake_context) % 8) == 0);
+    KASSERT(context_get_sp(&fake_context) == FAKE_STACK_TOP);
+    KASSERT(context_get_pc(&fake_context) == ((word_t)&upcall_ret));
 }
 
 /**
@@ -161,31 +158,26 @@ PRIVATE void test_upcall_forge(void)
  */
 PRIVATE void test_upcall_issue(void)
 {
-	word_t arg = MAGIC;
+    word_t arg = MAGIC;
 
-	/* These should agree. */
-	KASSERT(FAKE_STACK_SIZE == UPCALL_STACK_FRAME_SIZE(sizeof(word_t)));
+    /* These should agree. */
+    KASSERT(FAKE_STACK_SIZE == UPCALL_STACK_FRAME_SIZE(sizeof(word_t)));
 
-	/* Build fake stack. */
-	kmemset(&fake_stack, 0, FAKE_STACK_SIZE);
+    /* Build fake stack. */
+    kmemset(&fake_stack, 0, FAKE_STACK_SIZE);
 
-	/* Build fake context. */
-	kmemset(&fake_context, 0, sizeof(struct context));
-	for (int i = 0; i < CONTEXT_SIZE/WORD_SIZE; i++)
-		((word_t *)&fake_context)[i] = (word_t) i;
-	context_set_sp(&fake_context, FAKE_STACK_BASE);
-	context_set_pc(&fake_context, ((word_t) &_upcall_issue_ret));
+    /* Build fake context. */
+    kmemset(&fake_context, 0, sizeof(struct context));
+    for (int i = 0; i < CONTEXT_SIZE / WORD_SIZE; i++)
+        ((word_t *)&fake_context)[i] = (word_t)i;
+    context_set_sp(&fake_context, FAKE_STACK_BASE);
+    context_set_pc(&fake_context, ((word_t)&_upcall_issue_ret));
 
-	/* Forge upcall. */
-	upcall_forge(
-		&fake_context,
-		&dumb_upcall,
-		&arg,
-		sizeof(word_t)
-	);
+    /* Forge upcall. */
+    upcall_forge(&fake_context, &dumb_upcall, &arg, sizeof(word_t));
 
-	/* Issue upcall. */
-	_upcall_issue(FAKE_STACK_TOP);
+    /* Issue upcall. */
+    _upcall_issue(FAKE_STACK_TOP);
 }
 
 /*============================================================================*
@@ -197,11 +189,11 @@ PRIVATE void test_upcall_issue(void)
  */
 PRIVATE struct test upcall_tests_api[] = {
 #if UPCALL_TEST_DISABLE
-	{ NULL,               NULL          },
+    {NULL, NULL},
 #endif
-	{ test_upcall_forge, "forge upcall" },
-	{ test_upcall_issue, "issue upcall" },
-	{ NULL,               NULL          },
+    {test_upcall_forge, "forge upcall"},
+    {test_upcall_issue, "issue upcall"},
+    {NULL, NULL},
 };
 
 /**
@@ -212,11 +204,11 @@ PRIVATE struct test upcall_tests_api[] = {
  */
 PUBLIC void test_upcall(void)
 {
-	/* API Tests */
-	CLUSTER_KPRINTF(HLINE);
-	for (int i = 0; upcall_tests_api[i].test_fn != NULL; i++)
-	{
-		upcall_tests_api[i].test_fn();
-		CLUSTER_KPRINTF("[test][upcall][api] %s [passed]", upcall_tests_api[i].name);
-	}
+    /* API Tests */
+    CLUSTER_KPRINTF(HLINE);
+    for (int i = 0; upcall_tests_api[i].test_fn != NULL; i++) {
+        upcall_tests_api[i].test_fn();
+        CLUSTER_KPRINTF("[test][upcall][api] %s [passed]",
+                        upcall_tests_api[i].name);
+    }
 }

@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,12 +25,12 @@
 #ifndef CLUSTER_X86_CLUSTER_MEMMAP_H_
 #define CLUSTER_X86_CLUSTER_MEMMAP_H_
 
-	#ifndef __NEED_CLUSTER_MEMMAP
-		#error "do not include this file"
-	#endif
+#ifndef __NEED_CLUSTER_MEMMAP
+#error "do not include this file"
+#endif
 
-	/* Cluster Interface Implementation */
-	#include <arch/cluster/x86-cluster/_x86-cluster.h>
+/* Cluster Interface Implementation */
+#include <arch/cluster/x86-cluster/_x86-cluster.h>
 
 /**
  * @addtogroup x86_cluster-cluster-memmap Memory Map
@@ -40,19 +40,19 @@
  */
 /**@{*/
 
-	/**
-	 * @name Physical Memory Layout
-	 */
-	/**@{*/
-	#define X86_CLUSTER_DRAM_BASE_PHYS 0x00000000 /**< DRAM Base */
-	#define X86_CLUSTER_DRAM_END_PHYS  0x04000000 /**< DRAM End  */
-	/**@}*/
+/**
+ * @name Physical Memory Layout
+ */
+/**@{*/
+#define X86_CLUSTER_DRAM_BASE_PHYS 0x00000000 /**< DRAM Base */
+#define X86_CLUSTER_DRAM_END_PHYS 0x04000000  /**< DRAM End  */
+/**@}*/
 
-	/**
-	 * @brief DRAM brief (in bytes).
-	 */
-	#define X86_CLUSTER_DRAM_SIZE \
-		(X86_CLUSTER_DRAM_END_PHYS - X86_CLUSTER_DRAM_BASE_PHYS)
+/**
+ * @brief DRAM brief (in bytes).
+ */
+#define X86_CLUSTER_DRAM_SIZE                                                  \
+    (X86_CLUSTER_DRAM_END_PHYS - X86_CLUSTER_DRAM_BASE_PHYS)
 
 /**@}*/
 

@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,11 +25,11 @@
 #ifndef ARCH_CLUSTER_CLUSTER_RISCV32_CLUSTER_TIMER_H_
 #define ARCH_CLUSTER_CLUSTER_RISCV32_CLUSTER_TIMER_H_
 
-	/* Cluster Interface Implementation */
-	#include <arch/cluster/riscv32-cluster/_riscv32-cluster.h>
+/* Cluster Interface Implementation */
+#include <arch/cluster/riscv32-cluster/_riscv32-cluster.h>
 
-	/* Must come first. */
-	#define __NEED_CLUSTER_CLINT
+/* Must come first. */
+#define __NEED_CLUSTER_CLINT
 
 /**
  * @addtogroup rscv32-cluster-timer Timer
@@ -39,13 +39,13 @@
  */
 /**@{*/
 
-	#include <arch/cluster/riscv32-cluster/clint.h>
-	#include <posix/stdint.h>
+#include <arch/cluster/riscv32-cluster/clint.h>
+#include <posix/stdint.h>
 
-	/**
-	 * @brief Timer frequency (10 MHz)
-	 */
-	#define RISCV32_CLUSTER_TIMEBASE 10000000
+/**
+ * @brief Timer frequency (10 MHz)
+ */
+#define RISCV32_CLUSTER_TIMEBASE 10000000
 
 /*============================================================================*
  * Exported Interface                                                         *
@@ -55,35 +55,38 @@
  * @cond riscv32_cluster
  */
 
-	/**
-	 * @name Exported Constants
-	 */
-	/**@{*/
-	#define CLUSTER_FREQ RISCV32_CLUSTER_TIMEBASE /**< @see RISCV32_CLUSTER_TIMEBASE */
-	/**@}*/
+/**
+ * @name Exported Constants
+ */
+/**@{*/
+#define CLUSTER_FREQ                                                           \
+    RISCV32_CLUSTER_TIMEBASE /**< @see RISCV32_CLUSTER_TIMEBASE */
+/**@}*/
 
-	/**
-	 * @name Exported Functions
-	 */
-	/**@{*/
-	#define __timer_init_fn   /**< timer_init() */
-	#define __timer_reset_fn /**< timer_reset() */
-	#define __clock_read_fn  /**< clock_read()  */
-	/**@}*/
+/**
+ * @name Exported Functions
+ */
+/**@{*/
+#define __timer_init_fn  /**< timer_init() */
+#define __timer_reset_fn /**< timer_reset() */
+#define __clock_read_fn  /**< clock_read()  */
+                         /**@}*/
 
 #ifndef _ASM_FILE_
 
-	/**
-	 * @see timer_init().
-	 */
-	#define __timer_init(freq) \
-		rv32gc_timer_init(freq, RISCV32_CLUSTER_TIMEBASE, (uint64_t *) RISCV32_CLUSTER_CLINT_MTIME_BASE,	(uint64_t *) RISCV32_CLUSTER_CLINT_MTIMECMP_BASE)
+/**
+ * @see timer_init().
+ */
+#define __timer_init(freq)                                                     \
+    rv32gc_timer_init(freq,                                                    \
+                      RISCV32_CLUSTER_TIMEBASE,                                \
+                      (uint64_t *)RISCV32_CLUSTER_CLINT_MTIME_BASE,            \
+                      (uint64_t *)RISCV32_CLUSTER_CLINT_MTIMECMP_BASE)
 
-	/**
-	 * @see rv32gc_timer_reset().
-	 */
-	#define timer_reset(void) \
-		rv32gc_timer_reset(void)
+/**
+ * @see rv32gc_timer_reset().
+ */
+#define timer_reset(void) rv32gc_timer_reset(void)
 
 #endif /* !_ASM_FILE_ */
 

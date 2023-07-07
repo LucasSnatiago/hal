@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,26 +25,27 @@
 #ifndef NANVIX_HAL_CLUSTER_IPI_H_
 #define NANVIX_HAL_CLUSTER_IPI_H_
 
-	/* Cluster Interface Implementation */
-	#include <nanvix/hal/cluster/_cluster.h>
+/* Cluster Interface Implementation */
+#include <nanvix/hal/cluster/_cluster.h>
 
 /*============================================================================*
  * Interface Implementation Checking                                          *
  *============================================================================*/
 
 #if (CLUSTER_HAS_IPI)
-#if defined(__INTERFACE_CHECK) || defined(__INTERFACE_CHECK_CLUSTER_AL) || defined(__INTERFACE_CHECK_IPI)
+#if defined(__INTERFACE_CHECK) || defined(__INTERFACE_CHECK_CLUSTER_AL) ||     \
+    defined(__INTERFACE_CHECK_IPI)
 
-	/* Functions */
-	#ifndef __cluster_ipi_send_fn
-	#error "cluster_ipi_send() not defined?"
-	#endif
-	#ifndef __cluster_ipi_ack_fn
-	#error "cluster_ipi_ack() not defined?"
-	#endif
-	#ifndef __cluster_ipi_wait_fn
-	#error "cluster_ipi_wait() not defined?"
-	#endif
+/* Functions */
+#ifndef __cluster_ipi_send_fn
+#error "cluster_ipi_send() not defined?"
+#endif
+#ifndef __cluster_ipi_ack_fn
+#error "cluster_ipi_ack() not defined?"
+#endif
+#ifndef __cluster_ipi_wait_fn
+#error "cluster_ipi_wait() not defined?"
+#endif
 
 #endif
 #endif
@@ -61,45 +62,44 @@
  */
 /**@{*/
 
-	/**
-	 * @brief Sends an interrupt to another core.
-	 *
-	 * @param coreid ID of target core.
-	 */
+/**
+ * @brief Sends an interrupt to another core.
+ *
+ * @param coreid ID of target core.
+ */
 #if (CLUSTER_HAS_IPI)
-	EXTERN void cluster_ipi_send(int coreid);
+EXTERN void cluster_ipi_send(int coreid);
 #else
-	static inline void cluster_ipi_send(int coreid)
-	{
-		UNUSED(coreid);
-	}
+static inline void cluster_ipi_send(int coreid)
+{
+    UNUSED(coreid);
+}
 #endif
 
-	/**
-	 * @brief Complete the interrupt that came from another core.
-	 */
+/**
+ * @brief Complete the interrupt that came from another core.
+ */
 #if (CLUSTER_HAS_IPI)
-	EXTERN void cluster_ipi_ack(void);
+EXTERN void cluster_ipi_ack(void);
 #else
-	static inline void cluster_ipi_ack(void)
-	{
-		/* noop. */
-	}
+static inline void cluster_ipi_ack(void)
+{
+    /* noop. */
+}
 #endif
 
-	/**
-	 * @brief Waits for an IPI interrupt.
-	 */
+/**
+ * @brief Waits for an IPI interrupt.
+ */
 #if (CLUSTER_HAS_IPI)
-	EXTERN void cluster_ipi_wait(void);
+EXTERN void cluster_ipi_wait(void);
 #else
-	static inline void cluster_ipi_wait(void)
-	{
-		/* noop. */
-	}
+static inline void cluster_ipi_wait(void)
+{
+    /* noop. */
+}
 #endif
 
 /**@}*/
 
 #endif /* NANVIX_HAL_CLUSTER_IPI_H_ */
-

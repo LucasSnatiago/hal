@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,30 +25,31 @@
 #ifndef NANVIX_HAL_CLUSTER_TIMER_H_
 #define NANVIX_HAL_CLUSTER_TIMER_H_
 
-	/* Core Interface Implementation */
-	#include <nanvix/hal/cluster/_cluster.h>
+/* Core Interface Implementation */
+#include <nanvix/hal/cluster/_cluster.h>
 
 /*============================================================================*
  * Interface Implementation Checking                                          *
  *============================================================================*/
 
-#if defined(__INTERFACE_CHECK) || defined(__INTERFACE_CHECK_CLUSTER_AL) || defined(__INTERFACE_CHECK_TIMER)
+#if defined(__INTERFACE_CHECK) || defined(__INTERFACE_CHECK_CLUSTER_AL) ||     \
+    defined(__INTERFACE_CHECK_TIMER)
 
-	/* Constants */
-	#ifndef INTERRUPT_TIMER
-	#error "INTERRUPT_TIMER not defined"
-	#endif
+/* Constants */
+#ifndef INTERRUPT_TIMER
+#error "INTERRUPT_TIMER not defined"
+#endif
 
-	/* Functions */
-	#ifndef __timer_init_fn
-	#error "timer_init() not defined?"
-	#endif
-	#ifndef __timer_reset_fn
-	#error "timer_reset() not defined?"
-	#endif
-	#ifndef __clock_read_fn
-	#error "clock_read() not defined?"
-	#endif
+/* Functions */
+#ifndef __timer_init_fn
+#error "timer_init() not defined?"
+#endif
+#ifndef __timer_reset_fn
+#error "timer_reset() not defined?"
+#endif
+#ifndef __clock_read_fn
+#error "clock_read() not defined?"
+#endif
 
 #endif
 
@@ -64,50 +65,50 @@
  */
 /**@{*/
 
-	#include <nanvix/const.h>
-	#include <posix/stdint.h>
+#include <nanvix/const.h>
+#include <posix/stdint.h>
 
-	/**
-	 * @brief Simulated clock for architectures that do not
-	 * have Real Time Clock (RTC).
-	 */
-	EXTERN uint64_t timer_value;
+/**
+ * @brief Simulated clock for architectures that do not
+ * have Real Time Clock (RTC).
+ */
+EXTERN uint64_t timer_value;
 
-	/**
-	 * @brief Initializes the timer device.
-	 *
-	 * @param freq Frequency for the timer device.
-	 */
-	EXTERN void timer_init(unsigned freq);
+/**
+ * @brief Initializes the timer device.
+ *
+ * @param freq Frequency for the timer device.
+ */
+EXTERN void timer_init(unsigned freq);
 
-	/*
-	 * @brief Returns the clock error
-	 */
-	EXTERN uint64_t clock_get_error(void);
+/*
+ * @brief Returns the clock error
+ */
+EXTERN uint64_t clock_get_error(void);
 
 #ifdef __NANVIX_HAL
 
-	/**
-	 * @brief Resets the timer of the timer device.
-	 */
-	EXTERN void timer_reset(void);
+/**
+ * @brief Resets the timer of the timer device.
+ */
+EXTERN void timer_reset(void);
 
 #endif /* __NANVIX_HAL */
 
-	/**
-	 * @brief Returns the clock value.
-	 *
-	 * If the current architecture have an appropriate Real
-	 * Time Clock, exports the function, otherwise, uses the
-	 * counter provided by the HAL.
-	 */
+/**
+ * @brief Returns the clock value.
+ *
+ * If the current architecture have an appropriate Real
+ * Time Clock, exports the function, otherwise, uses the
+ * counter provided by the HAL.
+ */
 #if (CLUSTER_HAS_RTC)
-	EXTERN uint64_t clock_read(void);
+EXTERN uint64_t clock_read(void);
 #else
-	static inline uint64_t clock_read(void)
-	{
-		return (timer_value);
-	}
+static inline uint64_t clock_read(void)
+{
+    return (timer_value);
+}
 #endif
 
 /**@}*/

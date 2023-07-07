@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -33,30 +33,26 @@
  */
 /**@{*/
 
-	#include <nanvix/const.h>
-	#include <posix/stdint.h>
+#include <nanvix/const.h>
+#include <posix/stdint.h>
 
 #ifndef _ASM_FILE_
 
-	/**
-	 * @brief Initializes the timer device.
-	 *
-	 * @param freq     Timer frequency (in Hz).
-	 * @param timebase Timer time base.
-	 * @param mtime    Location of mtime register.
-	 * @param mtime    Location of mtimecmp register.
-	 */
-	EXTERN void rv32gc_timer_init(
-		uint64_t freq,
-		uint64_t timebase,
-		uint64_t *mtime,
-		uint64_t *mtimecmp
-	);
+/**
+ * @brief Initializes the timer device.
+ *
+ * @param freq     Timer frequency (in Hz).
+ * @param timebase Timer time base.
+ * @param mtime    Location of mtime register.
+ * @param mtime    Location of mtimecmp register.
+ */
+EXTERN void rv32gc_timer_init(uint64_t freq, uint64_t timebase, uint64_t *mtime,
+                              uint64_t *mtimecmp);
 
-	/**
-	 * @brief Resets the timer device.
-	 */
-	EXTERN void rv32gc_timer_reset(void);
+/**
+ * @brief Resets the timer device.
+ */
+EXTERN void rv32gc_timer_reset(void);
 
 #endif
 

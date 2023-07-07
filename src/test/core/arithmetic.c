@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
 #include "../test.h"
+#include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
+#include <nanvix/hlib.h>
 
 /*============================================================================*
  * API Tests                                                                  *
@@ -36,7 +36,7 @@
  *----------------------------------------------------------------------------*/
 
 #define COMMENT(c)
-#define VALUE(type, a) ((type) a)
+#define VALUE(type, a) ((type)a)
 #define OP(type, operator, a, b) (VALUE(type, a) operator VALUE(type, b))
 
 /**
@@ -44,36 +44,36 @@
  *
  * @author João Vicente Souto
  */
-#define TEST_ARITHMETIC_FUNC(funcname, type, value_a, value_b) \
-PRIVATE void test_api_ ## funcname (void)                      \
-{                                                              \
-	type a = value_a;                                          \
-	type b = value_b;                                          \
-                                                               \
-	COMMENT(Arithmetic)                                        \
-	KASSERT((a + b) == OP(type, +, value_a, value_b));         \
-	KASSERT((a - b) == OP(type, -, value_a, value_b));         \
-	KASSERT((a * b) == OP(type, *, value_a, value_b));         \
-	KASSERT((a / b) == OP(type, /, value_a, value_b));         \
-	KASSERT((a % b) == OP(type, %, value_a, value_b));         \
-                                                               \
-	COMMENT(Bit-wise)                                          \
-	KASSERT((a & b)  == OP(type,  &, value_a, value_b));       \
-	KASSERT((a | b)  == OP(type,  |, value_a, value_b));       \
-	KASSERT((a ^ b)  == OP(type,  ^, value_a, value_b));       \
-	KASSERT((a << b) == OP(type, <<, value_a, value_b));       \
-	KASSERT((a >> b) == OP(type, >>, value_a, value_b));       \
-	KASSERT((~a) == ~VALUE(type, value_a));                    \
-                                                               \
-	COMMENT(Logic)                                             \
-	KASSERT((a == b) == OP(type, ==, value_a, value_b));       \
-	KASSERT((a != b) == OP(type, !=, value_a, value_b));       \
-	KASSERT((a < b)  == OP(type,  <, value_a, value_b));       \
-	KASSERT((a <= b) == OP(type, <=, value_a, value_b));       \
-	KASSERT((a > b)  == OP(type,  >, value_a, value_b));       \
-	KASSERT((a >= b) == OP(type, >=, value_a, value_b));       \
-	KASSERT((!a) == !VALUE(type, value_a));                    \
-}
+#define TEST_ARITHMETIC_FUNC(funcname, type, value_a, value_b)                 \
+    PRIVATE void test_api_##funcname(void)                                     \
+    {                                                                          \
+        type a = value_a;                                                      \
+        type b = value_b;                                                      \
+                                                                               \
+        COMMENT(Arithmetic)                                                    \
+        KASSERT((a + b) == OP(type, +, value_a, value_b));                     \
+        KASSERT((a - b) == OP(type, -, value_a, value_b));                     \
+        KASSERT((a * b) == OP(type, *, value_a, value_b));                     \
+        KASSERT((a / b) == OP(type, /, value_a, value_b));                     \
+        KASSERT((a % b) == OP(type, %, value_a, value_b));                     \
+                                                                               \
+        COMMENT(Bit - wise)                                                    \
+        KASSERT((a & b) == OP(type, &, value_a, value_b));                     \
+        KASSERT((a | b) == OP(type, |, value_a, value_b));                     \
+        KASSERT((a ^ b) == OP(type, ^, value_a, value_b));                     \
+        KASSERT((a << b) == OP(type, <<, value_a, value_b));                   \
+        KASSERT((a >> b) == OP(type, >>, value_a, value_b));                   \
+        KASSERT((~a) == ~VALUE(type, value_a));                                \
+                                                                               \
+        COMMENT(Logic)                                                         \
+        KASSERT((a == b) == OP(type, ==, value_a, value_b));                   \
+        KASSERT((a != b) == OP(type, !=, value_a, value_b));                   \
+        KASSERT((a < b) == OP(type, <, value_a, value_b));                     \
+        KASSERT((a <= b) == OP(type, <=, value_a, value_b));                   \
+        KASSERT((a > b) == OP(type, >, value_a, value_b));                     \
+        KASSERT((a >= b) == OP(type, >=, value_a, value_b));                   \
+        KASSERT((!a) == !VALUE(type, value_a));                                \
+    }
 
 /**
  * @name Group of arithmetic test functions.
@@ -100,18 +100,18 @@ TEST_ARITHMETIC_FUNC(uint32_t, uint32_t, 49153, 5)
  * @brief Unit tests.
  */
 PRIVATE struct test test_api_arithmetic[] = {
-	{ test_api_byte,               "byte_t operations            "},
-	{ test_api_hword,              "hword_t operations           "},
-	{ test_api_word,               "word_t operations            "},
-	{ test_api_char,               "char operations              "},
-	{ test_api_short,              "short operations             "},
-	{ test_api_int,                "int operations               "},
-	{ test_api_unsigned_int,       "unsigned int operations      "},
-	{ test_api_long,               "long operations              "},
-	{ test_api_unsigned_long,      "unsigned long operations     "},
-	{ test_api_int32_t,            "int32_t operations           "},
-	{ test_api_uint32_t,           "uint32_t operations          "},
-	{ NULL,                         NULL                          },
+    {test_api_byte, "byte_t operations            "},
+    {test_api_hword, "hword_t operations           "},
+    {test_api_word, "word_t operations            "},
+    {test_api_char, "char operations              "},
+    {test_api_short, "short operations             "},
+    {test_api_int, "int operations               "},
+    {test_api_unsigned_int, "unsigned int operations      "},
+    {test_api_long, "long operations              "},
+    {test_api_unsigned_long, "unsigned long operations     "},
+    {test_api_int32_t, "int32_t operations           "},
+    {test_api_uint32_t, "uint32_t operations          "},
+    {NULL, NULL},
 };
 
 /**
@@ -121,12 +121,11 @@ PRIVATE struct test test_api_arithmetic[] = {
 " */
 PUBLIC void test_arithmetic(void)
 {
-	/* API Tests */
-	CLUSTER_KPRINTF(HLINE);
-	for (int i = 0; test_api_arithmetic[i].test_fn != NULL; i++)
-	{
-		test_api_arithmetic[i].test_fn();
-		CLUSTER_KPRINTF("[test][api][arithmetic] %s [passed]", test_api_arithmetic[i].name);
-	}
+    /* API Tests */
+    CLUSTER_KPRINTF(HLINE);
+    for (int i = 0; test_api_arithmetic[i].test_fn != NULL; i++) {
+        test_api_arithmetic[i].test_fn();
+        CLUSTER_KPRINTF("[test][api][arithmetic] %s [passed]",
+                        test_api_arithmetic[i].name);
+    }
 }
-

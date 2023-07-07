@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,13 +25,13 @@
 #ifndef NANVIX_HAL_HAL_H_
 #define NANVIX_HAL_HAL_H_
 
-	#if !defined(__NANVIX_HAL) && !defined(__NEED_HAL)
-		#error "include <nanvix/hal.h> instead"
-	#endif
+#if !defined(__NANVIX_HAL) && !defined(__NEED_HAL)
+#error "include <nanvix/hal.h> instead"
+#endif
 
-	#undef  __NEED_HAL_TARGET
-	#define __NEED_HAL_TARGET
-	#include <nanvix/hal/target.h>
+#undef __NEED_HAL_TARGET
+#define __NEED_HAL_TARGET
+#include <nanvix/hal/target.h>
 
 /**
  * @addtogroup kernel-hal HAL
@@ -41,15 +41,15 @@
  */
 /**@{*/
 
-	#include <nanvix/hal/log.h>
-	#include <nanvix/hal/resource.h>
-	#include <nanvix/hal/section_guard.h>
-	#include <nanvix/const.h>
+#include <nanvix/hal/log.h>
+#include <nanvix/hal/resource.h>
+#include <nanvix/hal/section_guard.h>
+#include <nanvix/const.h>
 
-	/**
-	 * @brief Initializes the HAL.
-	 */
-	EXTERN void hal_init(void);
+/**
+ * @brief Initializes the HAL.
+ */
+EXTERN void hal_init(void);
 
 /**@}*/
 

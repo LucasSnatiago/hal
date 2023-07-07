@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,8 +25,8 @@
 /* Must come first. */
 #define __NEED_HAL_CLUSTER
 
-#include <nanvix/hal/cluster.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/cluster.h>
 #include <nanvix/hlib.h>
 #include <posix/errno.h>
 
@@ -57,13 +57,13 @@ PUBLIC uint64_t timer_value = 0;
  */
 PRIVATE void default_handler(int num)
 {
-	UNUSED(num);
+    UNUSED(num);
 
-	/* Too many spurious interrupts. */
-	if (++spurious >= INTERRUPT_SPURIOUS_THRESHOLD)
-		kprintf("[hal][core] spurious interrupt %d", num);
+    /* Too many spurious interrupts. */
+    if (++spurious >= INTERRUPT_SPURIOUS_THRESHOLD)
+        kprintf("[hal][core] spurious interrupt %d", num);
 
-	noop();
+    noop();
 }
 
 /**
@@ -71,14 +71,14 @@ PRIVATE void default_handler(int num)
  */
 PRIVATE void do_timer(int num)
 {
-	/* Increment timer value. */
-	timer_value++;
+    /* Increment timer value. */
+    timer_value++;
 
-	/* Forward timer interrupt handling. */
-	if (timer_handler != NULL)
-		timer_handler(num);
+    /* Forward timer interrupt handling. */
+    if (timer_handler != NULL)
+        timer_handler(num);
 
-	timer_reset();
+    timer_reset();
 }
 
 /**
@@ -86,11 +86,11 @@ PRIVATE void do_timer(int num)
  */
 PRIVATE void do_event(int num)
 {
-	/* Forward event interrupt handling. */
-	if (event_handler != default_handler)
-		event_handler(num);
+    /* Forward event interrupt handling. */
+    if (event_handler != default_handler)
+        event_handler(num);
 
-	event_reset();
+    event_reset();
 }
 
 /**
@@ -105,38 +105,37 @@ PRIVATE void do_event(int num)
  */
 PUBLIC void do_interrupt(int intnum)
 {
-	int modenum;
-	interrupt_ack(intnum);
+    int modenum;
+    interrupt_ack(intnum);
 
-	/* Set interrupt execution mode. */
-	modenum = core_status_set_mode(CORE_STATUS_MODE_INTERRUPT);
+    /* Set interrupt execution mode. */
+    modenum = core_status_set_mode(CORE_STATUS_MODE_INTERRUPT);
 
-		/* Nothing to do. */
-		if (interrupt_handlers[intnum] == NULL)
-			goto exit;
+    /* Nothing to do. */
+    if (interrupt_handlers[intnum] == NULL)
+        goto exit;
 
-		interrupt_handlers[intnum](intnum);
+    interrupt_handlers[intnum](intnum);
 
-		/*
-		 * Lets also check for external interrupt, if
-		 * there's any pending, handle.
-		 */
-		while ((intnum = interrupt_next()) != 0)
-		{
-			/* ack. */
-			interrupt_ack(intnum);
+    /*
+     * Lets also check for external interrupt, if
+     * there's any pending, handle.
+     */
+    while ((intnum = interrupt_next()) != 0) {
+        /* ack. */
+        interrupt_ack(intnum);
 
-			/* Nothing to do. */
-			if (interrupt_handlers[intnum] == NULL)
-				goto exit;
+        /* Nothing to do. */
+        if (interrupt_handlers[intnum] == NULL)
+            goto exit;
 
-			/* Call handler. */
-			interrupt_handlers[intnum](intnum);
-		}
+        /* Call handler. */
+        interrupt_handlers[intnum](intnum);
+    }
 
 exit:
-	/* Set interrupt execution mode. */
-	core_status_set_mode(modenum);
+    /* Set interrupt execution mode. */
+    core_status_set_mode(modenum);
 }
 
 /**
@@ -147,44 +146,38 @@ exit:
  */
 PUBLIC int interrupt_register(int num, interrupt_handler_t handler)
 {
-	/* Invalid interrupt number. */
-	if ((num < 0) || (num >= INTERRUPTS_NUM))
-		return (-EINVAL);
+    /* Invalid interrupt number. */
+    if ((num < 0) || (num >= INTERRUPTS_NUM))
+        return (-EINVAL);
 
-	if (num != INTERRUPT_TIMER && num != INTERRUPT_IPI)
-	{
-		/* Handler function already registered. */
-		if (interrupt_handlers[num] != default_handler)
-			return (-EBUSY);
+    if (num != INTERRUPT_TIMER && num != INTERRUPT_IPI) {
+        /* Handler function already registered. */
+        if (interrupt_handlers[num] != default_handler)
+            return (-EBUSY);
 
-		interrupt_handlers[num] = handler;
-	}
-	else
-	{
-		if (num == INTERRUPT_TIMER)
-		{
-			/* Handler function already registered. */
-			if (timer_handler != default_handler)
-				return (-EBUSY);
+        interrupt_handlers[num] = handler;
+    } else {
+        if (num == INTERRUPT_TIMER) {
+            /* Handler function already registered. */
+            if (timer_handler != default_handler)
+                return (-EBUSY);
 
-			timer_handler = handler;
-		}
-		else
-		{
-			/* Handler function already registered. */
-			if (event_handler != default_handler)
-				return (-EBUSY);
+            timer_handler = handler;
+        } else {
+            /* Handler function already registered. */
+            if (event_handler != default_handler)
+                return (-EBUSY);
 
-			event_handler = handler;
-		}
-	}
+            event_handler = handler;
+        }
+    }
 
-	dcache_invalidate();
-	interrupt_unmask(num);
+    dcache_invalidate();
+    interrupt_unmask(num);
 
-	kprintf("[hal][core] interrupt handler registered for irq %d", num);
+    kprintf("[hal][core] interrupt handler registered for irq %d", num);
 
-	return (0);
+    return (0);
 }
 
 /**
@@ -195,44 +188,38 @@ PUBLIC int interrupt_register(int num, interrupt_handler_t handler)
  */
 PUBLIC int interrupt_unregister(int num)
 {
-	/* Invalid interrupt number. */
-	if ((num < 0) || (num >= INTERRUPTS_NUM))
-		return (-EINVAL);
+    /* Invalid interrupt number. */
+    if ((num < 0) || (num >= INTERRUPTS_NUM))
+        return (-EINVAL);
 
-	if (num != INTERRUPT_TIMER && num != INTERRUPT_IPI)
-	{
-		/* No handler function is registered. */
-		if (interrupt_handlers[num] == default_handler)
-			return (-EINVAL);
+    if (num != INTERRUPT_TIMER && num != INTERRUPT_IPI) {
+        /* No handler function is registered. */
+        if (interrupt_handlers[num] == default_handler)
+            return (-EINVAL);
 
-		interrupt_handlers[num] = default_handler;
-	}
-	else
-	{
-		if (num == INTERRUPT_TIMER)
-		{
-			/* No handler function is registered. */
-			if (timer_handler == default_handler)
-				return (-EINVAL);
+        interrupt_handlers[num] = default_handler;
+    } else {
+        if (num == INTERRUPT_TIMER) {
+            /* No handler function is registered. */
+            if (timer_handler == default_handler)
+                return (-EINVAL);
 
-			timer_handler = default_handler;
-		}
-		else
-		{
-			/* No handler function is registered. */
-			if (event_handler == default_handler)
-				return (-EINVAL);
+            timer_handler = default_handler;
+        } else {
+            /* No handler function is registered. */
+            if (event_handler == default_handler)
+                return (-EINVAL);
 
-			event_handler = default_handler;
-		}
-	}
+            event_handler = default_handler;
+        }
+    }
 
-		dcache_invalidate();
-	interrupt_mask(num);
+    dcache_invalidate();
+    interrupt_mask(num);
 
-	kprintf("[hal][core] interrupt handler unregistered for irq %d", num);
+    kprintf("[hal][core] interrupt handler unregistered for irq %d", num);
 
-	return (0);
+    return (0);
 }
 
 /**
@@ -241,25 +228,23 @@ PUBLIC int interrupt_unregister(int num)
  */
 PUBLIC void interrupt_setup(void)
 {
-	kputs("[hal][core] initializing interrupts...\n");
+    kputs("[hal][core] initializing interrupts...\n");
 
-	for (int i = 0; i < INTERRUPTS_NUM; i++)
-	{
-		interrupt_handler_t handler;
+    for (int i = 0; i < INTERRUPTS_NUM; i++) {
+        interrupt_handler_t handler;
 
-		if (i == INTERRUPT_TIMER)
-			handler = do_timer;
-		else if (i == INTERRUPT_IPI)
-			handler = do_event;
-		else
-			handler = default_handler;
+        if (i == INTERRUPT_TIMER)
+            handler = do_timer;
+        else if (i == INTERRUPT_IPI)
+            handler = do_event;
+        else
+            handler = default_handler;
 
-		interrupt_handlers[i] = handler;
-	}
+        interrupt_handlers[i] = handler;
+    }
 
-	timer_handler = default_handler;
-	event_handler = default_handler;
+    timer_handler = default_handler;
+    event_handler = default_handler;
 
-	dcache_invalidate();
+    dcache_invalidate();
 }
-

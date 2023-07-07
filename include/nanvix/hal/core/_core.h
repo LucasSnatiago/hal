@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,44 +25,44 @@
 #ifndef _NANVIX_HAL_CORE_CORE_H_
 #define _NANVIX_HAL_CORE_CORE_H_
 
-	/**
-	 * @defgroup cores Cores
-	 */
+/**
+ * @defgroup cores Cores
+ */
 
-	#if (defined(__x86__))
+#if (defined(__x86__))
 
-		#undef  __NEED_CORE_I486
-		#define __NEED_CORE_I486
-		#include <arch/core/i486.h>
+#undef __NEED_CORE_I486
+#define __NEED_CORE_I486
+#include <arch/core/i486.h>
 
-	#elif (defined(__or1200__))
+#elif (defined(__or1200__))
 
-		#undef  __NEED_CORE_OR1K
-		#define __NEED_CORE_OR1K
-		#include <arch/core/or1k.h>
+#undef __NEED_CORE_OR1K
+#define __NEED_CORE_OR1K
+#include <arch/core/or1k.h>
 
-	#elif (defined(__mor1kx__))
+#elif (defined(__mor1kx__))
 
-		#undef  __NEED_CORE_MOR1KX
-		#define __NEED_CORE_MOR1KX
-		#include <arch/core/mor1kx.h>
+#undef __NEED_CORE_MOR1KX
+#define __NEED_CORE_MOR1KX
+#include <arch/core/mor1kx.h>
 
-	#elif (defined(__rv32gc__))
+#elif (defined(__rv32gc__))
 
-		#undef  __NEED_CORE_RV32GC
-		#define __NEED_CORE_RV32GC
-		#include <arch/core/rv32gc.h>
+#undef __NEED_CORE_RV32GC
+#define __NEED_CORE_RV32GC
+#include <arch/core/rv32gc.h>
 
-	#elif (defined(__linux64_core__))
+#elif (defined(__linux64_core__))
 
-		#undef  __NEED_CORE_LINUX64
-		#define __NEED_CORE_LINUX64
-		#include <arch/core/linux64.h>
+#undef __NEED_CORE_LINUX64
+#define __NEED_CORE_LINUX64
+#include <arch/core/linux64.h>
 
-	#else
+#else
 
-		#error "unkonwn core"
+#error "unkonwn core"
 
-	#endif
+#endif
 
 #endif /* _NANVIX_HAL_CORE_CORE_H_ */

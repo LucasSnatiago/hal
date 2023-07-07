@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -33,9 +33,9 @@
  */
 PUBLIC void linux64_core_setup(void)
 {
-	linux64_core_dcache_setup();
-	linux64_core_icache_setup();
-	linux64_excp_setup();
-	linux64_interrupts_enable();
-	linux64_perf_setup();
+    linux64_core_dcache_setup();
+    linux64_core_icache_setup();
+    linux64_excp_setup();
+    linux64_interrupts_enable();
+    linux64_perf_setup();
 }

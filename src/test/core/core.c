@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
 #include "../test.h"
+#include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
+#include <nanvix/hlib.h>
 
 /**
  * @brief Launch verbose tests?
@@ -36,7 +36,6 @@
  * @brief Run destructive tests?
  */
 #define TEST_CORE_DESTRUCTIVE 0
-
 
 /*============================================================================*
  * API Tests                                                                  *
@@ -51,15 +50,15 @@
  */
 PRIVATE void test_core_get_id(void)
 {
-	int coreid;
+    int coreid;
 
-	coreid = core_get_id();
+    coreid = core_get_id();
 
 #if (TEST_CORE_VERBOSE)
-	kprintf("[test][core][core][api] core %d running", coreid);
+    kprintf("[test][core][core][api] core %d running", coreid);
 #endif
 
-	KASSERT(coreid == COREID_MASTER);
+    KASSERT(coreid == COREID_MASTER);
 }
 
 /*----------------------------------------------------------------------------*
@@ -71,11 +70,11 @@ PRIVATE void test_core_get_id(void)
  */
 PRIVATE void test_core_poweroff(void)
 {
-	/* Don't run destructive tests. */
-	if (!TEST_CORE_DESTRUCTIVE)
-		return;
+    /* Don't run destructive tests. */
+    if (!TEST_CORE_DESTRUCTIVE)
+        return;
 
-	core_poweroff();
+    core_poweroff();
 }
 
 #if CORE_SUPPORTS_MULTITHREADING
@@ -89,7 +88,7 @@ PRIVATE struct stack kstack;
 
 PRIVATE void dummy_start(void)
 {
-	kprintf("[test][core] Dummy function start.");
+    kprintf("[test][core] Dummy function start.");
 }
 
 /**
@@ -97,16 +96,13 @@ PRIVATE void dummy_start(void)
  */
 PRIVATE void test_context_create(void)
 {
-	struct context * ctx;
+    struct context *ctx;
 
-	KASSERT((ctx = context_create(dummy_start, &ustack, &kstack)) != NULL);
+    KASSERT((ctx = context_create(dummy_start, &ustack, &kstack)) != NULL);
 
-	KASSERT(context_get_pc(ctx) == (word_t) dummy_start);
-	KASSERT(WITHIN(
-		context_get_sp(ctx),
-		(word_t) (&ustack),
-		(word_t) (&ustack + 1)
-	));
+    KASSERT(context_get_pc(ctx) == (word_t)dummy_start);
+    KASSERT(
+        WITHIN(context_get_sp(ctx), (word_t)(&ustack), (word_t)(&ustack + 1)));
 }
 
 #endif /* CORE_SUPPORTS_MULTITHREADING */
@@ -119,12 +115,12 @@ PRIVATE void test_context_create(void)
  * @brief API Tests.
  */
 PRIVATE struct test core_tests_api[] = {
-	{ test_core_get_id,    "get core id   " },
-	{ test_core_poweroff,  "power off core" },
+    {test_core_get_id, "get core id   "},
+    {test_core_poweroff, "power off core"},
 #if CORE_SUPPORTS_MULTITHREADING
-	{ test_context_create, "create context" },
+    {test_context_create, "create context"},
 #endif
-	{ NULL,                NULL             },
+    {NULL, NULL},
 };
 
 /**
@@ -135,12 +131,12 @@ PRIVATE struct test core_tests_api[] = {
  */
 PUBLIC void test_core(void)
 {
-	CLUSTER_KPRINTF(HLINE);
+    CLUSTER_KPRINTF(HLINE);
 
-	for (int i = 0; core_tests_api[i].test_fn != NULL; i++)
-	{
-		core_tests_api[i].test_fn();
+    for (int i = 0; core_tests_api[i].test_fn != NULL; i++) {
+        core_tests_api[i].test_fn();
 
-		CLUSTER_KPRINTF("[test][core][core][api] %s [passed]", core_tests_api[i].name);
-	}
+        CLUSTER_KPRINTF("[test][core][core][api] %s [passed]",
+                        core_tests_api[i].name);
+    }
 }

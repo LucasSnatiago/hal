@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -44,27 +44,26 @@ PRIVATE bool initialized = false;
  */
 PUBLIC void tty_virt_write(const char *buf, size_t n)
 {
-	char _buf[TTY_VIRT_BUFSIZE + 1];
+    char _buf[TTY_VIRT_BUFSIZE + 1];
 
-	/**
-	 * It's important to only try to write if the device
-	 * was already initialized.
-	 */
-	if (!initialized)
-		return;
+    /**
+     * It's important to only try to write if the device
+     * was already initialized.
+     */
+    if (!initialized)
+        return;
 
-	while (n > 0)
-	{
-		size_t i;
+    while (n > 0) {
+        size_t i;
 
-		i = (n >= TTY_VIRT_BUFSIZE) ? TTY_VIRT_BUFSIZE : n;
+        i = (n >= TTY_VIRT_BUFSIZE) ? TTY_VIRT_BUFSIZE : n;
 
-		_buf[i] = '\0';
-		memcpy(_buf, buf, i);
+        _buf[i] = '\0';
+        memcpy(_buf, buf, i);
 
-		fprintf(stderr, "%s", _buf);
-		n -= i;
-	}
+        fprintf(stderr, "%s", _buf);
+        n -= i;
+    }
 }
 
 /**
@@ -72,7 +71,6 @@ PUBLIC void tty_virt_write(const char *buf, size_t n)
  */
 PUBLIC void tty_virt_init(void)
 {
-	/* Device initialized. */
-	initialized = true;
+    /* Device initialized. */
+    initialized = true;
 }
-

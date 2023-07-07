@@ -25,17 +25,17 @@
 #define __NEED_RESOURCE
 
 #include <arch/target/unix64/unix64/mailbox.h>
+#include <fcntl.h>
+#include <mqueue.h>
+#include <nanvix/const.h>
 #include <nanvix/hal/processor.h>
 #include <nanvix/hal/resource.h>
-#include <nanvix/const.h>
 #include <nanvix/hlib.h>
-#include <sys/stat.h>
-#include <mqueue.h>
-#include <time.h>
-#include <pthread.h>
-#include <fcntl.h>
 #include <posix/errno.h>
+#include <pthread.h>
 #include <stdio.h>
+#include <sys/stat.h>
+#include <time.h>
 
 /**
  * @brief Length of mailbox name.
@@ -50,53 +50,53 @@
 /**
  * @brief Mailbox.
  */
-struct mailbox
-{
-	/*
-	 * XXX: Don't Touch! This Must Come First!
-	 */
-	struct resource resource;                  /**< Generic resource information. */
+struct mailbox {
+    /*
+     * XXX: Don't Touch! This Must Come First!
+     */
+    struct resource resource; /**< Generic resource information. */
 
-	mqd_t fd;                                  /**< Underlying file descriptor.   */
-	char pathname[UNIX64_MAILBOX_NAME_LENGTH]; /**< Name of underlying mqueue.    */
-	int nodenum;                               /**< ID of underlying node.        */
-	int refcount;                              /**< Reference counter.            */
+    mqd_t fd; /**< Underlying file descriptor.   */
+    char pathname[UNIX64_MAILBOX_NAME_LENGTH]; /**< Name of underlying mqueue.
+                                                */
+    int nodenum;  /**< ID of underlying node.        */
+    int refcount; /**< Reference counter.            */
 };
 
 /**
  * @brief Table of mailboxes.
  */
-PRIVATE struct
-{
-	/**
-	 * @brief Input mailboxes.
-	 */
-	struct mailbox rxs[UNIX64_MAILBOX_CREATE_MAX];
+PRIVATE struct {
+    /**
+     * @brief Input mailboxes.
+     */
+    struct mailbox rxs[UNIX64_MAILBOX_CREATE_MAX];
 
-	/**
-	 * @brief Output mailboxes.
-	 */
-	struct mailbox txs[UNIX64_MAILBOX_OPEN_MAX];
+    /**
+     * @brief Output mailboxes.
+     */
+    struct mailbox txs[UNIX64_MAILBOX_OPEN_MAX];
 } mailboxtab = {
-	.rxs[0 ... UNIX64_MAILBOX_CREATE_MAX - 1] = {
-		.resource = {0},
-	},
+    .rxs[0 ... UNIX64_MAILBOX_CREATE_MAX - 1] =
+        {
+            .resource = {0},
+        },
 
-	.txs[0 ... UNIX64_MAILBOX_OPEN_MAX - 1] = {
-		.resource = {0},
-	},
+    .txs[0 ... UNIX64_MAILBOX_OPEN_MAX - 1] =
+        {
+            .resource = {0},
+        },
 };
 
 /**
  * @brief Resource pool for mailboxes.
  */
-PRIVATE struct
-{
-	const struct resource_pool rx;
-	const struct resource_pool tx;
+PRIVATE struct {
+    const struct resource_pool rx;
+    const struct resource_pool tx;
 } pool = {
-	.rx = {mailboxtab.rxs, UNIX64_MAILBOX_CREATE_MAX, sizeof(struct mailbox)},
-	.tx = {mailboxtab.txs, UNIX64_MAILBOX_OPEN_MAX,   sizeof(struct mailbox)},
+    .rx = {mailboxtab.rxs, UNIX64_MAILBOX_CREATE_MAX, sizeof(struct mailbox)},
+    .tx = {mailboxtab.txs, UNIX64_MAILBOX_OPEN_MAX, sizeof(struct mailbox)},
 };
 
 /**
@@ -107,10 +107,8 @@ PRIVATE pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 /**
  * @brief Default message queue attribute.
  */
-PRIVATE struct mq_attr mq_attr = {
-	.mq_maxmsg = PROCESSOR_NOC_NODES_NUM,
-	.mq_msgsize = UNIX64_MAILBOX_MSG_SIZE
-};
+PRIVATE struct mq_attr mq_attr = {.mq_maxmsg = PROCESSOR_NOC_NODES_NUM,
+                                  .mq_msgsize = UNIX64_MAILBOX_MSG_SIZE};
 
 /*============================================================================*
  * unix64_mailbox_lock()                                                      *
@@ -121,7 +119,7 @@ PRIVATE struct mq_attr mq_attr = {
  */
 PRIVATE void unix64_mailbox_lock(void)
 {
-	pthread_mutex_lock(&lock);
+    pthread_mutex_lock(&lock);
 }
 
 /*============================================================================*
@@ -133,7 +131,7 @@ PRIVATE void unix64_mailbox_lock(void)
  */
 PRIVATE void unix64_mailbox_unlock(void)
 {
-	pthread_mutex_unlock(&lock);
+    pthread_mutex_unlock(&lock);
 }
 
 /*============================================================================*
@@ -145,52 +143,50 @@ PRIVATE void unix64_mailbox_unlock(void)
  */
 PRIVATE int do_unix64_mailbox_create(int nodenum)
 {
-	int mbxid;      /* Mailbox ID.         */
-	int fd;         /* NoC connector.      */
-	char *pathname; /* NoC connector name. */
+    int mbxid;      /* Mailbox ID.         */
+    int fd;         /* NoC connector.      */
+    char *pathname; /* NoC connector name. */
 
-	/* Check if input mailbox was already created. */
-	for (int i = 0; i < UNIX64_MAILBOX_CREATE_MAX; i++)
-	{
-		/* Skip invalid entries. */
-		if (!resource_is_used(&mailboxtab.rxs[i].resource))
-			continue;
+    /* Check if input mailbox was already created. */
+    for (int i = 0; i < UNIX64_MAILBOX_CREATE_MAX; i++) {
+        /* Skip invalid entries. */
+        if (!resource_is_used(&mailboxtab.rxs[i].resource))
+            continue;
 
-		/* Found. */
-		if (mailboxtab.rxs[i].nodenum == nodenum)
-			return (-EEXIST);
-	}
+        /* Found. */
+        if (mailboxtab.rxs[i].nodenum == nodenum)
+            return (-EEXIST);
+    }
 
-	/* Allocate a mailbox. */
-	if ((mbxid = resource_alloc(&pool.rx)) < 0)
-		goto error0;
+    /* Allocate a mailbox. */
+    if ((mbxid = resource_alloc(&pool.rx)) < 0)
+        goto error0;
 
-	pathname = mailboxtab.rxs[mbxid].pathname;
+    pathname = mailboxtab.rxs[mbxid].pathname;
 
-	/* Build pathname for NoC connector. */
-	sprintf(pathname,
-		"/%s-%d",
-		UNIX64_MAILBOX_BASENAME,
-		nodenum
-	);
+    /* Build pathname for NoC connector. */
+    sprintf(pathname, "/%s-%d", UNIX64_MAILBOX_BASENAME, nodenum);
 
-	/* Open NoC connector. */
-	if ((fd = mq_open(pathname, O_RDONLY | O_CREAT | O_NONBLOCK, S_IRUSR | S_IWUSR, &mq_attr)) == -1)
-		goto error1;
+    /* Open NoC connector. */
+    if ((fd = mq_open(pathname,
+                      O_RDONLY | O_CREAT | O_NONBLOCK,
+                      S_IRUSR | S_IWUSR,
+                      &mq_attr)) == -1)
+        goto error1;
 
-	/* Initialize mailbox. */
-	mailboxtab.rxs[mbxid].fd = fd;
-	mailboxtab.rxs[mbxid].nodenum = nodenum;
-	mailboxtab.rxs[mbxid].refcount = 1;
-	resource_set_rdonly(&mailboxtab.rxs[mbxid].resource);
-	resource_set_notbusy(&mailboxtab.rxs[mbxid].resource);
+    /* Initialize mailbox. */
+    mailboxtab.rxs[mbxid].fd = fd;
+    mailboxtab.rxs[mbxid].nodenum = nodenum;
+    mailboxtab.rxs[mbxid].refcount = 1;
+    resource_set_rdonly(&mailboxtab.rxs[mbxid].resource);
+    resource_set_notbusy(&mailboxtab.rxs[mbxid].resource);
 
-	return (mbxid);
+    return (mbxid);
 
 error1:
-	resource_free(&pool.rx, mbxid);
+    resource_free(&pool.rx, mbxid);
 error0:
-	return (-EAGAIN);
+    return (-EAGAIN);
 }
 
 /**
@@ -202,13 +198,13 @@ error0:
  */
 PUBLIC int unix64_mailbox_create(int nodenum)
 {
-	int mbxid;
+    int mbxid;
 
-	unix64_mailbox_lock();
-		mbxid = do_unix64_mailbox_create(nodenum);
-	unix64_mailbox_unlock();
+    unix64_mailbox_lock();
+    mbxid = do_unix64_mailbox_create(nodenum);
+    unix64_mailbox_unlock();
 
-	return (mbxid);
+    return (mbxid);
 }
 
 /*============================================================================*
@@ -220,40 +216,39 @@ PUBLIC int unix64_mailbox_create(int nodenum)
  */
 PRIVATE int do_unix64_mailbox_open(int nodenum)
 {
-	int mbxid;      /* Mailbox ID.         */
-	int fd;         /* NoC connector.      */
-	char *pathname; /* NoC connector name. */
+    int mbxid;      /* Mailbox ID.         */
+    int fd;         /* NoC connector.      */
+    char *pathname; /* NoC connector name. */
 
-	/* Allocate a mailbox. */
-	if ((mbxid = resource_alloc(&pool.tx)) < 0)
-		goto error0;
+    /* Allocate a mailbox. */
+    if ((mbxid = resource_alloc(&pool.tx)) < 0)
+        goto error0;
 
-	pathname = mailboxtab.txs[mbxid].pathname;
+    pathname = mailboxtab.txs[mbxid].pathname;
 
-	/* Build pathname for NoC connector. */
-	sprintf(pathname,
-		"/%s-%d",
-		UNIX64_MAILBOX_BASENAME,
-		nodenum
-	);
+    /* Build pathname for NoC connector. */
+    sprintf(pathname, "/%s-%d", UNIX64_MAILBOX_BASENAME, nodenum);
 
-	/* Open NoC connector. */
-	if ((fd = mq_open(pathname, O_WRONLY | O_CREAT | O_NONBLOCK, S_IRUSR | S_IWUSR, &mq_attr)) == -1)
-		goto error1;
+    /* Open NoC connector. */
+    if ((fd = mq_open(pathname,
+                      O_WRONLY | O_CREAT | O_NONBLOCK,
+                      S_IRUSR | S_IWUSR,
+                      &mq_attr)) == -1)
+        goto error1;
 
-	/* Initialize mailbox. */
-	mailboxtab.txs[mbxid].fd = fd;
-	mailboxtab.txs[mbxid].nodenum = nodenum;
-	mailboxtab.txs[mbxid].refcount = 1;
-	resource_set_wronly(&mailboxtab.txs[mbxid].resource);
-	resource_set_notbusy(&mailboxtab.txs[mbxid].resource);
+    /* Initialize mailbox. */
+    mailboxtab.txs[mbxid].fd = fd;
+    mailboxtab.txs[mbxid].nodenum = nodenum;
+    mailboxtab.txs[mbxid].refcount = 1;
+    resource_set_wronly(&mailboxtab.txs[mbxid].resource);
+    resource_set_notbusy(&mailboxtab.txs[mbxid].resource);
 
-	return (mbxid);
+    return (mbxid);
 
 error1:
-	resource_free(&pool.tx, mbxid);
+    resource_free(&pool.tx, mbxid);
 error0:
-	return (-EAGAIN);
+    return (-EAGAIN);
 }
 
 /**
@@ -265,46 +260,44 @@ error0:
  */
 PUBLIC int unix64_mailbox_open(int nodenum)
 {
-	int mbxid;
+    int mbxid;
 
 again:
 
-	unix64_mailbox_lock();
+    unix64_mailbox_lock();
 
-	/*
-	 * Check if we should just duplicate
-	 * the underlying file descriptor.
-	 */
-	for (int i = 0; i < UNIX64_MAILBOX_OPEN_MAX; i++)
-	{
-		/* Skip unused mailboxes. */
-		if (!resource_is_used(&mailboxtab.txs[i].resource))
-			continue;
+    /*
+     * Check if we should just duplicate
+     * the underlying file descriptor.
+     */
+    for (int i = 0; i < UNIX64_MAILBOX_OPEN_MAX; i++) {
+        /* Skip unused mailboxes. */
+        if (!resource_is_used(&mailboxtab.txs[i].resource))
+            continue;
 
-		/* Not this node ID. */
-		if (nodenum != mailboxtab.txs[i].nodenum)
-			continue;
+        /* Not this node ID. */
+        if (nodenum != mailboxtab.txs[i].nodenum)
+            continue;
 
-		/*
-		 * Found, but mailbox is busy
-		 * We have to wait a bit more.
-		 */
-		if (resource_is_busy(&mailboxtab.txs[i].resource))
-		{
-			unix64_mailbox_unlock();
-			goto again;
-		}
+        /*
+         * Found, but mailbox is busy
+         * We have to wait a bit more.
+         */
+        if (resource_is_busy(&mailboxtab.txs[i].resource)) {
+            unix64_mailbox_unlock();
+            goto again;
+        }
 
-		mbxid = i;
-		mailboxtab.txs[i].refcount++;
-		goto out;
-	}
+        mbxid = i;
+        mailboxtab.txs[i].refcount++;
+        goto out;
+    }
 
-	mbxid = do_unix64_mailbox_open(nodenum);
+    mbxid = do_unix64_mailbox_open(nodenum);
 
 out:
-	unix64_mailbox_unlock();
-	return (mbxid);
+    unix64_mailbox_unlock();
+    return (mbxid);
 }
 
 /*============================================================================*
@@ -320,50 +313,48 @@ out:
  */
 PRIVATE int do_unix64_mailbox_unlink(int mbxid)
 {
-	int err;
+    int err;
 
 again:
 
-	unix64_mailbox_lock();
+    unix64_mailbox_lock();
 
-		/* Bad mailbox. */
-		if (!resource_is_used(&mailboxtab.rxs[mbxid].resource))
-		{
-			err = -EBADF;
-			goto error1;
-		}
+    /* Bad mailbox. */
+    if (!resource_is_used(&mailboxtab.rxs[mbxid].resource)) {
+        err = -EBADF;
+        goto error1;
+    }
 
-		/* Busy mailbox. */
-		if (resource_is_busy(&mailboxtab.rxs[mbxid].resource))
-		{
-			unix64_mailbox_unlock();
-			goto again;
-		}
+    /* Busy mailbox. */
+    if (resource_is_busy(&mailboxtab.rxs[mbxid].resource)) {
+        unix64_mailbox_unlock();
+        goto again;
+    }
 
-		/*
-		 * Set mailbox as busy, before releasing the lock,
-		 * because we may sleep below.
-		 */
-		resource_set_busy(&mailboxtab.rxs[mbxid].resource);
+    /*
+     * Set mailbox as busy, before releasing the lock,
+     * because we may sleep below.
+     */
+    resource_set_busy(&mailboxtab.rxs[mbxid].resource);
 
-	unix64_mailbox_unlock();
+    unix64_mailbox_unlock();
 
-		/* Release underlying message queue. */
-		KASSERT(mq_close(mailboxtab.rxs[mbxid].fd) == 0);
-		KASSERT(mq_unlink(mailboxtab.rxs[mbxid].pathname) == 0);
+    /* Release underlying message queue. */
+    KASSERT(mq_close(mailboxtab.rxs[mbxid].fd) == 0);
+    KASSERT(mq_unlink(mailboxtab.rxs[mbxid].pathname) == 0);
 
-	unix64_mailbox_lock();
+    unix64_mailbox_lock();
 
-		resource_set_notbusy(&mailboxtab.rxs[mbxid].resource);
-		resource_free(&pool.rx, mbxid);
+    resource_set_notbusy(&mailboxtab.rxs[mbxid].resource);
+    resource_free(&pool.rx, mbxid);
 
-	unix64_mailbox_unlock();
+    unix64_mailbox_unlock();
 
-	return (0);
+    return (0);
 
 error1:
-	unix64_mailbox_unlock();
-	return (err);
+    unix64_mailbox_unlock();
+    return (err);
 }
 
 /**
@@ -371,7 +362,7 @@ error1:
  */
 PUBLIC int unix64_mailbox_unlink(int mbxid)
 {
-	return (do_unix64_mailbox_unlink(mbxid));
+    return (do_unix64_mailbox_unlink(mbxid));
 }
 
 /*============================================================================*
@@ -387,57 +378,54 @@ PUBLIC int unix64_mailbox_unlink(int mbxid)
  */
 PRIVATE int do_unix64_mailbox_close(int mbxid)
 {
-	int err;
+    int err;
 
 again:
 
-	unix64_mailbox_lock();
+    unix64_mailbox_lock();
 
-		/* Bad mailbox. */
-		if (!resource_is_used(&mailboxtab.txs[mbxid].resource))
-		{
-			err = -EBADF;
-			goto error1;
-		}
+    /* Bad mailbox. */
+    if (!resource_is_used(&mailboxtab.txs[mbxid].resource)) {
+        err = -EBADF;
+        goto error1;
+    }
 
-		/* Busy mailbox. */
-		if (resource_is_busy(&mailboxtab.txs[mbxid].resource))
-		{
-			unix64_mailbox_unlock();
-			goto again;
-		}
+    /* Busy mailbox. */
+    if (resource_is_busy(&mailboxtab.txs[mbxid].resource)) {
+        unix64_mailbox_unlock();
+        goto again;
+    }
 
-		/*
-		 * Decrement reference counter and release
-		 * the underlying file descriptor if we can.
-		 */
-		if (mailboxtab.txs[mbxid].refcount-- == 1)
-		{
-			/*
-			 * Set mailbox as busy, before releasing the lock,
-			 * because we may sleep below.
-			 */
-			resource_set_busy(&mailboxtab.txs[mbxid].resource);
+    /*
+     * Decrement reference counter and release
+     * the underlying file descriptor if we can.
+     */
+    if (mailboxtab.txs[mbxid].refcount-- == 1) {
+        /*
+         * Set mailbox as busy, before releasing the lock,
+         * because we may sleep below.
+         */
+        resource_set_busy(&mailboxtab.txs[mbxid].resource);
 
-			unix64_mailbox_unlock();
+        unix64_mailbox_unlock();
 
-			/* Release underlying message queue. */
-			KASSERT(mq_close(mailboxtab.txs[mbxid].fd) == 0);
+        /* Release underlying message queue. */
+        KASSERT(mq_close(mailboxtab.txs[mbxid].fd) == 0);
 
-			/* Re-acquire lock. */
-			unix64_mailbox_lock();
+        /* Re-acquire lock. */
+        unix64_mailbox_lock();
 
-			resource_set_notbusy(&mailboxtab.txs[mbxid].resource);
-			resource_free(&pool.tx, mbxid);
-		}
+        resource_set_notbusy(&mailboxtab.txs[mbxid].resource);
+        resource_free(&pool.tx, mbxid);
+    }
 
-	unix64_mailbox_unlock();
+    unix64_mailbox_unlock();
 
-	return (0);
+    return (0);
 
 error1:
-	unix64_mailbox_unlock();
-	return (err);
+    unix64_mailbox_unlock();
+    return (err);
 }
 
 /**
@@ -445,7 +433,7 @@ error1:
  */
 PUBLIC int unix64_mailbox_close(int mbxid)
 {
-	return (do_unix64_mailbox_close(mbxid));
+    return (do_unix64_mailbox_close(mbxid));
 }
 
 /*============================================================================*
@@ -459,72 +447,68 @@ PUBLIC int unix64_mailbox_close(int mbxid)
  */
 PRIVATE ssize_t do_unix64_mailbox_awrite(int mbxid, const void *buf, size_t n)
 {
-	int err;
-	ssize_t nwritten;
-	int ntries = 5;
+    int err;
+    ssize_t nwritten;
+    int ntries = 5;
 
-	unix64_mailbox_lock();
+    unix64_mailbox_lock();
 
-		/* Bad mailbox. */
-		if (!resource_is_used(&mailboxtab.txs[mbxid].resource))
-		{
-			err = -EBADF;
-			goto error1;
-		}
+    /* Bad mailbox. */
+    if (!resource_is_used(&mailboxtab.txs[mbxid].resource)) {
+        err = -EBADF;
+        goto error1;
+    }
 
-		/* Busy mailbox. */
-		if (resource_is_busy(&mailboxtab.txs[mbxid].resource))
-		{
-			err = -EBUSY;
-			goto error1;
-		}
+    /* Busy mailbox. */
+    if (resource_is_busy(&mailboxtab.txs[mbxid].resource)) {
+        err = -EBUSY;
+        goto error1;
+    }
 
-		/* Set mailbox as busy. */
-		resource_set_busy(&mailboxtab.txs[mbxid].resource);
+    /* Set mailbox as busy. */
+    resource_set_busy(&mailboxtab.txs[mbxid].resource);
 
-	/*
-	 * Release lock, since we may sleep below.
-	 */
-	unix64_mailbox_unlock();
+    /*
+     * Release lock, since we may sleep below.
+     */
+    unix64_mailbox_unlock();
 
-	do
-	{
-		struct timespec tm;
+    do {
+        struct timespec tm;
 
-		if (ntries-- == 0)
-		{
-			err = -ETIMEDOUT;
-			goto error2;
-		}
+        if (ntries-- == 0) {
+            err = -ETIMEDOUT;
+            goto error2;
+        }
 
-		clock_gettime(CLOCK_REALTIME, &tm);
-		tm.tv_sec += 1;
+        clock_gettime(CLOCK_REALTIME, &tm);
+        tm.tv_sec += 1;
 
-		if ((nwritten = mq_timedsend(mailboxtab.txs[mbxid].fd, buf, n, 1, &tm)) == -1)
-		{
-			if (errno == EAGAIN)
-				continue;
+        if ((nwritten = mq_timedsend(
+                 mailboxtab.txs[mbxid].fd, buf, n, 1, &tm)) == -1) {
+            if (errno == EAGAIN)
+                continue;
 
-			err = -EAGAIN;
-			goto error2;
-		}
+            err = -EAGAIN;
+            goto error2;
+        }
 
-		break;
+        break;
 
-	} while (1);
+    } while (1);
 
-	unix64_mailbox_lock();
-		resource_set_notbusy(&mailboxtab.txs[mbxid].resource);
-	unix64_mailbox_unlock();
+    unix64_mailbox_lock();
+    resource_set_notbusy(&mailboxtab.txs[mbxid].resource);
+    unix64_mailbox_unlock();
 
-	return (n);
+    return (n);
 
 error2:
-	unix64_mailbox_lock();
-		resource_set_notbusy(&mailboxtab.txs[mbxid].resource);
+    unix64_mailbox_lock();
+    resource_set_notbusy(&mailboxtab.txs[mbxid].resource);
 error1:
-	unix64_mailbox_unlock();
-	return (err);
+    unix64_mailbox_unlock();
+    return (err);
 }
 
 /**
@@ -532,7 +516,7 @@ error1:
  */
 PUBLIC ssize_t unix64_mailbox_awrite(int mbxid, const void *buf, size_t n)
 {
-	return (do_unix64_mailbox_awrite(mbxid, buf, n));
+    return (do_unix64_mailbox_awrite(mbxid, buf, n));
 }
 
 /*============================================================================*
@@ -546,72 +530,68 @@ PUBLIC ssize_t unix64_mailbox_awrite(int mbxid, const void *buf, size_t n)
  */
 PRIVATE ssize_t do_unix64_mailbox_aread(int mbxid, void *buf, size_t n)
 {
-	int err;
-	ssize_t nread;
-	int ntries = 5;
+    int err;
+    ssize_t nread;
+    int ntries = 5;
 
-	unix64_mailbox_lock();
+    unix64_mailbox_lock();
 
-		/* Bad mailbox. */
-		if (!resource_is_used(&mailboxtab.rxs[mbxid].resource))
-		{
-			err = -EBADF;
-			goto error1;
-		}
+    /* Bad mailbox. */
+    if (!resource_is_used(&mailboxtab.rxs[mbxid].resource)) {
+        err = -EBADF;
+        goto error1;
+    }
 
-		/* Busy mailbox. */
-		if (resource_is_busy(&mailboxtab.rxs[mbxid].resource))
-		{
-			err = -EBUSY;
-			goto error1;
-		}
+    /* Busy mailbox. */
+    if (resource_is_busy(&mailboxtab.rxs[mbxid].resource)) {
+        err = -EBUSY;
+        goto error1;
+    }
 
-		/* Set mailbox as busy. */
-		resource_set_busy(&mailboxtab.rxs[mbxid].resource);
+    /* Set mailbox as busy. */
+    resource_set_busy(&mailboxtab.rxs[mbxid].resource);
 
-	/*
-	 * Release lock, since we may sleep below.
-	 */
-	unix64_mailbox_unlock();
+    /*
+     * Release lock, since we may sleep below.
+     */
+    unix64_mailbox_unlock();
 
-	do
-	{
-		struct timespec tm;
+    do {
+        struct timespec tm;
 
-		if (ntries-- == 0)
-		{
-			err = -ETIMEDOUT;
-			goto error2;
-		}
+        if (ntries-- == 0) {
+            err = -ETIMEDOUT;
+            goto error2;
+        }
 
-		clock_gettime(CLOCK_REALTIME, &tm);
-		tm.tv_sec += 1;
+        clock_gettime(CLOCK_REALTIME, &tm);
+        tm.tv_sec += 1;
 
-		if ((nread = mq_timedreceive(mailboxtab.rxs[mbxid].fd, buf, n, NULL, &tm)) == -1)
-		{
-			if (errno == EAGAIN)
-				continue;
+        if ((nread = mq_timedreceive(
+                 mailboxtab.rxs[mbxid].fd, buf, n, NULL, &tm)) == -1) {
+            if (errno == EAGAIN)
+                continue;
 
-			err = -EAGAIN;
-			goto error2;
-		}
+            err = -EAGAIN;
+            goto error2;
+        }
 
-		break;
+        break;
 
-	} while (1);
+    } while (1);
 
-	unix64_mailbox_lock();
-		resource_set_notbusy(&mailboxtab.rxs[mbxid].resource);
-	unix64_mailbox_unlock();
+    unix64_mailbox_lock();
+    resource_set_notbusy(&mailboxtab.rxs[mbxid].resource);
+    unix64_mailbox_unlock();
 
-	return (nread);
+    return (nread);
 
 error2:
-	unix64_mailbox_lock();
-		resource_set_notbusy(&mailboxtab.rxs[mbxid].resource);
+    unix64_mailbox_lock();
+    resource_set_notbusy(&mailboxtab.rxs[mbxid].resource);
 error1:
-	unix64_mailbox_unlock();
-	return (err);
+    unix64_mailbox_unlock();
+    return (err);
 }
 
 /**
@@ -619,7 +599,7 @@ error1:
  */
 PUBLIC ssize_t unix64_mailbox_aread(int mbxid, void *buf, size_t n)
 {
-	return (do_unix64_mailbox_aread(mbxid, buf, n));
+    return (do_unix64_mailbox_aread(mbxid, buf, n));
 }
 
 /*============================================================================*
@@ -638,34 +618,32 @@ PUBLIC ssize_t unix64_mailbox_aread(int mbxid, void *buf, size_t n)
  */
 PUBLIC int unix64_mailbox_ioctl(int mbxid, unsigned request, va_list args)
 {
-	int ret = (-EINVAL); /* Return value. */
+    int ret = (-EINVAL); /* Return value. */
 
-	UNUSED(mbxid);
-	UNUSED(args);
+    UNUSED(mbxid);
+    UNUSED(args);
 
-	unix64_mailbox_lock();
+    unix64_mailbox_lock();
 
-		switch (request)
-		{
-			case UNIX64_MAILBOX_IOCTL_SET_ASYNC_BEHAVIOR:
-			{
-				/**
-				 * The Unix64 does not have asynchronous operations, so the
-				 * definition of lock functions does not have any sense.
-				 */
-				ret = (0);
-			} break;
+    switch (request) {
+    case UNIX64_MAILBOX_IOCTL_SET_ASYNC_BEHAVIOR: {
+        /**
+         * The Unix64 does not have asynchronous operations, so the
+         * definition of lock functions does not have any sense.
+         */
+        ret = (0);
+    } break;
 
-			default:
-				break;
-		}
+    default:
+        break;
+    }
 
-	/*
-	 * Release lock, since we may sleep below.
-	 */
-	unix64_mailbox_unlock();
+    /*
+     * Release lock, since we may sleep below.
+     */
+    unix64_mailbox_unlock();
 
-	return (ret);
+    return (ret);
 }
 
 /*============================================================================*
@@ -677,7 +655,7 @@ PUBLIC int unix64_mailbox_ioctl(int mbxid, unsigned request, va_list args)
  */
 PUBLIC void unix64_mailbox_setup(void)
 {
-	noop();
+    noop();
 }
 
 /*============================================================================*
@@ -689,5 +667,5 @@ PUBLIC void unix64_mailbox_setup(void)
  */
 PUBLIC void unix64_mailbox_shutdown(void)
 {
-	noop();
+    noop();
 }

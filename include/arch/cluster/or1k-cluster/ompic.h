@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,18 +25,18 @@
 #ifndef CLUSTER_OR1K_CLUSTER_OMPIC_H_
 #define CLUSTER_OR1K_CLUSTER_OMPIC_H_
 
-	/* Cluster Interface Implementation */
-	#include <arch/cluster/or1k-cluster/_or1k-cluster.h>
+/* Cluster Interface Implementation */
+#include <arch/cluster/or1k-cluster/_or1k-cluster.h>
 
-	#include <nanvix/const.h>
-	#include <posix/stdint.h>
+#include <nanvix/const.h>
+#include <posix/stdint.h>
 
 #ifndef _ASM_FILE_
 
-	/* External functions. */
-	EXTERN void or1k_cluster_ompic_init(void);
-	EXTERN void or1k_cluster_ompic_send_ipi(uint32_t dstcore, uint16_t data);
-	EXTERN void or1k_cluster_ompic_ack_ipi(void);
+/* External functions. */
+EXTERN void or1k_cluster_ompic_init(void);
+EXTERN void or1k_cluster_ompic_send_ipi(uint32_t dstcore, uint16_t data);
+EXTERN void or1k_cluster_ompic_ack_ipi(void);
 
 #endif /* _ASM_FILE_ */
 

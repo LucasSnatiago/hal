@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,19 +22,18 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
 #include <arch/stdout/console.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
 #include <posix/stddef.h>
 #include <posix/stdint.h>
 
 /**
  * @brief Hardware cursor.
  */
-PRIVATE struct
-{
-	int x; /**< Horizontal axis position. */
-	int y; /**< Vertical axis position.   */
+PRIVATE struct {
+    int x; /**< Horizontal axis position. */
+    int y; /**< Vertical axis position.   */
 } cursor;
 
 /**
@@ -45,7 +44,7 @@ PRIVATE bool initialized = false;
 /**
  * @brief Video memory.
  */
-PRIVATE uint16_t *video = (uint16_t*)VIDEO_ADDR;
+PRIVATE uint16_t *video = (uint16_t *)VIDEO_ADDR;
 
 /**
  * @brief Moves the hardware cursor.
@@ -54,12 +53,12 @@ PRIVATE uint16_t *video = (uint16_t*)VIDEO_ADDR;
  */
 PRIVATE void cursor_move(void)
 {
-	uint16_t cursor_location = cursor.y*VIDEO_WIDTH + cursor.x;
+    uint16_t cursor_location = cursor.y * VIDEO_WIDTH + cursor.x;
 
-	output8(VIDEO_CRTL_REG, VIDEO_CLH);
-	output8(VIDEO_DATA_REG, (uint8_t) ((cursor_location >> 8) & 0xFF));
-	output8(VIDEO_CRTL_REG, VIDEO_CLL);
-	output8(VIDEO_DATA_REG, (uint8_t) (cursor_location & 0xFF));
+    output8(VIDEO_CRTL_REG, VIDEO_CLH);
+    output8(VIDEO_DATA_REG, (uint8_t)((cursor_location >> 8) & 0xFF));
+    output8(VIDEO_CRTL_REG, VIDEO_CLL);
+    output8(VIDEO_DATA_REG, (uint8_t)(cursor_location & 0xFF));
 }
 
 /**
@@ -69,18 +68,19 @@ PRIVATE void cursor_move(void)
  */
 PRIVATE void console_scrolldown(void)
 {
-	uint16_t *p;
+    uint16_t *p;
 
-	/* Pull lines up. */
-	for (p = video; p < (video + (VIDEO_HIGH-1)*(VIDEO_WIDTH)); p++)
-		*p = *(p + VIDEO_WIDTH);
+    /* Pull lines up. */
+    for (p = video; p < (video + (VIDEO_HIGH - 1) * (VIDEO_WIDTH)); p++)
+        *p = *(p + VIDEO_WIDTH);
 
-	/* Blank last line. */
-	for (; p < video + VIDEO_HIGH*VIDEO_WIDTH; p++)
-		*p = (BLACK << 8) | (' ');
+    /* Blank last line. */
+    for (; p < video + VIDEO_HIGH * VIDEO_WIDTH; p++)
+        *p = (BLACK << 8) | (' ');
 
-	/* Set cursor position. */
-	cursor.x = 0; cursor.y = VIDEO_HIGH - 1;
+    /* Set cursor position. */
+    cursor.x = 0;
+    cursor.y = VIDEO_HIGH - 1;
 }
 
 /**
@@ -93,43 +93,40 @@ PRIVATE void console_scrolldown(void)
  */
 PRIVATE void console_put(uint8_t ch, uint8_t color)
 {
-	/* Parse character. */
-    switch (ch)
-    {
-        /* New line. */
-        case '\n':
-            cursor.y++;
-            cursor.x = 0;
-            break;
+    /* Parse character. */
+    switch (ch) {
+    /* New line. */
+    case '\n':
+        cursor.y++;
+        cursor.x = 0;
+        break;
 
-        /* Tabulation. */
-        case '\t':
-            /* FIXME. */
-            cursor.x += 4 - (cursor.x & 3);
-            break;
+    /* Tabulation. */
+    case '\t':
+        /* FIXME. */
+        cursor.x += 4 - (cursor.x & 3);
+        break;
 
-        /* Backspace. */
-        case '\b':
-            if (cursor.x > 0)
-                cursor.x--;
-            else if (cursor.y > 0)
-            {
-                cursor.x = VIDEO_WIDTH - 1;
-                cursor.y--;
-            }
-            video[cursor.y*VIDEO_WIDTH +cursor.x] = (color << 8) | (' ');
-            break;
+    /* Backspace. */
+    case '\b':
+        if (cursor.x > 0)
+            cursor.x--;
+        else if (cursor.y > 0) {
+            cursor.x = VIDEO_WIDTH - 1;
+            cursor.y--;
+        }
+        video[cursor.y * VIDEO_WIDTH + cursor.x] = (color << 8) | (' ');
+        break;
 
-        /* Any other. */
-        default:
-            video[cursor.y*VIDEO_WIDTH +cursor.x] = (color << 8) | (ch);
-            cursor.x++;
-            break;
+    /* Any other. */
+    default:
+        video[cursor.y * VIDEO_WIDTH + cursor.x] = (color << 8) | (ch);
+        cursor.x++;
+        break;
     }
 
     /* Set cursor position. */
-    if (cursor.x >= VIDEO_WIDTH)
-    {
+    if (cursor.x >= VIDEO_WIDTH) {
         cursor.x = 0;
         cursor.y++;
     }
@@ -145,13 +142,13 @@ PRIVATE void console_put(uint8_t ch, uint8_t color)
  */
 PRIVATE void console_clear(void)
 {
-	/* Blank all lines. */
-	for (uint16_t *p = video; p < (video + VIDEO_HIGH*VIDEO_WIDTH); p++)
-		*p = (BLACK << 8) | (' ');
+    /* Blank all lines. */
+    for (uint16_t *p = video; p < (video + VIDEO_HIGH * VIDEO_WIDTH); p++)
+        *p = (BLACK << 8) | (' ');
 
-	/* Set console cursor position. */
-	cursor.x = cursor.y = 0;
-	cursor_move();
+    /* Set console cursor position. */
+    cursor.x = cursor.y = 0;
+    cursor_move();
 }
 
 /**
@@ -160,15 +157,15 @@ PRIVATE void console_clear(void)
  */
 PUBLIC void console_write(const char *buf, size_t n)
 {
-	/**
-	 * It's important to only try to write if the device
-	 * was already initialized.
-	 */
-	if (!initialized)
-		return;
+    /**
+     * It's important to only try to write if the device
+     * was already initialized.
+     */
+    if (!initialized)
+        return;
 
-	for (size_t i = 0; i < n; i++)
-		console_put((uint8_t) buf[i], WHITE);
+    for (size_t i = 0; i < n; i++)
+        console_put((uint8_t)buf[i], WHITE);
 }
 
 /**
@@ -182,20 +179,19 @@ PUBLIC void console_write(const char *buf, size_t n)
  */
 PUBLIC void console_init(void)
 {
-	/* Do not re-initialize the device. */
-	if (initialized)
-		return;
+    /* Do not re-initialize the device. */
+    if (initialized)
+        return;
 
-	/* Set cursor shape. */
-	output8(VIDEO_CRTL_REG, VIDEO_CS);
-	output8(VIDEO_DATA_REG, 0x00);
-	output8(VIDEO_CRTL_REG, VIDEO_CE);
-	output8(VIDEO_DATA_REG, 0x1f);
+    /* Set cursor shape. */
+    output8(VIDEO_CRTL_REG, VIDEO_CS);
+    output8(VIDEO_DATA_REG, 0x00);
+    output8(VIDEO_CRTL_REG, VIDEO_CE);
+    output8(VIDEO_DATA_REG, 0x1f);
 
-	/* Clear the console. */
-	console_clear();
+    /* Clear the console. */
+    console_clear();
 
-	/* Device initialized. */
-	initialized = true;
+    /* Device initialized. */
+    initialized = true;
 }
-

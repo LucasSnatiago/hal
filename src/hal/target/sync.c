@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -47,13 +47,8 @@
  */
 PRIVATE int sync_rx_is_valid(int syncid)
 {
-	return (
-		WITHIN(
-			syncid,
-			SYNC_CREATE_OFFSET,
-			SYNC_CREATE_OFFSET + SYNC_CREATE_MAX
-		)
-	);
+    return (WITHIN(
+        syncid, SYNC_CREATE_OFFSET, SYNC_CREATE_OFFSET + SYNC_CREATE_MAX));
 }
 
 #endif /* __TARGET_HAS_SYNC */
@@ -78,13 +73,7 @@ PRIVATE int sync_rx_is_valid(int syncid)
  */
 PRIVATE int sync_tx_is_valid(int syncid)
 {
-	return (
-		WITHIN(
-			syncid,
-			SYNC_OPEN_OFFSET,
-			SYNC_OPEN_OFFSET + SYNC_OPEN_MAX
-		)
-	);
+    return (WITHIN(syncid, SYNC_OPEN_OFFSET, SYNC_OPEN_OFFSET + SYNC_OPEN_MAX));
 }
 
 #endif /* __TARGET_HAS_SYNC */
@@ -104,38 +93,37 @@ PRIVATE int sync_tx_is_valid(int syncid)
  *
  * @return Non zero if node list is valid and zero otherwise.
  */
-PRIVATE int sync_nodelist_is_valid(const int * nodes, int nnodes, int is_the_one)
+PRIVATE int sync_nodelist_is_valid(const int *nodes, int nnodes, int is_the_one)
 {
-	int local;       /* Local node.          */
-	uint64_t checks; /* Bit-stream of nodes. */
+    int local;       /* Local node.          */
+    uint64_t checks; /* Bit-stream of nodes. */
 
-	checks = 0ULL;
-	local  = processor_node_get_num();
+    checks = 0ULL;
+    local = processor_node_get_num();
 
-	/* Is the local the one? */
-	if (is_the_one && (nodes[0] != local))
-		return (0);
+    /* Is the local the one? */
+    if (is_the_one && (nodes[0] != local))
+        return (0);
 
-	/* Isn't the local the one? */
-	if (!is_the_one && (nodes[0] == local))
-		return (0);
+    /* Isn't the local the one? */
+    if (!is_the_one && (nodes[0] == local))
+        return (0);
 
-	/* Build nodelist. */
-	for (int i = 0; i < nnodes; ++i)
-	{
-		/* Invalid node. */
-		if (!WITHIN(nodes[i], 0, PROCESSOR_NOC_NODES_NUM))
-			return (0);
+    /* Build nodelist. */
+    for (int i = 0; i < nnodes; ++i) {
+        /* Invalid node. */
+        if (!WITHIN(nodes[i], 0, PROCESSOR_NOC_NODES_NUM))
+            return (0);
 
-		/* Does a node appear twice? */
-		if (checks & (1ULL << nodes[i]))
-			return (0);
+        /* Does a node appear twice? */
+        if (checks & (1ULL << nodes[i]))
+            return (0);
 
-		checks |= (1ULL << nodes[i]);
-	}
+        checks |= (1ULL << nodes[i]);
+    }
 
-	/* Is the local node founded? */
-	return (checks & (1ULL << local));
+    /* Is the local node founded? */
+    return (checks & (1ULL << local));
 }
 
 #endif /* __TARGET_HAS_SYNC */
@@ -147,37 +135,37 @@ PRIVATE int sync_nodelist_is_valid(const int * nodes, int nnodes, int is_the_one
 /**
  * @todo TODO: provide a detailed description for this function.
  */
-PUBLIC int sync_create(const int * nodes, int nnodes, int type)
+PUBLIC int sync_create(const int *nodes, int nnodes, int type)
 {
 #if (__TARGET_HAS_SYNC && !__NANVIX_IKC_USES_ONLY_MAILBOX)
-	int is_the_one;
+    int is_the_one;
 
-	/*  Invalid nodes list. */
-	if (nodes == NULL)
-		return (-EINVAL);
+    /*  Invalid nodes list. */
+    if (nodes == NULL)
+        return (-EINVAL);
 
-	/* Bad nodes list. */
-	if (!WITHIN(nnodes, 2, PROCESSOR_NOC_NODES_NUM + 1))
-		return (-EINVAL);
+    /* Bad nodes list. */
+    if (!WITHIN(nnodes, 2, PROCESSOR_NOC_NODES_NUM + 1))
+        return (-EINVAL);
 
-	/* Bad sync type. */
-	if ((type != SYNC_ONE_TO_ALL) && (type != SYNC_ALL_TO_ONE))
-		return (-EINVAL);
+    /* Bad sync type. */
+    if ((type != SYNC_ONE_TO_ALL) && (type != SYNC_ALL_TO_ONE))
+        return (-EINVAL);
 
-	is_the_one = (type == SYNC_ALL_TO_ONE);
+    is_the_one = (type == SYNC_ALL_TO_ONE);
 
-	/* Is nodelist valid? */
-	if (!sync_nodelist_is_valid(nodes, nnodes, is_the_one))
-		return (-EINVAL);
+    /* Is nodelist valid? */
+    if (!sync_nodelist_is_valid(nodes, nnodes, is_the_one))
+        return (-EINVAL);
 
-	return (__sync_create(nodes, nnodes, type));
+    return (__sync_create(nodes, nnodes, type));
 
-#else /* __TARGET_HAS_SYNC */
-	UNUSED(nodes);
-	UNUSED(nnodes);
-	UNUSED(type);
+#else  /* __TARGET_HAS_SYNC */
+    UNUSED(nodes);
+    UNUSED(nnodes);
+    UNUSED(type);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif /* __TARGET_HAS_SYNC */
 }
 
@@ -188,37 +176,37 @@ PUBLIC int sync_create(const int * nodes, int nnodes, int type)
 /**
  * @todo TODO: provide a detailed description for this function.
  */
-PUBLIC int sync_open(const int * nodes, int nnodes, int type)
+PUBLIC int sync_open(const int *nodes, int nnodes, int type)
 {
 #if (__TARGET_HAS_SYNC && !__NANVIX_IKC_USES_ONLY_MAILBOX)
-	int is_the_one;
+    int is_the_one;
 
-	/*  Invalid nodes list. */
-	if (nodes == NULL)
-		return (-EINVAL);
+    /*  Invalid nodes list. */
+    if (nodes == NULL)
+        return (-EINVAL);
 
-	/* Bad nodes list. */
-	if (!WITHIN(nnodes, 2, PROCESSOR_NOC_NODES_NUM + 1))
-		return (-EINVAL);
+    /* Bad nodes list. */
+    if (!WITHIN(nnodes, 2, PROCESSOR_NOC_NODES_NUM + 1))
+        return (-EINVAL);
 
-	/* Bad sync type. */
-	if ((type != SYNC_ONE_TO_ALL) && (type != SYNC_ALL_TO_ONE))
-		return (-EINVAL);
+    /* Bad sync type. */
+    if ((type != SYNC_ONE_TO_ALL) && (type != SYNC_ALL_TO_ONE))
+        return (-EINVAL);
 
-	is_the_one = (type == SYNC_ONE_TO_ALL);
+    is_the_one = (type == SYNC_ONE_TO_ALL);
 
-	/* Is nodelist valid? */
-	if (!sync_nodelist_is_valid(nodes, nnodes, is_the_one))
-		return (-EINVAL);
+    /* Is nodelist valid? */
+    if (!sync_nodelist_is_valid(nodes, nnodes, is_the_one))
+        return (-EINVAL);
 
-	return (__sync_open(nodes, nnodes, type));
+    return (__sync_open(nodes, nnodes, type));
 
-#else /* __TARGET_HAS_SYNC */
-	UNUSED(nodes);
-	UNUSED(nnodes);
-	UNUSED(type);
+#else  /* __TARGET_HAS_SYNC */
+    UNUSED(nodes);
+    UNUSED(nnodes);
+    UNUSED(type);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif /* __TARGET_HAS_SYNC */
 }
 
@@ -233,16 +221,16 @@ PUBLIC int sync_unlink(int syncid)
 {
 #if (__TARGET_HAS_SYNC && !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
-	/* Invalid portal. */
-	if (!sync_rx_is_valid(syncid))
-		return (-EBADF);
+    /* Invalid portal. */
+    if (!sync_rx_is_valid(syncid))
+        return (-EBADF);
 
-	return (__sync_unlink(syncid));
+    return (__sync_unlink(syncid));
 
-#else /* __TARGET_HAS_SYNC */
-	UNUSED(syncid);
+#else  /* __TARGET_HAS_SYNC */
+    UNUSED(syncid);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif /* __TARGET_HAS_SYNC */
 }
 
@@ -257,16 +245,16 @@ PUBLIC int sync_close(int syncid)
 {
 #if (__TARGET_HAS_SYNC && !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
-	/* Invalid portal. */
-	if (!sync_tx_is_valid(syncid))
-		return (-EBADF);
+    /* Invalid portal. */
+    if (!sync_tx_is_valid(syncid))
+        return (-EBADF);
 
-	return (__sync_close(syncid));
+    return (__sync_close(syncid));
 
-#else /* __TARGET_HAS_SYNC */
-	UNUSED(syncid);
+#else  /* __TARGET_HAS_SYNC */
+    UNUSED(syncid);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif /* __TARGET_HAS_SYNC */
 }
 
@@ -281,16 +269,16 @@ PUBLIC ssize_t sync_signal(int syncid)
 {
 #if (__TARGET_HAS_SYNC && !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
-	/* Invalid NoC node ID. */
-	if (!sync_tx_is_valid(syncid))
-		return (-EBADF);
+    /* Invalid NoC node ID. */
+    if (!sync_tx_is_valid(syncid))
+        return (-EBADF);
 
-	return (__sync_signal(syncid));
+    return (__sync_signal(syncid));
 
-#else /* __TARGET_HAS_SYNC */
-	UNUSED(syncid);
+#else  /* __TARGET_HAS_SYNC */
+    UNUSED(syncid);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif /* __TARGET_HAS_SYNC */
 }
 
@@ -305,16 +293,16 @@ PUBLIC int sync_wait(int syncid)
 {
 #if (__TARGET_HAS_SYNC && !__NANVIX_IKC_USES_ONLY_MAILBOX)
 
-	/* Invalid mailbox. */
-	if (!sync_rx_is_valid(syncid))
-		return (-EBADF);
+    /* Invalid mailbox. */
+    if (!sync_rx_is_valid(syncid))
+        return (-EBADF);
 
-	return (__sync_wait(syncid));
+    return (__sync_wait(syncid));
 
-#else /* __TARGET_HAS_SYNC */
-	UNUSED(syncid);
+#else  /* __TARGET_HAS_SYNC */
+    UNUSED(syncid);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif /* __TARGET_HAS_SYNC */
 }
 
@@ -328,34 +316,30 @@ PUBLIC int sync_wait(int syncid)
 PUBLIC int sync_ioctl(int syncid, unsigned request, ...)
 {
 #if (__TARGET_HAS_SYNC && !__NANVIX_IKC_USES_ONLY_MAILBOX)
-	int ret;
-	va_list args;
+    int ret;
+    va_list args;
 
-	/* Invalid mailbox. */
-	if (!sync_rx_is_valid(syncid) && !sync_tx_is_valid(syncid))
-		return (-EBADF);
+    /* Invalid mailbox. */
+    if (!sync_rx_is_valid(syncid) && !sync_tx_is_valid(syncid))
+        return (-EBADF);
 
-	va_start(args, request);
+    va_start(args, request);
 
-		dcache_invalidate();
+    dcache_invalidate();
 
-		ret = __sync_ioctl(
-			syncid,
-			request,
-			args
-		);
+    ret = __sync_ioctl(syncid, request, args);
 
-		dcache_invalidate();
+    dcache_invalidate();
 
-	va_end(args);
+    va_end(args);
 
-	return (ret);
+    return (ret);
 
-#else /* __TARGET_HAS_SYNC */
-	UNUSED(syncid);
-	UNUSED(request);
+#else  /* __TARGET_HAS_SYNC */
+    UNUSED(syncid);
+    UNUSED(request);
 
-	return (-ENOSYS);
+    return (-ENOSYS);
 #endif /* __TARGET_HAS_SYNC */
 }
 
@@ -369,6 +353,6 @@ PUBLIC int sync_ioctl(int syncid, unsigned request, ...)
 PUBLIC void sync_setup(void)
 {
 #if (__TARGET_HAS_SYNC && !__NANVIX_IKC_USES_ONLY_MAILBOX)
-	__sync_setup();
+    __sync_setup();
 #endif /* __TARGET_HAS_SYNC */
 }

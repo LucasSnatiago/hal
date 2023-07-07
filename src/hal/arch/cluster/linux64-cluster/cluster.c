@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,9 +25,9 @@
 /* Must come first. */
 #define __NEED_HAL_CLUSTER
 
-#include <nanvix/hal/cluster.h>
 #include <arch/cluster/linux64-cluster.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/cluster.h>
 #include <nanvix/hlib.h>
 #include <setjmp.h>
 
@@ -38,10 +38,26 @@ EXTERN NORETURN void kmain(int, const char *[]);
  * @brief Cores table.
  */
 PUBLIC struct coreinfo cores[LINUX64_CLUSTER_NUM_CORES] = {
-	{ true,  CORE_RUNNING,   0, NULL, LINUX64_SPINLOCK_UNLOCKED }, /* Master Core   */
-	{ false, CORE_RESETTING, 0, NULL, LINUX64_SPINLOCK_UNLOCKED }, /* Slave Core 1  */
-	{ false, CORE_RESETTING, 0, NULL, LINUX64_SPINLOCK_UNLOCKED }, /* Slave Core 2  */
-	{ false, CORE_RESETTING, 0, NULL, LINUX64_SPINLOCK_UNLOCKED }, /* Slave Core 3  */
+    {true,
+     CORE_RUNNING,
+     0,
+     NULL,
+     LINUX64_SPINLOCK_UNLOCKED}, /* Master Core   */
+    {false,
+     CORE_RESETTING,
+     0,
+     NULL,
+     LINUX64_SPINLOCK_UNLOCKED}, /* Slave Core 1  */
+    {false,
+     CORE_RESETTING,
+     0,
+     NULL,
+     LINUX64_SPINLOCK_UNLOCKED}, /* Slave Core 2  */
+    {false,
+     CORE_RESETTING,
+     0,
+     NULL,
+     LINUX64_SPINLOCK_UNLOCKED}, /* Slave Core 3  */
 };
 
 /**
@@ -54,22 +70,21 @@ PRIVATE jmp_buf reset_buffers[LINUX64_CLUSTER_NUM_CORES];
  */
 PRIVATE NORETURN void linux64_cluster_slave_setup(void)
 {
-	int coreid;
+    int coreid;
 
-	cluster_fence_wait();
+    cluster_fence_wait();
 
-	linux64_core_setup();
+    linux64_core_setup();
 
-	coreid = linux64_core_get_id();
+    coreid = linux64_core_get_id();
 
-	while(1)
-	{
-		setjmp(reset_buffers[coreid]);
-		core_idle();
-		core_run();
-	}
+    while (1) {
+        setjmp(reset_buffers[coreid]);
+        core_idle();
+        core_run();
+    }
 
-	UNREACHABLE();
+    UNREACHABLE();
 }
 
 /**
@@ -77,28 +92,27 @@ PRIVATE NORETURN void linux64_cluster_slave_setup(void)
  */
 PUBLIC NORETURN void _linux64_core_reset(void)
 {
-	int coreid;
+    int coreid;
 
-	coreid = linux64_core_get_id();
-	longjmp(reset_buffers[coreid], 0);
+    coreid = linux64_core_get_id();
+    longjmp(reset_buffers[coreid], 0);
 }
-
 
 /**
  * @todo TODO: provide a detailed description for this function.
  */
 PRIVATE NORETURN void linux64_cluster_master_setup(void)
 {
-	kprintf("[hal][cluster] initializing cluster...");
+    kprintf("[hal][cluster] initializing cluster...");
 
-	for (int i = 1; i < LINUX64_CLUSTER_NUM_CORES; i++)
-		linux64_spinlock_lock(&cores[i].lock);
+    for (int i = 1; i < LINUX64_CLUSTER_NUM_CORES; i++)
+        linux64_spinlock_lock(&cores[i].lock);
 
-	mem_setup();
-	linux64_core_setup();
+    mem_setup();
+    linux64_core_setup();
 
-	cluster_fence_release();
-	kmain(0, NULL);
+    cluster_fence_release();
+    kmain(0, NULL);
 }
 
 /**
@@ -106,14 +120,14 @@ PRIVATE NORETURN void linux64_cluster_master_setup(void)
  */
 PUBLIC NORETURN void linux64_cluster_setup(void)
 {
-	int coreid;
+    int coreid;
 
-	coreid = linux64_core_get_id();
+    coreid = linux64_core_get_id();
 
-	if (coreid == LINUX64_CLUSTER_COREID_MASTER)
-		linux64_cluster_master_setup();
+    if (coreid == LINUX64_CLUSTER_COREID_MASTER)
+        linux64_cluster_master_setup();
 
-	linux64_cluster_slave_setup();
+    linux64_cluster_slave_setup();
 }
 
 /**
@@ -121,19 +135,17 @@ PUBLIC NORETURN void linux64_cluster_setup(void)
  */
 PUBLIC NORETURN void linux64_core_poweroff(bool panic)
 {
-	/* Panic. */
-	if (panic)
-	{
-		kprintf("[hal] core panic");
-		exit(0);
-	}
+    /* Panic. */
+    if (panic) {
+        kprintf("[hal] core panic");
+        exit(0);
+    }
 
-	/* Poweroff. */
-	if (linux64_core_get_id() == LINUX64_CLUSTER_COREID_MASTER)
-	{
-		kprintf("[hal] powering off...");
-		exit(0);
-	}
+    /* Poweroff. */
+    if (linux64_core_get_id() == LINUX64_CLUSTER_COREID_MASTER) {
+        kprintf("[hal] powering off...");
+        exit(0);
+    }
 
-	pthread_exit(NULL);
+    pthread_exit(NULL);
 }

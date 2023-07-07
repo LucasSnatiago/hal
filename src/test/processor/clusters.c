@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
 #include "../test.h"
+#include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
+#include <nanvix/hlib.h>
 
 #if (PROCESSOR_IS_MULTICLUSTER)
 
@@ -47,15 +47,15 @@
  */
 PRIVATE void test_clusters_get_num(void)
 {
-	int clusternum;
+    int clusternum;
 
-	clusternum = cluster_get_num();
+    clusternum = cluster_get_num();
 
 #if (TEST_CLUSTERS_VERBOSE)
-	kprintf("[test][processor][clusters][api] cluster %d running", clusternum);
+    kprintf("[test][processor][clusters][api] cluster %d running", clusternum);
 #endif
 
-	KASSERT(clusternum == PROCESSOR_CLUSTERNUM_MASTER);
+    KASSERT(clusternum == PROCESSOR_CLUSTERNUM_MASTER);
 }
 
 /*----------------------------------------------------------------------------*
@@ -67,7 +67,7 @@ PRIVATE void test_clusters_get_num(void)
  */
 PRIVATE void test_clusters_get_type(void)
 {
-	KASSERT(cluster_is_iocluster(PROCESSOR_CLUSTERNUM_MASTER));
+    KASSERT(cluster_is_iocluster(PROCESSOR_CLUSTERNUM_MASTER));
 }
 
 /*============================================================================*
@@ -78,9 +78,9 @@ PRIVATE void test_clusters_get_type(void)
  * @brief API Tests.
  */
 PRIVATE struct test test_api_clusters[] = {
-	{ test_clusters_get_num,  "get logical cluster id" },
-	{ test_clusters_get_type, "get cluster type      " },
-	{ NULL,                    NULL                    },
+    {test_clusters_get_num, "get logical cluster id"},
+    {test_clusters_get_type, "get cluster type      "},
+    {NULL, NULL},
 };
 
 /**
@@ -92,19 +92,17 @@ PRIVATE struct test test_api_clusters[] = {
 PUBLIC void test_clusters(void)
 {
 #if (PROCESSOR_IS_MULTICLUSTER)
-	if (processor_node_get_num() == NODENUM_SLAVE)
-		return;
+    if (processor_node_get_num() == NODENUM_SLAVE)
+        return;
 #endif
 
-	/* API Tests */
-	kprintf(HLINE);
-	for (int i = 0; test_api_clusters[i].test_fn != NULL; i++)
-	{
-		test_api_clusters[i].test_fn();
-		kprintf("[test][processor][clusters][api] %s [passed]",
-			test_api_clusters[i].name
-		);
-	}
+    /* API Tests */
+    kprintf(HLINE);
+    for (int i = 0; test_api_clusters[i].test_fn != NULL; i++) {
+        test_api_clusters[i].test_fn();
+        kprintf("[test][processor][clusters][api] %s [passed]",
+                test_api_clusters[i].name);
+    }
 }
 
 #endif /* PROCESSOR_IS_MULTICLUSTER */

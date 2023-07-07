@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,8 +25,8 @@
 /* Must come fist. */
 #define __NEED_HAL_PROCESSOR
 
-#include <nanvix/hal/processor.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/processor.h>
 #include <nanvix/hlib.h>
 
 /**
@@ -34,14 +34,14 @@
  */
 PUBLIC int linux64_processor_boot(int nclusters)
 {
-	UNUSED(nclusters);
+    UNUSED(nclusters);
 
-	kprintf("[hal][processor] powering on...");
+    kprintf("[hal][processor] powering on...");
 
-	linux64_processor_clusters_boot();
-	linux64_processor_noc_boot();
+    linux64_processor_clusters_boot();
+    linux64_processor_noc_boot();
 
-	return (linux64_cluster_boot());
+    return (linux64_cluster_boot());
 }
 
 /**
@@ -49,11 +49,11 @@ PUBLIC int linux64_processor_boot(int nclusters)
  */
 PUBLIC NORETURN void linux64_processor_poweroff(void)
 {
-	if (cluster_get_num() == PROCESSOR_CLUSTERNUM_MASTER)
-		kprintf("[hal][processor] powering off...");
+    if (cluster_get_num() == PROCESSOR_CLUSTERNUM_MASTER)
+        kprintf("[hal][processor] powering off...");
 
-	linux64_processor_noc_shutdown();
-	linux64_processor_clusters_shutdown();
+    linux64_processor_noc_shutdown();
+    linux64_processor_clusters_shutdown();
 
-	cluster_poweroff();
+    cluster_poweroff();
 }

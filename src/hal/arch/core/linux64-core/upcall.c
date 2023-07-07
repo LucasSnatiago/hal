@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -39,17 +39,13 @@
  * @note It is up to the caller to check if enough memory is available
  * in the user stack to perform the upcall.
  */
-PUBLIC void upcall_forge(
-	struct context *ctx,
-	void (*fn)(void *),
-	void *arg,
-	word_t argsize
-)
+PUBLIC void upcall_forge(struct context *ctx, void (*fn)(void *), void *arg,
+                         word_t argsize)
 {
-	UNUSED(ctx);
-	UNUSED(argsize);
+    UNUSED(ctx);
+    UNUSED(argsize);
 
-	fn(arg);
+    fn(arg);
 
-	linux64_core_poweroff(true);
+    linux64_core_poweroff(true);
 }

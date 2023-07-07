@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,21 +25,27 @@
 /* Must come first. */
 #define __NEED_CORE_TYPES
 
-#include <arch/core/linux64/types.h>
 #include <arch/core/linux64/perf.h>
+#include <arch/core/linux64/types.h>
 #include <nanvix/hlib.h>
+#include <posix/errno.h>
+#include <posix/stdint.h>
 #include <sys/ioctl.h>
 #include <syscall.h>
-#include <posix/stdint.h>
 #include <unistd.h>
-#include <posix/errno.h>
 
 /**
  * @Brief Function to call to configure a perf
  */
-PRIVATE int perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu, int group_fd, unsigned long flags)
+PRIVATE int perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
+                            int cpu, int group_fd, unsigned long flags)
 {
-	return (syscall(__NR_perf_event_open, (linux64_dword_t) hw_event, pid, cpu, group_fd, flags));
+    return (syscall(__NR_perf_event_open,
+                    (linux64_dword_t)hw_event,
+                    pid,
+                    cpu,
+                    group_fd,
+                    flags));
 }
 
 /**
@@ -47,18 +53,17 @@ PRIVATE int perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu
  */
 int linux64_perf_monitors[LINUX64_PERF_MONITORS_NUM];
 
-
 /**
  * @Brief Check if the perf and event values are valide
  */
 PUBLIC int perf_isvalid(int perf)
 {
-	return (perf >= 0 && perf < LINUX64_PERF_MONITORS_NUM);
+    return (perf >= 0 && perf < LINUX64_PERF_MONITORS_NUM);
 }
 
 PUBLIC int event_isvalid(int event)
 {
-	return (event >= 0 && event < LINUX64_PERF_EVENTS_NUM);
+    return (event >= 0 && event < LINUX64_PERF_EVENTS_NUM);
 }
 
 /**
@@ -69,8 +74,8 @@ PUBLIC int event_isvalid(int event)
  */
 PUBLIC void linux64_perf_setup(void)
 {
-	for(int i = 0; i < LINUX64_PERF_MONITORS_NUM; i++)
-		linux64_perf_monitors[i] = -1;
+    for (int i = 0; i < LINUX64_PERF_MONITORS_NUM; i++)
+        linux64_perf_monitors[i] = -1;
 }
 
 /**
@@ -84,29 +89,29 @@ PUBLIC void linux64_perf_setup(void)
  */
 PUBLIC int linux64_perf_start(int perf, int event)
 {
-	if (!perf_isvalid(perf) || !event_isvalid(event))
-		return (-EINVAL);
+    if (!perf_isvalid(perf) || !event_isvalid(event))
+        return (-EINVAL);
 
-	struct perf_event_attr attr;
-	kmemset(&attr, 0, sizeof(struct perf_event_attr));
-	attr.type = PERF_TYPE_HARDWARE;
-	attr.size = sizeof(struct perf_event_attr);
-	attr.config = event;
-	attr.disabled = 1;
-	attr.exclude_kernel = 1;
-	attr.exclude_hv = 1;
-	linux64_perf_monitors[perf] = perf_event_open(&attr,
-												LINUX64_PERF_ARG1,
-												LINUX64_PERF_ARG2,
-												LINUX64_PERF_ARG3,
-												LINUX64_PERF_ARG4);
+    struct perf_event_attr attr;
+    kmemset(&attr, 0, sizeof(struct perf_event_attr));
+    attr.type = PERF_TYPE_HARDWARE;
+    attr.size = sizeof(struct perf_event_attr);
+    attr.config = event;
+    attr.disabled = 1;
+    attr.exclude_kernel = 1;
+    attr.exclude_hv = 1;
+    linux64_perf_monitors[perf] = perf_event_open(&attr,
+                                                  LINUX64_PERF_ARG1,
+                                                  LINUX64_PERF_ARG2,
+                                                  LINUX64_PERF_ARG3,
+                                                  LINUX64_PERF_ARG4);
 
-	if (linux64_perf_monitors[perf] == -1)
-		return (-EINVAL);
+    if (linux64_perf_monitors[perf] == -1)
+        return (-EINVAL);
 
-	ioctl(linux64_perf_monitors[perf], PERF_EVENT_IOC_RESET, 0);
-	ioctl(linux64_perf_monitors[perf], PERF_EVENT_IOC_ENABLE, 0);
-	return (0);
+    ioctl(linux64_perf_monitors[perf], PERF_EVENT_IOC_RESET, 0);
+    ioctl(linux64_perf_monitors[perf], PERF_EVENT_IOC_ENABLE, 0);
+    return (0);
 }
 
 /**
@@ -119,11 +124,11 @@ PUBLIC int linux64_perf_start(int perf, int event)
  */
 PUBLIC int linux64_perf_stop(int perf)
 {
-	if (!perf_isvalid(perf))
-		return (-EINVAL);
+    if (!perf_isvalid(perf))
+        return (-EINVAL);
 
-	ioctl(linux64_perf_monitors[perf], PERF_EVENT_IOC_DISABLE, 0);
-	return (0);
+    ioctl(linux64_perf_monitors[perf], PERF_EVENT_IOC_DISABLE, 0);
+    return (0);
 }
 
 /**
@@ -136,11 +141,11 @@ PUBLIC int linux64_perf_stop(int perf)
  */
 PUBLIC int linux64_perf_restart(int perf)
 {
-	if (!perf_isvalid(perf))
-		return (-1);
+    if (!perf_isvalid(perf))
+        return (-1);
 
-	ioctl(linux64_perf_monitors[perf], PERF_EVENT_IOC_RESET, 0);
-	return (0);
+    ioctl(linux64_perf_monitors[perf], PERF_EVENT_IOC_RESET, 0);
+    return (0);
 }
 
 /**
@@ -153,12 +158,12 @@ PUBLIC int linux64_perf_restart(int perf)
  */
 PUBLIC uint64_t linux64_perf_read(int perf)
 {
-	if (!perf_isvalid(perf))
-		return (-1);
+    if (!perf_isvalid(perf))
+        return (-1);
 
-	uint64_t res = 0;
-	if (read(linux64_perf_monitors[perf], &res, sizeof(unsigned long)) < 1)
-		return (0);
-	else
-		return (res);
+    uint64_t res = 0;
+    if (read(linux64_perf_monitors[perf], &res, sizeof(unsigned long)) < 1)
+        return (0);
+    else
+        return (res);
 }

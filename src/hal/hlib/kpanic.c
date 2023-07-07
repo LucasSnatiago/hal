@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
 #include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
 #include <nanvix/hlib.h>
 #include <posix/stdarg.h>
 
@@ -35,24 +35,24 @@
  */
 PUBLIC NORETURN void kpanic(const char *fmt, ...)
 {
-	size_t len;                    /* String length.           */
-	va_list args;                  /* Variable arguments list. */
-	char buffer[KBUFFER_SIZE + 2]; /* Temporary buffer.        */
+    size_t len;                    /* String length.           */
+    va_list args;                  /* Variable arguments list. */
+    char buffer[KBUFFER_SIZE + 2]; /* Temporary buffer.        */
 
-	kstrncpy(buffer, "PANIC: ", 7);
+    kstrncpy(buffer, "PANIC: ", 7);
 
-	/* Convert to raw string. */
-	va_start(args, fmt);
-	len = kvsnprintf(buffer + 7, KBUFFER_SIZE - 7 + 1, fmt, args) + 7;
-	buffer[++len] = '\n';
-	buffer[++len] = '\0';
-	va_end(args);
+    /* Convert to raw string. */
+    va_start(args, fmt);
+    len = kvsnprintf(buffer + 7, KBUFFER_SIZE - 7 + 1, fmt, args) + 7;
+    buffer[++len] = '\n';
+    buffer[++len] = '\0';
+    va_end(args);
 
-	kputs(buffer);
+    kputs(buffer);
 
-	/* I don't want to be troubled. */
-	interrupts_disable();
+    /* I don't want to be troubled. */
+    interrupts_disable();
 
-	/* Stay here, forever. */
-	UNREACHABLE();
+    /* Stay here, forever. */
+    UNREACHABLE();
 }

@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
 #include "../test.h"
+#include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
+#include <nanvix/hlib.h>
 
 /*----------------------------------------------------------------------------*
  * Fence                                                                      *
@@ -39,10 +39,10 @@
  */
 PUBLIC void fence_init(struct fence *b, int ncores)
 {
-	b->nreached = 0;
-	b->ncores = ncores;
-	spinlock_init(&b->lock);
-	dcache_invalidate();
+    b->nreached = 0;
+    b->ncores = ncores;
+    spinlock_init(&b->lock);
+    dcache_invalidate();
 }
 
 /**
@@ -50,17 +50,16 @@ PUBLIC void fence_init(struct fence *b, int ncores)
  */
 PUBLIC void fence_wait(struct fence *b)
 {
-	again:
+again:
 
-		spinlock_lock(&b->lock);
+    spinlock_lock(&b->lock);
 
-			if (b->nreached < b->ncores)
-			{
-				spinlock_unlock(&b->lock);
-				goto again;
-			}
+    if (b->nreached < b->ncores) {
+        spinlock_unlock(&b->lock);
+        goto again;
+    }
 
-		spinlock_unlock(&b->lock);
+    spinlock_unlock(&b->lock);
 }
 
 /**
@@ -70,9 +69,9 @@ PUBLIC void fence_wait(struct fence *b)
  */
 PUBLIC void fence_join(struct fence *b)
 {
-	spinlock_lock(&b->lock);
+    spinlock_lock(&b->lock);
 
-		b->nreached++;
+    b->nreached++;
 
-	spinlock_unlock(&b->lock);
+    spinlock_unlock(&b->lock);
 }

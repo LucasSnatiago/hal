@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,10 +25,10 @@
 /* Must come fist. */
 #define __NEED_RESOURCE
 
+#include <nanvix/const.h>
 #include <nanvix/hal/core/spinlock.h>
 #include <nanvix/hal/resource.h>
 #include <nanvix/hlib.h>
-#include <nanvix/const.h>
 #include <posix/errno.h>
 
 PRIVATE spinlock_t _lock = SPINLOCK_UNLOCKED;
@@ -55,34 +55,32 @@ PRIVATE spinlock_t _lock = SPINLOCK_UNLOCKED;
  */
 PRIVATE int resource_dumb_alloc(const struct resource_pool *pool)
 {
-	KASSERT(pool != NULL);
+    KASSERT(pool != NULL);
 
-	char *base = (char *) pool->resources;
-	int n = pool->nresources;
-	size_t size = pool->resource_size;
+    char *base = (char *)pool->resources;
+    int n = pool->nresources;
+    size_t size = pool->resource_size;
 
-	spinlock_lock(&_lock);
+    spinlock_lock(&_lock);
 
-		/* Search for a free synchronization point. */
-		for (int i = 0; i < n; i++)
-		{
-			struct resource *resource;
+    /* Search for a free synchronization point. */
+    for (int i = 0; i < n; i++) {
+        struct resource *resource;
 
-			resource = (struct resource *)(&base[mult(i, size)]);
+        resource = (struct resource *)(&base[mult(i, size)]);
 
-			/* Found. */
-			if (!resource_is_used(resource))
-			{
-				*resource = RESOURCE_INITIALIZER;
-				resource_set_used(resource);
-				spinlock_unlock(&_lock);
-				return (i);
-			}
-		}
+        /* Found. */
+        if (!resource_is_used(resource)) {
+            *resource = RESOURCE_INITIALIZER;
+            resource_set_used(resource);
+            spinlock_unlock(&_lock);
+            return (i);
+        }
+    }
 
-	spinlock_unlock(&_lock);
+    spinlock_unlock(&_lock);
 
-	return (-1);
+    return (-1);
 }
 
 /*============================================================================*
@@ -101,19 +99,19 @@ PRIVATE int resource_dumb_alloc(const struct resource_pool *pool)
  */
 PRIVATE void resource_dumb_free(const struct resource_pool *pool, int id)
 {
-	KASSERT(pool != NULL && id >= 0);
+    KASSERT(pool != NULL && id >= 0);
 
-	char *base = (char *) pool->resources;
-	size_t size = pool->resource_size;
-	struct resource *resource;
+    char *base = (char *)pool->resources;
+    size_t size = pool->resource_size;
+    struct resource *resource;
 
-	resource = (struct resource *)(&base[mult(id, size)]);
+    resource = (struct resource *)(&base[mult(id, size)]);
 
-	spinlock_lock(&_lock);
+    spinlock_lock(&_lock);
 
-		resource_set_unused(resource);
+    resource_set_unused(resource);
 
-	spinlock_unlock(&_lock);
+    spinlock_unlock(&_lock);
 }
 
 /*============================================================================*
@@ -140,23 +138,24 @@ PRIVATE void resource_dumb_free(const struct resource_pool *pool, int id)
  * @note This function is non-blocking.
  * @note This function is @b NOT thread safe.
  */
-PRIVATE int resource_dumb_push_front(struct resource_arrangement * arr, struct resource * r)
+PRIVATE int resource_dumb_push_front(struct resource_arrangement *arr,
+                                     struct resource *r)
 {
-	/* Valid pointers. */
-	KASSERT(arr && r && !r->next);
+    /* Valid pointers. */
+    KASSERT(arr && r && !r->next);
 
-	/* Empty? */
-	if (arr->size == 0)
-		arr->tail = r;
+    /* Empty? */
+    if (arr->size == 0)
+        arr->tail = r;
 
-	/* Update next resource of the tail. */
-	else
-		r->next = arr->head;
+    /* Update next resource of the tail. */
+    else
+        r->next = arr->head;
 
-	arr->head = r;
-	arr->size++;
+    arr->head = r;
+    arr->size++;
 
-	return (0);
+    return (0);
 }
 
 /*============================================================================*
@@ -175,23 +174,24 @@ PRIVATE int resource_dumb_push_front(struct resource_arrangement * arr, struct r
  * @note This function is non-blocking.
  * @note This function is @b NOT thread safe.
  */
-PRIVATE int resource_dumb_push_back(struct resource_arrangement * arr, struct resource * r)
+PRIVATE int resource_dumb_push_back(struct resource_arrangement *arr,
+                                    struct resource *r)
 {
-	/* Valid pointers. */
-	KASSERT(arr && r && !r->next);
+    /* Valid pointers. */
+    KASSERT(arr && r && !r->next);
 
-	/* Empty? */
-	if (arr->size == 0)
-		arr->head = r;
+    /* Empty? */
+    if (arr->size == 0)
+        arr->head = r;
 
-	/* Update next resource of the tail. */
-	else
-		arr->tail->next = r;
+    /* Update next resource of the tail. */
+    else
+        arr->tail->next = r;
 
-	arr->tail = r;
-	arr->size++;
+    arr->tail = r;
+    arr->size++;
 
-	return (arr->size - 1);
+    return (arr->size - 1);
 }
 
 /*============================================================================*
@@ -210,45 +210,45 @@ PRIVATE int resource_dumb_push_back(struct resource_arrangement * arr, struct re
  * @note This function is non-blocking.
  * @note This function is @b NOT thread safe.
  */
-PRIVATE int resource_dumb_insert(struct resource_arrangement * arr, struct resource * r, int pos)
+PRIVATE int resource_dumb_insert(struct resource_arrangement *arr,
+                                 struct resource *r, int pos)
 {
-	int i;
-	struct resource * previous;
+    int i;
+    struct resource *previous;
 
-	/* Valid pointers. */
-	KASSERT(arr && r && !r->next);
+    /* Valid pointers. */
+    KASSERT(arr && r && !r->next);
 
-	/* Valid position. */
-	if (!WITHIN(pos, 0, (int) (arr->size + 1)))
-		return (-1);
+    /* Valid position. */
+    if (!WITHIN(pos, 0, (int)(arr->size + 1)))
+        return (-1);
 
-	/* Front? */
-	if (pos == 0)
-		return (resource_dumb_push_front(arr, r));
+    /* Front? */
+    if (pos == 0)
+        return (resource_dumb_push_front(arr, r));
 
-	/* Back? */
-	if (pos == (int) arr->size)
-		return (resource_dumb_push_back(arr, r));
+    /* Back? */
+    if (pos == (int)arr->size)
+        return (resource_dumb_push_back(arr, r));
 
-	/* Middle. */
-	i        = 1;
-	previous = arr->head;
+    /* Middle. */
+    i = 1;
+    previous = arr->head;
 
-	/* Find position. */
-	while (i != pos)
-	{
-		previous = previous->next;
-		i++;
-	}
+    /* Find position. */
+    while (i != pos) {
+        previous = previous->next;
+        i++;
+    }
 
-	/* Insert resource. */
-	r->next        = previous->next;
-	previous->next = r;
+    /* Insert resource. */
+    r->next = previous->next;
+    previous->next = r;
 
-	/* Update size. */
-	arr->size++;
+    /* Update size. */
+    arr->size++;
 
-	return (pos);
+    return (pos);
 }
 
 /*============================================================================*
@@ -268,48 +268,44 @@ PRIVATE int resource_dumb_insert(struct resource_arrangement * arr, struct resou
  * @note This function is non-blocking.
  * @note This function is @b NOT thread safe.
  */
-PRIVATE int resource_dumb_insert_ordered(
-	struct resource_arrangement * arr,
-	struct resource * r,
-	compare_fn cmp
-)
+PRIVATE int resource_dumb_insert_ordered(struct resource_arrangement *arr,
+                                         struct resource *r, compare_fn cmp)
 {
-	int pos;
-	struct resource * previous;
+    int pos;
+    struct resource *previous;
 
-	/* Valid pointers. */
-	KASSERT(arr && r && !r->next && cmp);
+    /* Valid pointers. */
+    KASSERT(arr && r && !r->next && cmp);
 
-	/* Head > r ? Insert front. */
-	if (arr->size == 0 || cmp(arr->head, r) > 0)
-		return (resource_dumb_push_front(arr, r));
+    /* Head > r ? Insert front. */
+    if (arr->size == 0 || cmp(arr->head, r) > 0)
+        return (resource_dumb_push_front(arr, r));
 
-	/* Search until reach the tail. */
-	pos      = 1;
-	previous = arr->head;
+    /* Search until reach the tail. */
+    pos = 1;
+    previous = arr->head;
 
-	/**
-	 * Search until reach the tail (next == NULL) or the cmp function
-	 * sinalizes that the next is greater than r.
-	 */
-	while (previous->next && cmp(previous->next, r) <= 0)
-	{
-		previous = previous->next;
-		pos++;
-	}
+    /**
+     * Search until reach the tail (next == NULL) or the cmp function
+     * sinalizes that the next is greater than r.
+     */
+    while (previous->next && cmp(previous->next, r) <= 0) {
+        previous = previous->next;
+        pos++;
+    }
 
-	/* Insert on tail? */
-	if (previous == arr->tail)
-		return (resource_dumb_push_back(arr, r));
+    /* Insert on tail? */
+    if (previous == arr->tail)
+        return (resource_dumb_push_back(arr, r));
 
-	/* Insert between two nodes. */
-	r->next        = previous->next;
-	previous->next = r;
+    /* Insert between two nodes. */
+    r->next = previous->next;
+    previous->next = r;
 
-	/* Update size. */
-	arr->size++;
+    /* Update size. */
+    arr->size++;
 
-	return (pos);
+    return (pos);
 }
 
 /*============================================================================*
@@ -330,29 +326,29 @@ PRIVATE int resource_dumb_insert_ordered(
  * @note This function is non-blocking.
  * @note This function is @b NOT thread safe.
  */
-PRIVATE void __resource_remove(struct resource_arrangement * arr, struct resource * previous, struct resource * curr)
+PRIVATE void __resource_remove(struct resource_arrangement *arr,
+                               struct resource *previous, struct resource *curr)
 {
-	KASSERT(arr && curr);
+    KASSERT(arr && curr);
 
-	/* Remove head? */
-	if (curr == arr->head)
-		arr->head = curr->next;
-	else
-		previous->next = curr->next;
+    /* Remove head? */
+    if (curr == arr->head)
+        arr->head = curr->next;
+    else
+        previous->next = curr->next;
 
-	/* Remove tail? */
-	if (curr == arr->tail)
-		arr->tail = previous;
+    /* Remove tail? */
+    if (curr == arr->tail)
+        arr->tail = previous;
 
-	arr->size--;
-	curr->next = NULL;
+    arr->size--;
+    curr->next = NULL;
 
-	/* Empty? */
-	if (arr->size == 0)
-	{
-		arr->head = NULL;
-		arr->tail = NULL;
-	}
+    /* Empty? */
+    if (arr->size == 0) {
+        arr->head = NULL;
+        arr->tail = NULL;
+    }
 }
 
 /*============================================================================*
@@ -372,54 +368,51 @@ PRIVATE void __resource_remove(struct resource_arrangement * arr, struct resourc
  * @note This function is non-blocking.
  * @note This function is @b NOT thread safe.
  */
-PRIVATE int resource_dumb_remove_pos(struct resource_arrangement * arr, struct resource ** r, int * pos)
+PRIVATE int resource_dumb_remove_pos(struct resource_arrangement *arr,
+                                     struct resource **r, int *pos)
 {
-	int i;
-	struct resource * curr;
-	struct resource * previous;
+    int i;
+    struct resource *curr;
+    struct resource *previous;
 
-	KASSERT(arr && r && pos);
+    KASSERT(arr && r && pos);
 
-	/* One of them must be valid. */
-	if (*r == NULL && !WITHIN(*pos, 0, (int) arr->size))
-		return (-1);
+    /* One of them must be valid. */
+    if (*r == NULL && !WITHIN(*pos, 0, (int)arr->size))
+        return (-1);
 
-	i        = 0;
-	curr     = arr->head;
-	previous = NULL;
+    i = 0;
+    curr = arr->head;
+    previous = NULL;
 
-	/* Search by resource? */
-	if (*r)
-	{
-		while (curr != NULL && curr != *r)
-		{
-			previous = curr;
-			curr     = curr->next;
-			i++;
-		}
-	}
+    /* Search by resource? */
+    if (*r) {
+        while (curr != NULL && curr != *r) {
+            previous = curr;
+            curr = curr->next;
+            i++;
+        }
+    }
 
-	/* Search by id. */
-	else
-	{
-		while (curr != NULL && i != *pos)
-		{
-			previous = curr;
-			curr     = curr->next;
-			i++;
-		}
-	}
+    /* Search by id. */
+    else {
+        while (curr != NULL && i != *pos) {
+            previous = curr;
+            curr = curr->next;
+            i++;
+        }
+    }
 
-	/* Not Found? */
-	if (!curr)
-		return (-1);
+    /* Not Found? */
+    if (!curr)
+        return (-1);
 
-	*pos = i;
-	*r   = curr;
+    *pos = i;
+    *r = curr;
 
-	__resource_remove(arr, previous, curr);
+    __resource_remove(arr, previous, curr);
 
-	return (0);
+    return (0);
 }
 
 /*============================================================================*
@@ -436,17 +429,18 @@ PRIVATE int resource_dumb_remove_pos(struct resource_arrangement * arr, struct r
  * @note This function is non-blocking.
  * @note This function is @b NOT thread safe.
  */
-PRIVATE struct resource * resource_dumb_pop_front(struct resource_arrangement * arr)
+PRIVATE struct resource *resource_dumb_pop_front(
+    struct resource_arrangement *arr)
 {
-	KASSERT(arr != NULL);
+    KASSERT(arr != NULL);
 
-	int pos = 0;
-	struct resource * r = NULL;
+    int pos = 0;
+    struct resource *r = NULL;
 
-	if (resource_dumb_remove_pos(arr, &r, &pos) != 0)
-		return (NULL);
+    if (resource_dumb_remove_pos(arr, &r, &pos) != 0)
+        return (NULL);
 
-	return (r);
+    return (r);
 }
 
 /*============================================================================*
@@ -463,17 +457,18 @@ PRIVATE struct resource * resource_dumb_pop_front(struct resource_arrangement * 
  * @note This function is non-blocking.
  * @note This function is @b NOT thread safe.
  */
-PRIVATE struct resource * resource_dumb_pop_back(struct resource_arrangement * arr)
+PRIVATE struct resource *resource_dumb_pop_back(
+    struct resource_arrangement *arr)
 {
-	KASSERT(arr != NULL);
+    KASSERT(arr != NULL);
 
-	int pos = (arr->size - 1);
-	struct resource * r = NULL;
+    int pos = (arr->size - 1);
+    struct resource *r = NULL;
 
-	if (resource_dumb_remove_pos(arr, &r, &pos) != 0)
-		return (NULL);
+    if (resource_dumb_remove_pos(arr, &r, &pos) != 0)
+        return (NULL);
 
-	return (r);
+    return (r);
 }
 
 /*============================================================================*
@@ -491,16 +486,17 @@ PRIVATE struct resource * resource_dumb_pop_back(struct resource_arrangement * a
  * @note This function is non-blocking.
  * @note This function is @b NOT thread safe.
  */
-PRIVATE struct resource * resource_dumb_remove_spec(struct resource_arrangement * arr, int pos)
+PRIVATE struct resource *resource_dumb_remove_spec(
+    struct resource_arrangement *arr, int pos)
 {
-	KASSERT(arr != NULL);
+    KASSERT(arr != NULL);
 
-	struct resource * r = NULL;
+    struct resource *r = NULL;
 
-	if (resource_dumb_remove_pos(arr, &r, &pos) != 0)
-		return (NULL);
+    if (resource_dumb_remove_pos(arr, &r, &pos) != 0)
+        return (NULL);
 
-	return (r);
+    return (r);
 }
 
 /*============================================================================*
@@ -518,16 +514,17 @@ PRIVATE struct resource * resource_dumb_remove_spec(struct resource_arrangement 
  * @note This function is non-blocking.
  * @note This function is @b NOT thread safe.
  */
-PRIVATE int resource_dumb_pop(struct resource_arrangement * arr, struct resource * r)
+PRIVATE int resource_dumb_pop(struct resource_arrangement *arr,
+                              struct resource *r)
 {
-	KASSERT(arr != NULL);
+    KASSERT(arr != NULL);
 
-	int pos = -1;
+    int pos = -1;
 
-	if (resource_dumb_remove_pos(arr, &r, &pos) != 0)
-		return (-EAGAIN);
+    if (resource_dumb_remove_pos(arr, &r, &pos) != 0)
+        return (-EAGAIN);
 
-	return (pos);
+    return (pos);
 }
 
 /*============================================================================*
@@ -546,29 +543,29 @@ PRIVATE int resource_dumb_pop(struct resource_arrangement * arr, struct resource
  * @note This function is non-blocking.
  * @note This function is @b NOT thread safe.
  */
-PRIVATE struct resource * resource_dumb_remove_verify(struct resource_arrangement * arr, verify_fn verify)
+PRIVATE struct resource *resource_dumb_remove_verify(
+    struct resource_arrangement *arr, verify_fn verify)
 {
-	struct resource * curr;
-	struct resource * previous;
+    struct resource *curr;
+    struct resource *previous;
 
-	KASSERT(arr && verify);
+    KASSERT(arr && verify);
 
-	curr     = arr->head;
-	previous = NULL;
+    curr = arr->head;
+    previous = NULL;
 
-	/* While still has resources and has not been found. */
-	while (curr != NULL && !verify(curr))
-	{
-		previous = curr;
-		curr     = curr->next;
-	}
+    /* While still has resources and has not been found. */
+    while (curr != NULL && !verify(curr)) {
+        previous = curr;
+        curr = curr->next;
+    }
 
-	/* Found? */
-	if (curr)
-		__resource_remove(arr, previous, curr);
+    /* Found? */
+    if (curr)
+        __resource_remove(arr, previous, curr);
 
-	/* Return. */
-	return (curr);
+    /* Return. */
+    return (curr);
 }
 
 /*============================================================================*
@@ -590,24 +587,24 @@ PRIVATE struct resource * resource_dumb_remove_verify(struct resource_arrangemen
  * @note This function is non-blocking.
  * @note This function is @b NOT thread safe.
  */
-PRIVATE int resource_dumb_search(struct resource_arrangement * arr, struct resource * r)
+PRIVATE int resource_dumb_search(struct resource_arrangement *arr,
+                                 struct resource *r)
 {
-	int i;
-	struct resource * curr;
+    int i;
+    struct resource *curr;
 
-	if (arr == NULL || r == NULL)
-		return (-EINVAL);
+    if (arr == NULL || r == NULL)
+        return (-EINVAL);
 
-	i    = 0;
-	curr = arr->head;
+    i = 0;
+    curr = arr->head;
 
-	while (curr != NULL && curr != r)
-	{
-		curr = curr->next;
-		i++;
-	}
+    while (curr != NULL && curr != r) {
+        curr = curr->next;
+        i++;
+    }
 
-	return (curr ? i : -EAGAIN);
+    return (curr ? i : -EAGAIN);
 }
 
 /*============================================================================*
@@ -625,24 +622,24 @@ PRIVATE int resource_dumb_search(struct resource_arrangement * arr, struct resou
  * @note This function is non-blocking.
  * @note This function is @b NOT thread safe.
  */
-PRIVATE int resource_dumb_search_verify(struct resource_arrangement * arr, verify_fn verify)
+PRIVATE int resource_dumb_search_verify(struct resource_arrangement *arr,
+                                        verify_fn verify)
 {
-	int i;
-	struct resource * curr;
+    int i;
+    struct resource *curr;
 
-	if (arr == NULL || verify == NULL)
-		return (-EINVAL);
+    if (arr == NULL || verify == NULL)
+        return (-EINVAL);
 
-	i    = 0;
-	curr = arr->head;
+    i = 0;
+    curr = arr->head;
 
-	while (curr != NULL && !verify(curr))
-	{
-		curr = curr->next;
-		i++;
-	}
+    while (curr != NULL && !verify(curr)) {
+        curr = curr->next;
+        i++;
+    }
 
-	return (curr ? i : -EAGAIN);
+    return (curr ? i : -EAGAIN);
 }
 
 /*============================================================================*

@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
 #include "../test.h"
+#include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
+#include <nanvix/hlib.h>
 
 /**
  * @brief Launch verbose tests?
@@ -47,17 +47,16 @@
  */
 PRIVATE void test_perf_api_query(void)
 {
-	/*
-	 * At least one performance event
-	 * should be supported.
-	 */
-	for (int i = 0; i < PERF_EVENTS_MAX; i++)
-	{
-		if (!perf_query(i))
-			return;
-	}
+    /*
+     * At least one performance event
+     * should be supported.
+     */
+    for (int i = 0; i < PERF_EVENTS_MAX; i++) {
+        if (!perf_query(i))
+            return;
+    }
 
-	KASSERT(0);
+    KASSERT(0);
 }
 
 /*----------------------------------------------------------------------------*
@@ -69,8 +68,8 @@ PRIVATE void test_perf_api_query(void)
  */
 PRIVATE void test_perf_api_read(void)
 {
-	for (int i = 0; i < PERF_MONITORS_NUM; i++)
-		KASSERT(perf_read(i) == 0);
+    for (int i = 0; i < PERF_MONITORS_NUM; i++)
+        KASSERT(perf_read(i) == 0);
 }
 
 /*----------------------------------------------------------------------------*
@@ -82,23 +81,21 @@ PRIVATE void test_perf_api_read(void)
  */
 PRIVATE void test_perf_api_start_stop(void)
 {
-	int event = -1;
+    int event = -1;
 
-	/*
-	 * Get the first performance
-	 * event that is supported.
-	 */
-	for (int i = 0; i < PERF_EVENTS_MAX; i++)
-	{
-		if (!perf_query(i))
-		{
-			event = i;
-			break;
-		}
-	}
+    /*
+     * Get the first performance
+     * event that is supported.
+     */
+    for (int i = 0; i < PERF_EVENTS_MAX; i++) {
+        if (!perf_query(i)) {
+            event = i;
+            break;
+        }
+    }
 
-	KASSERT(perf_start(0, event) == 0);
-	KASSERT(perf_stop(event) == 0);
+    KASSERT(perf_start(0, event) == 0);
+    KASSERT(perf_stop(event) == 0);
 }
 
 /*============================================================================*
@@ -114,8 +111,8 @@ PRIVATE void test_perf_api_start_stop(void)
  */
 PRIVATE void test_perf_fault_query(void)
 {
-	KASSERT(perf_query(-1) == -ENOTSUP);
-	KASSERT(perf_query(PERF_EVENTS_NUM) == -ENOTSUP);
+    KASSERT(perf_query(-1) == -ENOTSUP);
+    KASSERT(perf_query(PERF_EVENTS_NUM) == -ENOTSUP);
 }
 
 /*----------------------------------------------------------------------------*
@@ -127,8 +124,8 @@ PRIVATE void test_perf_fault_query(void)
  */
 PRIVATE void test_perf_fault_read(void)
 {
-	KASSERT(perf_read(-1) == (uint64_t) -1);
-	KASSERT(perf_read(PERF_MONITORS_NUM) == (uint64_t) -1);
+    KASSERT(perf_read(-1) == (uint64_t)-1);
+    KASSERT(perf_read(PERF_MONITORS_NUM) == (uint64_t)-1);
 }
 
 /*----------------------------------------------------------------------------*
@@ -140,25 +137,23 @@ PRIVATE void test_perf_fault_read(void)
  */
 PRIVATE void test_perf_fault_start(void)
 {
-	int event = -1;
+    int event = -1;
 
-	/*
-	 * Get the first performance
-	 * event that is supported.
-	 */
-	for (int i = 0; i < PERF_EVENTS_MAX; i++)
-	{
-		if (!perf_query(i))
-		{
-			event = i;
-			break;
-		}
-	}
+    /*
+     * Get the first performance
+     * event that is supported.
+     */
+    for (int i = 0; i < PERF_EVENTS_MAX; i++) {
+        if (!perf_query(i)) {
+            event = i;
+            break;
+        }
+    }
 
-	KASSERT(perf_start(-1, event) == -EINVAL);
-	KASSERT(perf_start(PERF_MONITORS_NUM, event) == -EINVAL);
-	KASSERT(perf_start(0, -1) == -EINVAL);
-	KASSERT(perf_start(0, PERF_EVENTS_NUM) == -EINVAL);
+    KASSERT(perf_start(-1, event) == -EINVAL);
+    KASSERT(perf_start(PERF_MONITORS_NUM, event) == -EINVAL);
+    KASSERT(perf_start(0, -1) == -EINVAL);
+    KASSERT(perf_start(0, PERF_EVENTS_NUM) == -EINVAL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -170,8 +165,8 @@ PRIVATE void test_perf_fault_start(void)
  */
 PRIVATE void test_perf_fault_stop(void)
 {
-	KASSERT(perf_stop(-1) == -EINVAL);
-	KASSERT(perf_stop(PERF_MONITORS_NUM) == -EINVAL);
+    KASSERT(perf_stop(-1) == -EINVAL);
+    KASSERT(perf_stop(PERF_MONITORS_NUM) == -EINVAL);
 }
 
 #endif
@@ -185,11 +180,11 @@ PRIVATE void test_perf_fault_stop(void)
  */
 PRIVATE struct test perf_tests_api[] = {
 #if (CORE_HAS_PERF)
-	{ test_perf_api_query,      "query performance monitor capabilities " },
-	{ test_perf_api_read,       "read performance monitor               " },
-	{ test_perf_api_start_stop, "start and stop performance monitor     " },
+    {test_perf_api_query, "query performance monitor capabilities "},
+    {test_perf_api_read, "read performance monitor               "},
+    {test_perf_api_start_stop, "start and stop performance monitor     "},
 #endif
-	{ NULL,                      NULL                                     },
+    {NULL, NULL},
 };
 
 /**
@@ -197,12 +192,12 @@ PRIVATE struct test perf_tests_api[] = {
  */
 PRIVATE struct test perf_tests_fault[] = {
 #if (CORE_HAS_PERF)
-	{ test_perf_fault_query, "invalid query performance monitor capabilities " },
-	{ test_perf_fault_read,  "invalid read performance monitor               " },
-	{ test_perf_fault_start, "invalid start performance monitor              " },
-	{ test_perf_fault_stop,  "invalid stop performance monitor               " },
+    {test_perf_fault_query, "invalid query performance monitor capabilities "},
+    {test_perf_fault_read, "invalid read performance monitor               "},
+    {test_perf_fault_start, "invalid start performance monitor              "},
+    {test_perf_fault_stop, "invalid stop performance monitor               "},
 #endif
-	{ NULL,                   NULL                                             },
+    {NULL, NULL},
 };
 
 /**
@@ -213,18 +208,18 @@ PRIVATE struct test perf_tests_fault[] = {
  */
 PUBLIC void test_perf(void)
 {
-	CLUSTER_KPRINTF(HLINE);
-	for (int i = 0; perf_tests_api[i].test_fn != NULL; i++)
-	{
-		perf_tests_api[i].test_fn();
-		CLUSTER_KPRINTF("[test][core][perf][api] %s [passed]", perf_tests_api[i].name);
-	}
+    CLUSTER_KPRINTF(HLINE);
+    for (int i = 0; perf_tests_api[i].test_fn != NULL; i++) {
+        perf_tests_api[i].test_fn();
+        CLUSTER_KPRINTF("[test][core][perf][api] %s [passed]",
+                        perf_tests_api[i].name);
+    }
 
-	/* Fault Injection Tests */
-	CLUSTER_KPRINTF(HLINE);
-	for (int i = 0; perf_tests_fault[i].test_fn != NULL; i++)
-	{
-		perf_tests_fault[i].test_fn();
-		CLUSTER_KPRINTF("[test][core][perf][fault] %s [passed]", perf_tests_fault[i].name);
-	}
+    /* Fault Injection Tests */
+    CLUSTER_KPRINTF(HLINE);
+    for (int i = 0; perf_tests_fault[i].test_fn != NULL; i++) {
+        perf_tests_fault[i].test_fn();
+        CLUSTER_KPRINTF("[test][core][perf][fault] %s [passed]",
+                        perf_tests_fault[i].name);
+    }
 }

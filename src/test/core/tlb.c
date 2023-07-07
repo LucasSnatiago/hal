@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-#include <nanvix/hal/hal.h>
+#include "../test.h"
 #include <nanvix/const.h>
+#include <nanvix/hal/hal.h>
 #include <nanvix/hlib.h>
 #include <posix/errno.h>
-#include "../test.h"
 
 /**
  * @brief Run destructive tests?
@@ -51,15 +51,15 @@
  */
 PRIVATE void test_tlb_lookup_vaddr(void)
 {
-	vaddr_t vaddr;
+    vaddr_t vaddr;
 
-	vaddr = TRUNCATE(VADDR(test_tlb_lookup_vaddr), KPAGE_SIZE);
+    vaddr = TRUNCATE(VADDR(test_tlb_lookup_vaddr), KPAGE_SIZE);
 
 #if (TEST_TLB_VERBOSE)
-	kprintf("tlb_lookup_vaddr() vaddr = %x", vaddr);
+    kprintf("tlb_lookup_vaddr() vaddr = %x", vaddr);
 #endif
 
-	KASSERT(tlb_lookup_vaddr(TLB_INSTRUCTION, vaddr) != NULL);
+    KASSERT(tlb_lookup_vaddr(TLB_INSTRUCTION, vaddr) != NULL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -71,15 +71,15 @@ PRIVATE void test_tlb_lookup_vaddr(void)
  */
 PRIVATE void test_tlb_lookup_paddr(void)
 {
-	paddr_t paddr;
+    paddr_t paddr;
 
-	paddr = TRUNCATE(PADDR(test_tlb_lookup_paddr), KPAGE_SIZE);
+    paddr = TRUNCATE(PADDR(test_tlb_lookup_paddr), KPAGE_SIZE);
 
 #if (TEST_TLB_VERBOSE)
-	kprintf("tlb_lookup_paddr() paddr = %x", paddr);
+    kprintf("tlb_lookup_paddr() paddr = %x", paddr);
 #endif
 
-	KASSERT(tlb_lookup_paddr(TLB_INSTRUCTION, paddr) != NULL);
+    KASSERT(tlb_lookup_paddr(TLB_INSTRUCTION, paddr) != NULL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -91,24 +91,24 @@ PRIVATE void test_tlb_lookup_paddr(void)
  */
 PRIVATE void test_tlb_write(void)
 {
-	vaddr_t vaddr;
-	paddr_t paddr;
+    vaddr_t vaddr;
+    paddr_t paddr;
 
-	vaddr = TRUNCATE(VADDR(UBASE_VIRT) + PAGE_SIZE, PAGE_SIZE);
-	paddr = TRUNCATE(PADDR(UBASE_PHYS) + PAGE_SIZE, PAGE_SIZE);
+    vaddr = TRUNCATE(VADDR(UBASE_VIRT) + PAGE_SIZE, PAGE_SIZE);
+    paddr = TRUNCATE(PADDR(UBASE_PHYS) + PAGE_SIZE, PAGE_SIZE);
 
 #if (TEST_TLB_VERBOSE)
-	kprintf("tlb_write() vaddr = %x, paddr = %x", vaddr, paddr);
+    kprintf("tlb_write() vaddr = %x, paddr = %x", vaddr, paddr);
 #endif
 
-	/* Write TLB entry. */
-	KASSERT(tlb_write(TLB_DATA, vaddr, paddr) == 0);
-	KASSERT(tlb_flush() == 0);
+    /* Write TLB entry. */
+    KASSERT(tlb_write(TLB_DATA, vaddr, paddr) == 0);
+    KASSERT(tlb_flush() == 0);
 
-	/*
-	 * TLB entry will be invalidated in
-	 * test_tlb_invalidate().
-	 */
+    /*
+     * TLB entry will be invalidated in
+     * test_tlb_invalidate().
+     */
 }
 
 /*----------------------------------------------------------------------------*
@@ -120,23 +120,23 @@ PRIVATE void test_tlb_write(void)
  */
 PRIVATE void test_tlb_invalidate(void)
 {
-	vaddr_t vaddr;
+    vaddr_t vaddr;
 
-	vaddr = TRUNCATE(VADDR(UBASE_VIRT) + PAGE_SIZE, PAGE_SIZE);
+    vaddr = TRUNCATE(VADDR(UBASE_VIRT) + PAGE_SIZE, PAGE_SIZE);
 
 #if (TEST_TLB_VERBOSE)
-	kprintf("tlb_inval() vaddr = %x", vaddr);
+    kprintf("tlb_inval() vaddr = %x", vaddr);
 #endif
 
-	/* This entry should exist. */
-	KASSERT(tlb_lookup_vaddr(TLB_DATA, vaddr) != NULL);
+    /* This entry should exist. */
+    KASSERT(tlb_lookup_vaddr(TLB_DATA, vaddr) != NULL);
 
-	/* Invalidate TLB entry. */
-	KASSERT(tlb_inval(TLB_DATA, vaddr) == 0);
-	KASSERT(tlb_flush() == 0);
+    /* Invalidate TLB entry. */
+    KASSERT(tlb_inval(TLB_DATA, vaddr) == 0);
+    KASSERT(tlb_flush() == 0);
 
-	/* This entry should no longer exist. */
-	KASSERT(tlb_lookup_vaddr(TLB_DATA, vaddr) == NULL);
+    /* This entry should no longer exist. */
+    KASSERT(tlb_lookup_vaddr(TLB_DATA, vaddr) == NULL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -148,36 +148,36 @@ PRIVATE void test_tlb_invalidate(void)
  */
 PRIVATE void test_tlb_write_destructive(void)
 {
-	vaddr_t vaddr;
-	paddr_t paddr;
+    vaddr_t vaddr;
+    paddr_t paddr;
 
-	/* Don't run this test. */
-	if (!TEST_TLB_DESTRUCTIVE)
-		return;
+    /* Don't run this test. */
+    if (!TEST_TLB_DESTRUCTIVE)
+        return;
 
-	vaddr = TRUNCATE(VADDR(UBASE_VIRT) + PAGE_SIZE, PAGE_SIZE);
-	paddr = TRUNCATE(PADDR(UBASE_PHYS) + PAGE_SIZE, PAGE_SIZE);
+    vaddr = TRUNCATE(VADDR(UBASE_VIRT) + PAGE_SIZE, PAGE_SIZE);
+    paddr = TRUNCATE(PADDR(UBASE_PHYS) + PAGE_SIZE, PAGE_SIZE);
 
 #if (TEST_TLB_VERBOSE)
-	kprintf("tlb_write() vaddr = %x, paddr = %x", vaddr, paddr);
+    kprintf("tlb_write() vaddr = %x, paddr = %x", vaddr, paddr);
 #endif
 
-	/* Write TLB entry. */
-	KASSERT(tlb_write(TLB_DATA, vaddr, paddr) == 0);
-	KASSERT(tlb_flush() == 0);
+    /* Write TLB entry. */
+    KASSERT(tlb_write(TLB_DATA, vaddr, paddr) == 0);
+    KASSERT(tlb_flush() == 0);
 
-	/* This entry should exist. */
-	KASSERT(tlb_lookup_vaddr(TLB_DATA, vaddr) != NULL);
+    /* This entry should exist. */
+    KASSERT(tlb_lookup_vaddr(TLB_DATA, vaddr) != NULL);
 
-	/* Write to the page. */
-	kmemset((void *) vaddr, -1, PAGE_SIZE);
+    /* Write to the page. */
+    kmemset((void *)vaddr, -1, PAGE_SIZE);
 
-	/* Invalidate TLB entry. */
-	KASSERT(tlb_inval(TLB_DATA, vaddr) == 0);
-	KASSERT(tlb_flush() == 0);
+    /* Invalidate TLB entry. */
+    KASSERT(tlb_inval(TLB_DATA, vaddr) == 0);
+    KASSERT(tlb_flush() == 0);
 
-	/* This entry should no longer exist. */
-	KASSERT(tlb_lookup_vaddr(TLB_DATA, vaddr) == NULL);
+    /* This entry should no longer exist. */
+    KASSERT(tlb_lookup_vaddr(TLB_DATA, vaddr) == NULL);
 }
 
 /*============================================================================*
@@ -193,15 +193,15 @@ PRIVATE void test_tlb_write_destructive(void)
  */
 PRIVATE void test_tlb_lookup_vaddr_tlb_type_inval(void)
 {
-	vaddr_t vaddr;
+    vaddr_t vaddr;
 
-	vaddr = VADDR(KBASE_VIRT);
+    vaddr = VADDR(KBASE_VIRT);
 
 #if (TEST_TLB_VERBOSE)
-	kprintf("tlb_lookup_vaddr() vaddr = %x", vaddr);
+    kprintf("tlb_lookup_vaddr() vaddr = %x", vaddr);
 #endif
 
-	KASSERT(tlb_lookup_vaddr(-1, vaddr) == NULL);
+    KASSERT(tlb_lookup_vaddr(-1, vaddr) == NULL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -213,15 +213,15 @@ PRIVATE void test_tlb_lookup_vaddr_tlb_type_inval(void)
  */
 PRIVATE void test_tlb_lookup_vaddr_bad(void)
 {
-	vaddr_t vaddr;
+    vaddr_t vaddr;
 
-	vaddr = TRUNCATE(VADDR(UBASE_VIRT) + PAGE_SIZE, PAGE_SIZE);
+    vaddr = TRUNCATE(VADDR(UBASE_VIRT) + PAGE_SIZE, PAGE_SIZE);
 
 #if (TEST_TLB_VERBOSE)
-	kprintf("tlb_lookup_vaddr() vaddr = %x", vaddr);
+    kprintf("tlb_lookup_vaddr() vaddr = %x", vaddr);
 #endif
 
-	KASSERT(tlb_lookup_vaddr(TLB_INSTRUCTION, vaddr) == NULL);
+    KASSERT(tlb_lookup_vaddr(TLB_INSTRUCTION, vaddr) == NULL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -233,15 +233,15 @@ PRIVATE void test_tlb_lookup_vaddr_bad(void)
  */
 PRIVATE void test_tlb_lookup_paddr_tlb_type_inval(void)
 {
-	paddr_t paddr;
+    paddr_t paddr;
 
-	paddr = PADDR(KBASE_PHYS);
+    paddr = PADDR(KBASE_PHYS);
 
 #if (TEST_TLB_VERBOSE)
-	kprintf("tlb_lookup_paddr() paddr = %x", paddr);
+    kprintf("tlb_lookup_paddr() paddr = %x", paddr);
 #endif
 
-	KASSERT(tlb_lookup_paddr(-1, paddr) == NULL);
+    KASSERT(tlb_lookup_paddr(-1, paddr) == NULL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -253,15 +253,15 @@ PRIVATE void test_tlb_lookup_paddr_tlb_type_inval(void)
  */
 PRIVATE void test_tlb_lookup_paddr_bad(void)
 {
-	paddr_t paddr;
+    paddr_t paddr;
 
-	paddr = TRUNCATE(VADDR(UBASE_PHYS) + PAGE_SIZE, PAGE_SIZE);
+    paddr = TRUNCATE(VADDR(UBASE_PHYS) + PAGE_SIZE, PAGE_SIZE);
 
 #if (TEST_TLB_VERBOSE)
-	kprintf("tlb_lookup_paddr() paddr = %x", paddr);
+    kprintf("tlb_lookup_paddr() paddr = %x", paddr);
 #endif
 
-	KASSERT(tlb_lookup_paddr(TLB_INSTRUCTION, paddr) == NULL);
+    KASSERT(tlb_lookup_paddr(TLB_INSTRUCTION, paddr) == NULL);
 }
 
 /*----------------------------------------------------------------------------*
@@ -273,24 +273,24 @@ PRIVATE void test_tlb_lookup_paddr_bad(void)
  */
 PRIVATE void test_tlb_write_inval(void)
 {
-	vaddr_t vaddr;
-	paddr_t paddr;
+    vaddr_t vaddr;
+    paddr_t paddr;
 
-	vaddr = TRUNCATE(VADDR(UBASE_VIRT) + PAGE_SIZE, PAGE_SIZE);
-	paddr = TRUNCATE(PADDR(UBASE_PHYS) + PAGE_SIZE, PAGE_SIZE);
+    vaddr = TRUNCATE(VADDR(UBASE_VIRT) + PAGE_SIZE, PAGE_SIZE);
+    paddr = TRUNCATE(PADDR(UBASE_PHYS) + PAGE_SIZE, PAGE_SIZE);
 
 #if (TEST_TLB_VERBOSE)
-	kprintf("tlb_write() vaddr = %x, paddr = %x", vaddr, paddr);
+    kprintf("tlb_write() vaddr = %x, paddr = %x", vaddr, paddr);
 #endif
 
-	/* Write TLB entry. */
-	KASSERT(tlb_write(-1, vaddr, paddr) == -EINVAL);
-	KASSERT(tlb_flush() == 0);
+    /* Write TLB entry. */
+    KASSERT(tlb_write(-1, vaddr, paddr) == -EINVAL);
+    KASSERT(tlb_flush() == 0);
 
-	/*
-	 * TLB entry will be invalidated in
-	 * test_tlb_invalidate().
-	 */
+    /*
+     * TLB entry will be invalidated in
+     * test_tlb_invalidate().
+     */
 }
 
 /*----------------------------------------------------------------------------*
@@ -302,22 +302,22 @@ PRIVATE void test_tlb_write_inval(void)
  */
 PRIVATE void test_tlb_invalidate_inval(void)
 {
-	vaddr_t vaddr;
+    vaddr_t vaddr;
 
-	vaddr = TRUNCATE(VADDR(UBASE_VIRT) + PAGE_SIZE, PAGE_SIZE);
+    vaddr = TRUNCATE(VADDR(UBASE_VIRT) + PAGE_SIZE, PAGE_SIZE);
 
 #if (TEST_TLB_VERBOSE)
-	kprintf("tlb_write() vaddr = %x, paddr = %x", vaddr, paddr);
+    kprintf("tlb_write() vaddr = %x, paddr = %x", vaddr, paddr);
 #endif
 
-	/* Write TLB entry. */
-	KASSERT(tlb_inval(-1, vaddr) == -EINVAL);
-	KASSERT(tlb_flush() == 0);
+    /* Write TLB entry. */
+    KASSERT(tlb_inval(-1, vaddr) == -EINVAL);
+    KASSERT(tlb_flush() == 0);
 
-	/*
-	 * TLB entry will be invalidated in
-	 * test_tlb_invalidate().
-	 */
+    /*
+     * TLB entry will be invalidated in
+     * test_tlb_invalidate().
+     */
 }
 
 /*============================================================================*
@@ -328,38 +328,40 @@ PRIVATE void test_tlb_invalidate_inval(void)
  * @brief Unit tests.
  */
 PRIVATE struct test tlb_api_tests[] = {
-	{ test_tlb_lookup_vaddr,      "lookup virtual address " },
-	{ test_tlb_lookup_paddr,      "lookup physical address" },
-	{ test_tlb_write,             "write                  " },
-	{ test_tlb_invalidate,        "invalidate             " },
-	{ test_tlb_write_destructive, "write destructive      " },
-	{ NULL,                        NULL                     },
+    {test_tlb_lookup_vaddr, "lookup virtual address "},
+    {test_tlb_lookup_paddr, "lookup physical address"},
+    {test_tlb_write, "write                  "},
+    {test_tlb_invalidate, "invalidate             "},
+    {test_tlb_write_destructive, "write destructive      "},
+    {NULL, NULL},
 };
 
 /**
  * @brief Unit tests.
  */
 PRIVATE struct test tlb_fault_tests[] = {
-	{ test_tlb_lookup_vaddr_tlb_type_inval, "lookup invalid virtual address " },
-	{ test_tlb_lookup_vaddr_bad,            "lookup bad virtual address     " },
-	{ test_tlb_lookup_paddr_tlb_type_inval, "lookup invalid physical address" },
-	{ test_tlb_lookup_paddr_bad,            "lookup bad physical address    " },
-	{ test_tlb_write_inval,                 "write invalid entry            " },
-	{ test_tlb_invalidate_inval,            "invalidate invalid entry       " },
-	{ NULL,                                  NULL                             },
+    {test_tlb_lookup_vaddr_tlb_type_inval, "lookup invalid virtual address "},
+    {test_tlb_lookup_vaddr_bad, "lookup bad virtual address     "},
+    {test_tlb_lookup_paddr_tlb_type_inval, "lookup invalid physical address"},
+    {test_tlb_lookup_paddr_bad, "lookup bad physical address    "},
+    {test_tlb_write_inval, "write invalid entry            "},
+    {test_tlb_invalidate_inval, "invalidate invalid entry       "},
+    {NULL, NULL},
 };
 
 PRIVATE void test_unix64_tlb_init()
 {
-	for (int i = 0; tlb_api_tests[i].test_fn != NULL; i++)
-	{
-		tlb_write(TLB_INSTRUCTION, TRUNCATE(VADDR(tlb_api_tests[i].test_fn), KPAGE_SIZE), TRUNCATE(PADDR(tlb_api_tests[i].test_fn), KPAGE_SIZE));
-	}
+    for (int i = 0; tlb_api_tests[i].test_fn != NULL; i++) {
+        tlb_write(TLB_INSTRUCTION,
+                  TRUNCATE(VADDR(tlb_api_tests[i].test_fn), KPAGE_SIZE),
+                  TRUNCATE(PADDR(tlb_api_tests[i].test_fn), KPAGE_SIZE));
+    }
 
-	for (int i = 0; tlb_fault_tests[i].test_fn != NULL; i++)
-	{
-		tlb_write(TLB_INSTRUCTION, TRUNCATE(VADDR(tlb_fault_tests[i].test_fn), KPAGE_SIZE), TRUNCATE(PADDR(tlb_fault_tests[i].test_fn), KPAGE_SIZE));
-	}
+    for (int i = 0; tlb_fault_tests[i].test_fn != NULL; i++) {
+        tlb_write(TLB_INSTRUCTION,
+                  TRUNCATE(VADDR(tlb_fault_tests[i].test_fn), KPAGE_SIZE),
+                  TRUNCATE(PADDR(tlb_fault_tests[i].test_fn), KPAGE_SIZE));
+    }
 }
 
 /**
@@ -370,29 +372,27 @@ PRIVATE void test_unix64_tlb_init()
  */
 PUBLIC void test_tlb(void)
 {
-	/* Test not applicable. */
+    /* Test not applicable. */
 #if (CORE_HAS_TLB_HW)
-		return;
+    return;
 #endif
 
 #ifdef __unix64__
-	test_unix64_tlb_init();
+    test_unix64_tlb_init();
 #endif
 
-	/* API Tests */
-	CLUSTER_KPRINTF(HLINE);
-	for (int i = 0; tlb_api_tests[i].test_fn != NULL; i++)
-	{
-		tlb_api_tests[i].test_fn();
-		CLUSTER_KPRINTF("[test][api][tlb] %s [passed]", tlb_api_tests[i].name);
-	}
+    /* API Tests */
+    CLUSTER_KPRINTF(HLINE);
+    for (int i = 0; tlb_api_tests[i].test_fn != NULL; i++) {
+        tlb_api_tests[i].test_fn();
+        CLUSTER_KPRINTF("[test][api][tlb] %s [passed]", tlb_api_tests[i].name);
+    }
 
-	/* Fault Tests */
-	CLUSTER_KPRINTF(HLINE);
-	for (int i = 0; tlb_fault_tests[i].test_fn != NULL; i++)
-	{
-		tlb_fault_tests[i].test_fn();
-		CLUSTER_KPRINTF("[test][fault][tlb] %s [passed]", tlb_fault_tests[i].name);
-	}
+    /* Fault Tests */
+    CLUSTER_KPRINTF(HLINE);
+    for (int i = 0; tlb_fault_tests[i].test_fn != NULL; i++) {
+        tlb_fault_tests[i].test_fn();
+        CLUSTER_KPRINTF("[test][fault][tlb] %s [passed]",
+                        tlb_fault_tests[i].name);
+    }
 }
-

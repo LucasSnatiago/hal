@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -30,28 +30,27 @@
  */
 /**@{*/
 
-	#include <nanvix/const.h>
+#include <nanvix/const.h>
 
 #ifdef __NANVIX_HAL
 
-	/**
-	 * @brief Size of log (in bytes).
-	 */
-	#define HAL_LOG_SIZE 512
+/**
+ * @brief Size of log (in bytes).
+ */
+#define HAL_LOG_SIZE 512
 
+/**
+ * @brief Setups the HAL log.
+ */
+EXTERN void hal_log_setup(void);
 
-	/**
-	 * @brief Setups the HAL log.
-	 */
-	EXTERN void hal_log_setup(void);
-
-	/**
-	 * @brief Writes to HAL log.
-	 *
-	 * @param buf Target buffer.
-	 * @param n   Number of characters to write.
-	 */
-	EXTERN void hal_log_write(const char *, size_t);
+/**
+ * @brief Writes to HAL log.
+ *
+ * @param buf Target buffer.
+ * @param n   Number of characters to write.
+ */
+EXTERN void hal_log_write(const char *, size_t);
 
 #endif /* __NANVIX_HAL */
 
