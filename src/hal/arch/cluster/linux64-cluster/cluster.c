@@ -24,6 +24,7 @@
 
 /* Must come first. */
 #define __NEED_HAL_CLUSTER
+#define __NEED_CLUSTER_LINUX64
 
 #include <arch/cluster/linux64-cluster.h>
 #include <nanvix/const.h>

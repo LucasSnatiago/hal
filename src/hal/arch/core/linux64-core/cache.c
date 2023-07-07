@@ -24,8 +24,6 @@
 
 #include <arch/cluster/linux64-cluster/cores.h>
 #include <nanvix/const.h>
-#include <nanvix/hlib.h>
-#include <stdio.h>
 #include <unistd.h>
 
 /**

@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+/* Must come first. */
+#define __NEED_CORE_CONTEXT
+
 #include <arch/core/linux64/ctx.h>
 #include <nanvix/const.h>
 #include <nanvix/hal/core/exception.h>

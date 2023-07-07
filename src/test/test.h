@@ -25,6 +25,8 @@
 #ifndef _HAL_TEST_H_
 #define _HAL_TEST_H_
 
+#include <nanvix/hal/hal.h>
+
 /**
  * @name Node numbers for stress tests
  */

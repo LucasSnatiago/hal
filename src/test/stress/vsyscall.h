@@ -25,6 +25,9 @@
 #ifndef _VSYSCALL_H_
 #define _VSYSCALL_H_
 
+#include <nanvix/const.h>
+#include <posix/stddef.h>
+
 /**
  * @brief Number of system calls.
  *
