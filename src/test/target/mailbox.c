@@ -121,6 +121,7 @@ PRIVATE void test_mailbox_invalid_write(void)
 {
     int mbxid;
     char msg[HAL_MAILBOX_MSG_SIZE];
+    kmemset(msg, HAL_MAILBOX_MSG_SIZE, 0);
 
     KASSERT(mailbox_awrite(-1, msg, HAL_MAILBOX_MSG_SIZE) == -EBADF);
 

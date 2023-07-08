@@ -177,6 +177,7 @@ PRIVATE void test_portal_invalid_write(void)
 {
     int portalid;
     char buf[PORTAL_SIZE];
+    kmemset(buf, 0, PORTAL_SIZE);
 
     /* Invalid portal ID */
     KASSERT(portal_awrite(-1, buf, PORTAL_SIZE) == -EBADF);
