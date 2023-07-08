@@ -33,10 +33,12 @@
  */
 /**@{*/
 
+/* Must come first. */
 #define __NEED_CORE_TYPES
+#define __NEED_CC
 
 #include <arch/core/linux64/types.h>
-#include <nanvix/const.h>
+#include <nanvix/cc.h>
 
 /**
  * @brief Low-level kernel call dispatcher.
@@ -48,7 +50,7 @@
  * @param arg4     Fifth kernel call argument.
  * @param kcall_nr Kernel call number.
  */
-EXTERN linux64_word_t linux64_core_do_kcall(
+extern linux64_word_t linux64_core_do_kcall(
     linux64_word_t arg0, linux64_word_t arg1, linux64_word_t arg2,
     linux64_word_t arg3, linux64_word_t arg4, linux64_word_t kcall_nr);
 

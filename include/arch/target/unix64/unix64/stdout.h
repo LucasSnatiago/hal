@@ -36,8 +36,10 @@
  */
 /**@{*/
 
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
+/* Must come first. */
+#define __NEED_CC
+
+#include <nanvix/cc.h>
 #include <arch/stdout/tty-virt.h>
 
 /**

@@ -25,12 +25,14 @@
 #ifndef ARCH_CORE_LINUX64_EXCP_H_
 #define ARCH_CORE_LINUX64_EXCP_H_
 
-#include <signal.h>
-
 /* Must come first. */
 #define __NEED_CORE_CONTEXT
 #define __NEED_CORE_TYPES
 #define __NEED_MEMORY_TYPES
+#define __NEED_CC
+
+#include <nanvix/cc.h>
+#include <signal.h>
 
 /**
  * @addtogroup linux64-core-exception Exception
@@ -93,12 +95,12 @@ static inline int linux64_excp_get_num(const struct exception *excp)
  *
  * @param excp Exception information.
  */
-EXTERN void linux64_excp_dump(const struct exception *excp);
+extern void linux64_excp_dump(const struct exception *excp);
 
 /**
  * @brief Setup the signals
  */
-EXTERN void linux64_excp_setup(void);
+extern void linux64_excp_setup(void);
 
 /**@}*/
 

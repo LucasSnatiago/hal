@@ -37,7 +37,10 @@
  */
 /**@{*/
 
-#include <nanvix/const.h>
+/* Must come first. */
+#define __NEED_CC
+
+#include <nanvix/cc.h>
 #include <arch/core/linux64/core.h>
 #include <arch/core/linux64/cache.h>
 #include <arch/core/linux64/excp.h>
@@ -49,13 +52,14 @@
 #include <arch/core/linux64/ctx.h>
 #include <arch/core/linux64/perf.h>
 #include <arch/core/linux64/upcall.h>
+#include <posix/stdbool.h>
 
 /**
  * @brief Powers off the underlying core.
  *
  * @param panic Panic?
  */
-EXTERN NORETURN void linux64_core_poweroff(bool panic);
+extern NORETURN void linux64_core_poweroff(bool panic);
 
 /**@}*/
 

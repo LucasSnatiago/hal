@@ -30,6 +30,7 @@
 #include <nanvix/hlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 /**
  * @brief Boot arguments.

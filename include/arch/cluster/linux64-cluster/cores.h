@@ -36,7 +36,10 @@
  */
 /**@{*/
 
-#include <nanvix/const.h>
+/* Must come first. */
+#define __NEED_CC
+
+#include <nanvix/cc.h>
 
 /**
  * @brief Number of cores in the cluster.
@@ -51,17 +54,17 @@
 /**
  * @brief Array of the cores.
  */
-EXTERN pthread_t linux64_cores_tab[LINUX64_CLUSTER_NUM_CORES];
+extern pthread_t linux64_cores_tab[LINUX64_CLUSTER_NUM_CORES];
 
 /**
  * @brief Lock for the array of the cores.
  */
-EXTERN linux64_spinlock_t linux64_cores_lock;
+extern linux64_spinlock_t linux64_cores_lock;
 
 /**
  * @brief Powers off the underlying core.
  */
-EXTERN void linux64_core_setup(void);
+extern void linux64_core_setup(void);
 
 /**
  * @brief Gets the ID of the underlying core.
@@ -69,12 +72,12 @@ EXTERN void linux64_core_setup(void);
  * @returns The ID of the underlying core or -1 if the thread
  * calling thread is not attached to the underlying cluster.
  */
-EXTERN int linux64_core_get_id(void);
+extern int linux64_core_get_id(void);
 
 /**
  * @brief Resets the underlying core.
  */
-EXTERN NORETURN void _linux64_core_reset(void);
+extern NORETURN void _linux64_core_reset(void);
 
 /**
  * @brief Gets the number of cores.

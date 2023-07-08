@@ -40,9 +40,12 @@
  */
 /**@*/
 
+/* Must come first. */
+#define __NEED_CC
+
 #include <arch/processor/linux64/clusters.h>
 #include <arch/processor/linux64/noc.h>
-#include <nanvix/const.h>
+#include <nanvix/cc.h>
 
 #ifdef __NANVIX_HAL
 
@@ -54,19 +57,19 @@
  * @returns Upon successful completion, zero is returned. Upon
  * failure, a negative error code is returned instead.
  */
-EXTERN int linux64_processor_boot(int nclusters);
+extern int linux64_processor_boot(int nclusters);
 
 /**
  * @brief Initializes the underlying processor.
  */
-EXTERN void linux64_processor_setup(void);
+extern void linux64_processor_setup(void);
 
 #endif /* __NANVIX_HAL */
 
 /**
  * @brief Powers off the underlying processor.
  */
-EXTERN NORETURN void linux64_processor_poweroff(void);
+extern NORETURN void linux64_processor_poweroff(void);
 
 /**@}*/
 

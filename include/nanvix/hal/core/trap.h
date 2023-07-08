@@ -28,6 +28,8 @@
 /* Core Interface Implementation */
 #include <nanvix/hal/core/_core.h>
 
+#include <nanvix/const.h>
+
 /*============================================================================*
  * Interface Implementation Checking                                          *
  *============================================================================*/

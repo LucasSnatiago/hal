@@ -36,7 +36,10 @@
  */
 /**@{*/
 
-#include <nanvix/const.h>
+/* Must come first. */
+#define __NEED_CC
+
+#include <nanvix/cc.h>
 
 /**
  * @brief Number of NoC nodes attached to an IO cluster.
@@ -63,12 +66,12 @@
 /**
  * @brief Powers on the network-on-chip.
  */
-EXTERN void linux64_processor_noc_boot(void);
+extern void linux64_processor_noc_boot(void);
 
 /**
  * @brief Powers off the network-on-chip.
  */
-EXTERN void linux64_processor_noc_shutdown(void);
+extern void linux64_processor_noc_shutdown(void);
 
 #endif /* __NANVIX_HAL */
 
@@ -80,7 +83,7 @@ EXTERN void linux64_processor_noc_shutdown(void);
  * @returns One if the target NoC node is attached to an IO cluster,
  * and zero otherwise.
  */
-EXTERN int linux64_processor_noc_is_ionode(int nodenum);
+extern int linux64_processor_noc_is_ionode(int nodenum);
 
 /**
  * @brief Asserts whether a NoC node is attached to a compute cluster.
@@ -90,7 +93,7 @@ EXTERN int linux64_processor_noc_is_ionode(int nodenum);
  * @returns One if the target NoC node is attached to a compute
  * cluster, and zero otherwise.
  */
-EXTERN int linux64_processor_noc_is_cnode(int nodenum);
+extern int linux64_processor_noc_is_cnode(int nodenum);
 
 /**@}*/
 

@@ -27,6 +27,7 @@
 
 #include <arch/processor/linux64.h>
 #include <nanvix/const.h>
+#include <nanvix/hlib.h>
 
 /**
  * @todo Provide a detailed description for this function.

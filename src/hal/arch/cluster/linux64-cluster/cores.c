@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 #include <arch/cluster/linux64-cluster/_linux64-cluster.h>
 #include <arch/cluster/linux64-cluster/cores.h>
+#include <nanvix/const.h>
 
 /**
  * @brief Lock for the array of the cores.

@@ -36,7 +36,10 @@
  */
 /**@{*/
 
-#include <nanvix/const.h>
+/* Must come first. */
+#define __NEED_CC
+
+#include <nanvix/cc.h>
 #include <posix/sys/types.h>
 
 /**
@@ -83,14 +86,14 @@
 /**
  * @brief Shutdowns the portal interface.
  */
-EXTERN void unix64_portal_shutdown(void);
+extern void unix64_portal_shutdown(void);
 
 #endif
 
 /**
  * @brief Initializes the portal interface.
  */
-EXTERN void unix64_portal_setup(void);
+extern void unix64_portal_setup(void);
 
 /**
  * @brief Creates a portal.
@@ -101,7 +104,7 @@ EXTERN void unix64_portal_setup(void);
  * portal is returned. Upon failure, a negative error code is returned
  * instead.
  */
-EXTERN int unix64_portal_create(int nodenum);
+extern int unix64_portal_create(int nodenum);
 
 /**
  * @brief Enables read operations from a remote.
@@ -112,7 +115,7 @@ EXTERN int unix64_portal_create(int nodenum);
  * @returns Upons successful completion zero is returned. Upon failure,
  * a negative error code is returned instead.
  */
-EXTERN int unix64_portal_allow(int portalid, int remote);
+extern int unix64_portal_allow(int portalid, int remote);
 
 /**
  * @brief Opens a portal.
@@ -123,7 +126,7 @@ EXTERN int unix64_portal_allow(int portalid, int remote);
  * is returned. Upon failure, a negative error code is returned
  * instead.
  */
-EXTERN int unix64_portal_open(int local, int remote);
+extern int unix64_portal_open(int local, int remote);
 
 /**
  * @brief Reads data from a portal.
@@ -135,7 +138,7 @@ EXTERN int unix64_portal_open(int local, int remote);
  * @returns Upon successful completion, 0 is returned
  * and non zero otherwise.
  */
-EXTERN ssize_t unix64_portal_read(int portalid, void *buffer, uint64_t size);
+extern ssize_t unix64_portal_read(int portalid, void *buffer, uint64_t size);
 
 /**
  * @brief Writes data to a portal.
@@ -148,7 +151,7 @@ EXTERN ssize_t unix64_portal_read(int portalid, void *buffer, uint64_t size);
  * successfully written is returned. Upon failure, a negative error
  * code is returned instead.
  */
-EXTERN ssize_t unix64_portal_write(int portalid, const void *buffer,
+extern ssize_t unix64_portal_write(int portalid, const void *buffer,
                                    uint64_t size);
 
 /**
@@ -159,7 +162,7 @@ EXTERN ssize_t unix64_portal_write(int portalid, const void *buffer,
  * @returns Upon successful completion, zero is returned. Upon failure,
  * a negative error code is returned instead.
  */
-EXTERN int unix64_portal_unlink(int portalid);
+extern int unix64_portal_unlink(int portalid);
 
 /**
  * @brief Closes a portal.
@@ -169,7 +172,7 @@ EXTERN int unix64_portal_unlink(int portalid);
  * @returns Upon successful completion, zero is returned. Upon
  * failure, a negative error code is returned instead.
  */
-EXTERN int unix64_portal_close(int portalid);
+extern int unix64_portal_close(int portalid);
 
 /**
  * @brief Request an I/O operation on a portal.
@@ -181,7 +184,7 @@ EXTERN int unix64_portal_close(int portalid);
  * @returns Upon successful completion, zero is returned.
  * Upon failure, a negative error code is returned instead.
  */
-EXTERN int unix64_portal_ioctl(int portalid, unsigned request, va_list args);
+extern int unix64_portal_ioctl(int portalid, unsigned request, va_list args);
 
 /**@}*/
 

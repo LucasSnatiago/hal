@@ -40,7 +40,10 @@
  */
 /**@{*/
 
-#include <nanvix/const.h>
+/* Must come first. */
+#define __NEED_CC
+
+#include <nanvix/cc.h>
 #include <arch/target/unix64/unix64/sync.h>
 #include <arch/target/unix64/unix64/mailbox.h>
 #include <arch/target/unix64/unix64/portal.h>
@@ -59,14 +62,14 @@
 /**
  * @brief Initializes the underlying target.
  */
-EXTERN void unix64_setup(void);
+extern void unix64_setup(void);
 
 #endif /* __NANVIX_HAL */
 
 /**
  * @brief Powers off the underlying target.
  */
-EXTERN NORETURN void unix64_poweroff(void);
+extern NORETURN void unix64_poweroff(void);
 
 /**@}*/
 

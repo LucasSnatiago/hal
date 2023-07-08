@@ -28,6 +28,9 @@
 /* Cluster Interface Implementation */
 #include <arch/cluster/linux64-cluster/_linux64-cluster.h>
 
+/* Must come first. */
+#define __NEED_CC
+
 /**
  * @addtogroup linux64-cluster-timer Timer
  * @ingroup linux64-cluster
@@ -37,6 +40,7 @@
 /**@{*/
 
 #include <posix/stdint.h>
+#include <nanvix/cc.h>
 
 #define INTERRUPT_TIMER 0
 
@@ -57,14 +61,14 @@
  *
  * @author Daniel Coscia
  */
-EXTERN uint64_t linux64_cluster_clock_read(void);
+extern uint64_t linux64_cluster_clock_read(void);
 
 /**
  * @brief Initialize the timer at the current clock()
  *
  * @author Daniel Coscia
  */
-EXTERN void linux64_timer_init(void);
+extern void linux64_timer_init(void);
 
 #endif /* !_ASM_FILE_ */
 

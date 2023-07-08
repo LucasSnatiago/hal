@@ -24,6 +24,7 @@
 
 #include <arch/cluster/linux64-cluster/timer.h>
 #include <time.h>
+#include <nanvix/const.h>
 
 /**
  * @brief Startup time.

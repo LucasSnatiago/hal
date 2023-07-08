@@ -33,7 +33,10 @@
  */
 /**@{*/
 
-#include <nanvix/const.h>
+/* Must come first. */
+#define __NEED_CC
+
+#include <nanvix/cc.h>
 #include <linux/perf_event.h>
 #include <posix/stdint.h>
 
@@ -103,14 +106,14 @@
 /**
  * @Brief Array of File Descriptor containing the values of the counters
  */
-EXTERN int linux64_perf_monitors[LINUX64_PERF_MONITORS_NUM];
+extern int linux64_perf_monitors[LINUX64_PERF_MONITORS_NUM];
 
 /**
  * @Brief Check if the perf and event values are valide
  */
-EXTERN int perf_isvalid(int perf);
+extern int perf_isvalid(int perf);
 
-EXTERN int event_isvalid(int event);
+extern int event_isvalid(int event);
 
 /**
  * @brief Initializes performance monitors.
@@ -118,7 +121,7 @@ EXTERN int event_isvalid(int event);
  * @returns Upon successful completion, zero is returned. Upon
  * failure, a negative error code is returned instead.
  */
-EXTERN void linux64_perf_setup(void);
+extern void linux64_perf_setup(void);
 
 /**
  * @brief Starts a performance monitor.
@@ -129,7 +132,7 @@ EXTERN void linux64_perf_setup(void);
  * @returns Upon successful completion, zero is returned.
  * Upon failure, a negative error code is returned instead.
  */
-EXTERN int linux64_perf_start(int perf, int event);
+extern int linux64_perf_start(int perf, int event);
 
 /**
  * @brief Stops a performance monitor.
@@ -139,7 +142,7 @@ EXTERN int linux64_perf_start(int perf, int event);
  * @returns Upon successful completion, zero is returned. Upon
  * failure, a negative error code is returned instead.
  */
-EXTERN int linux64_perf_stop(int perf);
+extern int linux64_perf_stop(int perf);
 
 /**
  * @brief Restarts a performance monitor.
@@ -149,7 +152,7 @@ EXTERN int linux64_perf_stop(int perf);
  * @returns Upon successful completion, zero is returned. Upon
  * failure, a negative error code is returned instead.
  */
-EXTERN int linux64_perf_restart(int perf);
+extern int linux64_perf_restart(int perf);
 
 /**
  * @brief Reads a PM register.
@@ -159,7 +162,7 @@ EXTERN int linux64_perf_restart(int perf);
  * @returns Upon successful completion, the value of the target
  * performance monitor.
  */
-EXTERN uint64_t linux64_perf_read(int perf);
+extern uint64_t linux64_perf_read(int perf);
 
 /**@}*/
 

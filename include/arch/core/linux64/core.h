@@ -35,8 +35,6 @@
 /**@{*/
 
 #include <arch/core/linux64/types.h>
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
 
 /**@}*/
 

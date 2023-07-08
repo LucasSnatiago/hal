@@ -34,12 +34,12 @@
 /**@{*/
 
 /* Must comme first. */
-/* #define __NEED_LINUX64_ELF */
 #define __NEED_MEMORY_TYPES
+#define __NEED_CC
 
-/* #include <arch/core/linux64/elf.h> */
+#include <nanvix/cc.h>
+#include <nanvix/barelib.h>
 #include <arch/core/linux64/types.h>
-#include <nanvix/hlib.h>
 #include <posix/errno.h>
 #include <posix/stdint.h>
 
@@ -149,7 +149,7 @@ struct pte {
  * @returns Upon successful completion, zero is returned. Upon
  * failure, a negative error code is returned instead.
  */
-EXTERN int linux64_page_map(struct pte *pgtab, paddr_t paddr, vaddr_t vaddr,
+extern int linux64_page_map(struct pte *pgtab, paddr_t paddr, vaddr_t vaddr,
                             int w);
 
 /**
@@ -162,7 +162,7 @@ EXTERN int linux64_page_map(struct pte *pgtab, paddr_t paddr, vaddr_t vaddr,
  * @returns Upon successful completion, zero is returned. Upon
  * failure, a negative error code is returned instead.
  */
-EXTERN int linux64_pgtab_map(struct pde *pgdir, paddr_t paddr, vaddr_t vaddr);
+extern int linux64_pgtab_map(struct pde *pgdir, paddr_t paddr, vaddr_t vaddr);
 
 /**@}*/
 
@@ -263,7 +263,7 @@ static inline int pde_clear(struct pde *pde)
     if (pde == NULL)
         return (-EINVAL);
 
-    kmemset(pde, 0, PTE_SIZE);
+    __memset(pde, 0, PTE_SIZE);
 
     return (0);
 }
@@ -506,7 +506,7 @@ static inline int pte_clear(struct pte *pte)
     if (pte == NULL)
         return (-EINVAL);
 
-    kmemset(pte, 0, PTE_SIZE);
+    __memset(pte, 0, PTE_SIZE);
 
     return (0);
 }

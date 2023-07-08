@@ -33,7 +33,10 @@
  */
 /**@{*/
 
-#include <nanvix/hlib.h>
+/* Must come first. */
+#define __NEED_CC
+
+#include <nanvix/cc.h>
 #include <signal.h>
 
 /**
@@ -46,19 +49,19 @@
 /**
  * @brief Enable all the interrupts.
  */
-EXTERN void linux64_interrupts_disable(void);
+extern void linux64_interrupts_disable(void);
 
 /**
  * @brief Disable all the interrupts.
  */
-EXTERN void linux64_interrupts_enable(void);
+extern void linux64_interrupts_enable(void);
 
 /**
  * @brief Gets the interrupt level of the underlying core.
  *
  * @returns The current interrupt level.
  */
-EXTERN int linux64_interrupts_get_level(void);
+extern int linux64_interrupts_get_level(void);
 
 /**
  * @brief Sets the interrupt level of the underlying core.
@@ -67,7 +70,7 @@ EXTERN int linux64_interrupts_get_level(void);
  *
  * @returns The old interrupt level.
  */
-EXTERN int linux64_interrupts_set_level(int newlevel);
+extern int linux64_interrupts_set_level(int newlevel);
 
 /**
  * @brief Unmask a interrupt.
@@ -76,7 +79,7 @@ EXTERN int linux64_interrupts_set_level(int newlevel);
  *
  * @return 0 if succesful, negative value otherwise.
  */
-EXTERN int linux64_interrupt_mask(int intnum);
+extern int linux64_interrupt_mask(int intnum);
 
 /**
  * @brief Unmask a interrupt.
@@ -85,7 +88,7 @@ EXTERN int linux64_interrupt_mask(int intnum);
  *
  * @return 0 if succesful, negative value otherwise.
  */
-EXTERN int linux64_interrupt_unmask(int intnum);
+extern int linux64_interrupt_unmask(int intnum);
 
 /**
  * @brief Give the next interrupt called while blocked.
@@ -93,7 +96,7 @@ EXTERN int linux64_interrupt_unmask(int intnum);
  * @return The number of the next interrupt OR a negative value if there is
  * none.
  */
-EXTERN int linux64_interrupt_next(void);
+extern int linux64_interrupt_next(void);
 
 /**@}*/
 

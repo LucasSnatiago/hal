@@ -36,7 +36,10 @@
  */
 /**@*/
 
-#include <nanvix/const.h>
+/* Must come first. */
+#define __NEED_CC
+
+#include <nanvix/cc.h>
 
 /**
  * @brief Number of IO Clusters.
@@ -72,24 +75,24 @@
 /**
  * @brief Powers on clusters of the underlying processor.
  */
-EXTERN void linux64_processor_clusters_boot(void);
+extern void linux64_processor_clusters_boot(void);
 
 /**
  * @brief Powers off clusters of the underlying processor.
  */
-EXTERN void linux64_processor_clusters_shutdown(void);
+extern void linux64_processor_clusters_shutdown(void);
 
 /**
  * @brief Initialize clusters of the underlying processor.
  */
-EXTERN void linux64_processor_clusters_setup(void);
+extern void linux64_processor_clusters_setup(void);
 
 #endif /* __NANVIX_HAL */
 
 /**
  * @brief Retrieves the logical number of the underlying cluster.
  */
-EXTERN int linux64_cluster_get_num(void);
+extern int linux64_cluster_get_num(void);
 
 /**
  * @brief Asserts whether or not the target cluster is a compute cluster.
@@ -99,7 +102,7 @@ EXTERN int linux64_cluster_get_num(void);
  * @return Non zero if the target cluster is a compute cluster and
  * zero otherwise.
  */
-EXTERN int linux64_cluster_is_compute(int clusternum);
+extern int linux64_cluster_is_compute(int clusternum);
 
 /**
  * @brief Asserts whether or not the target cluster is an IO cluster.
@@ -109,7 +112,7 @@ EXTERN int linux64_cluster_is_compute(int clusternum);
  * @return Non zero if the target cluster is an IO cluster and
  * zero otherwise.
  */
-EXTERN int linux64_cluster_is_io(int clusternum);
+extern int linux64_cluster_is_io(int clusternum);
 
 /**@}*/
 /*============================================================================*

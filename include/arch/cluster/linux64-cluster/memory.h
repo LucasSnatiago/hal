@@ -36,6 +36,11 @@
  */
 /**@{*/
 
+/* Must come first. */
+#define __NEED_CC
+
+#include <nanvix/cc.h>
+
 /**
  * @brief Memory size (in bytes).
  */
@@ -65,11 +70,11 @@
  * @name Virtual Memory Layout
  */
 /**@{*/
-EXTERN vaddr_t LINUX64_USER_BASE_VIRT;   /**< User Base             */
-EXTERN vaddr_t LINUX64_USER_END_VIRT;    /**< User End              */
-EXTERN vaddr_t LINUX64_USTACK_BASE_VIRT; /**< User Stack Base       */
-EXTERN vaddr_t LINUX64_KERNEL_BASE_VIRT; /**< Kernel Base           */
-EXTERN vaddr_t LINUX64_KPOOL_BASE_VIRT;  /**< Kernel Page Pool Base */
+extern vaddr_t LINUX64_USER_BASE_VIRT;   /**< User Base             */
+extern vaddr_t LINUX64_USER_END_VIRT;    /**< User End              */
+extern vaddr_t LINUX64_USTACK_BASE_VIRT; /**< User Stack Base       */
+extern vaddr_t LINUX64_KERNEL_BASE_VIRT; /**< Kernel Base           */
+extern vaddr_t LINUX64_KPOOL_BASE_VIRT;  /**< Kernel Page Pool Base */
 /**@}*/
 
 /**
@@ -101,20 +106,20 @@ EXTERN vaddr_t LINUX64_KPOOL_BASE_VIRT;  /**< Kernel Page Pool Base */
 /**
  * @brief Flushes the TLB.
  */
-EXTERN int linux64_cluster_tlb_flush(void);
+extern int linux64_cluster_tlb_flush(void);
 
 /**
  * @brief Binary Sections
  */
 /**@{*/
-EXTERN unsigned char __BOOTSTRAP_START; /**< Bootstrap Start */
-EXTERN unsigned char __BOOTSTRAP_END;   /**< Bootstrap End   */
-EXTERN unsigned char __TEXT_START;      /**< Text Start      */
-EXTERN unsigned char __TEXT_END;        /**< Text End        */
-EXTERN unsigned char __DATA_START;      /**< Data Start      */
-EXTERN unsigned char __DATA_END;        /**< Data End        */
-EXTERN unsigned char __BSS_START;       /**< BSS Start       */
-EXTERN unsigned char __BSS_END;         /**< BSS End         */
+extern unsigned char __BOOTSTRAP_START; /**< Bootstrap Start */
+extern unsigned char __BOOTSTRAP_END;   /**< Bootstrap End   */
+extern unsigned char __TEXT_START;      /**< Text Start      */
+extern unsigned char __TEXT_END;        /**< Text End        */
+extern unsigned char __DATA_START;      /**< Data Start      */
+extern unsigned char __DATA_END;        /**< Data End        */
+extern unsigned char __BSS_START;       /**< BSS Start       */
+extern unsigned char __BSS_END;         /**< BSS End         */
                                         /**@}*/
 
 #ifdef __NANVIX_HAL
@@ -122,7 +127,7 @@ EXTERN unsigned char __BSS_END;         /**< BSS End         */
 /**
  * @brief Powers of the virtual memory.
  */
-EXTERN void linux64_cluster_memory_boot(void);
+extern void linux64_cluster_memory_boot(void);
 
 #endif /* __NANVIX_HAL */
 

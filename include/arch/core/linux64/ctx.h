@@ -36,9 +36,11 @@
  * @brief Execution Context Interface
  */
 
+/* Must come first */
+#define __NEED_CC
+
 #include <arch/core/linux64/core.h>
-#include <nanvix/const.h>
-#include <nanvix/hlib.h>
+#include <nanvix/cc.h>
 
 /**
  * @brief Execution context size (in bytes).
@@ -65,7 +67,7 @@ struct context {
  *
  * @param ctx Saved exception context.
  */
-EXTERN void linux64_ctx_dump(const struct context *ctx);
+extern void linux64_ctx_dump(const struct context *ctx);
 
 /**
  * @brief Get the value of the core.

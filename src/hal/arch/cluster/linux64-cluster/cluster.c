@@ -31,6 +31,7 @@
 #include <nanvix/hal/cluster.h>
 #include <nanvix/hlib.h>
 #include <setjmp.h>
+#include <stdlib.h>
 
 /* Import definitions. */
 EXTERN NORETURN void kmain(int, const char *[]);

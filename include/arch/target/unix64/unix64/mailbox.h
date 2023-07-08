@@ -36,8 +36,11 @@
 /* Processor API. */
 #include <arch/target/unix64/unix64/_unix64.h>
 
+/* Must come first. */
+#define __NEED_CC
+
 #include <posix/sys/types.h>
-#include <nanvix/const.h>
+#include <nanvix/cc.h>
 
 /**
  * @name Maximum number of mailboxes points.
@@ -83,14 +86,14 @@
 /**
  * @brief Shutdowns the mailbox interface.
  */
-EXTERN void unix64_mailbox_shutdown(void);
+extern void unix64_mailbox_shutdown(void);
 
 #endif /* __NANVIX_HAL */
 
 /**
  * @brief Setup the mailbox interface.
  */
-EXTERN void unix64_mailbox_setup(void);
+extern void unix64_mailbox_setup(void);
 
 /**
  * @brief Creates a mailbox.
@@ -101,7 +104,7 @@ EXTERN void unix64_mailbox_setup(void);
  * mailbox is returned. Upon failure, a negative error code is
  * returned instead.
  */
-EXTERN int unix64_mailbox_create(int nodenum);
+extern int unix64_mailbox_create(int nodenum);
 
 /**
  * @brief Opens a mailbox.
@@ -112,7 +115,7 @@ EXTERN int unix64_mailbox_create(int nodenum);
  * mailbox is returned. Upon failure, a negative error code is
  * returned instead.
  */
-EXTERN int unix64_mailbox_open(int nodenum);
+extern int unix64_mailbox_open(int nodenum);
 
 /**
  * @brief Destroys a mailbox.
@@ -122,7 +125,7 @@ EXTERN int unix64_mailbox_open(int nodenum);
  * @returns Upon successful completion, zero is returned. Upon
  * failure, a negative error code is returned instead.
  */
-EXTERN int unix64_mailbox_unlink(int mbxid);
+extern int unix64_mailbox_unlink(int mbxid);
 
 /**
  * @brief Closes a mailbox.
@@ -132,7 +135,7 @@ EXTERN int unix64_mailbox_unlink(int mbxid);
  * @returns Upon successful completion, zero is returned. Upon
  * failure, a negative error code is returned instead.
  */
-EXTERN int unix64_mailbox_close(int mbxid);
+extern int unix64_mailbox_close(int mbxid);
 
 /**
  * @brief Writes data to a mailbox.
@@ -144,7 +147,7 @@ EXTERN int unix64_mailbox_close(int mbxid);
  * @returns Upon successful completion, 0 is returned and non zero
  * otherwise.
  */
-EXTERN ssize_t unix64_mailbox_awrite(int mbxid, const void *buffer,
+extern ssize_t unix64_mailbox_awrite(int mbxid, const void *buffer,
                                      uint64_t size);
 
 /**
@@ -157,7 +160,7 @@ EXTERN ssize_t unix64_mailbox_awrite(int mbxid, const void *buffer,
  * @returns Upon successful completion, 0 is returned and non zero
  * otherwise.
  */
-EXTERN ssize_t unix64_mailbox_aread(int mbxid, void *buffer, uint64_t size);
+extern ssize_t unix64_mailbox_aread(int mbxid, void *buffer, uint64_t size);
 
 /**
  * @brief Request an I/O operation on a mailbox.
@@ -169,7 +172,7 @@ EXTERN ssize_t unix64_mailbox_aread(int mbxid, void *buffer, uint64_t size);
  * @returns Upon successful completion, zero is returned.
  * Upon failure, a negative error code is returned instead.
  */
-EXTERN int unix64_mailbox_ioctl(int mbxid, unsigned request, va_list args);
+extern int unix64_mailbox_ioctl(int mbxid, unsigned request, va_list args);
 
 /**@}*/
 

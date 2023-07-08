@@ -36,7 +36,10 @@
  */
 /**@{*/
 
-#include <nanvix/const.h>
+/* Must come first. */
+#define __NEED_CC
+
+#include <nanvix/cc.h>
 
 /**
  * @brief Type of synchronization points.
@@ -87,7 +90,7 @@
  * @returns Upon successful completion, zero is returned.
  * Upon failure, a negative error code is returned instead.
  */
-EXTERN int unix64_sync_ioctl(int syncid, unsigned request, va_list args);
+extern int unix64_sync_ioctl(int syncid, unsigned request, va_list args);
 
 #if !__NANVIX_IKC_USES_ONLY_MAILBOX
 
@@ -96,14 +99,14 @@ EXTERN int unix64_sync_ioctl(int syncid, unsigned request, va_list args);
 /**
  * @brief Shutdowns the sync interface.
  */
-PUBLIC void unix64_sync_shutdown(void);
+extern void unix64_sync_shutdown(void);
 
 #endif
 
 /**
  * @todo TODO: rely on dummy platform-independent dummy function.
  */
-EXTERN void unix64_sync_setup(void);
+extern void unix64_sync_setup(void);
 
 /**
  * @brief Allocates and configures the receiving side of the synchronization
@@ -117,7 +120,7 @@ EXTERN void unix64_sync_setup(void);
  * synchronization point is returned. Upon failure, a negative error
  * code is returned instead.
  */
-EXTERN int unix64_sync_create(const int *nodes, int nnodes, int type);
+extern int unix64_sync_create(const int *nodes, int nnodes, int type);
 
 /**
  * @brief Opens a synchronization point.
@@ -130,7 +133,7 @@ EXTERN int unix64_sync_create(const int *nodes, int nnodes, int type);
  * synchronization point is returned. Upon failure, a negative error
  * code is returned instead.
  */
-EXTERN int unix64_sync_open(const int *nodes, int nnodes, int type);
+extern int unix64_sync_open(const int *nodes, int nnodes, int type);
 
 /**
  * @brief Destroys a synchronization point.
@@ -140,7 +143,7 @@ EXTERN int unix64_sync_open(const int *nodes, int nnodes, int type);
  * @returns Upon successful completion, zero is returned. Upon
  * failure, a negative error code is returned instead.
  */
-EXTERN int unix64_sync_unlink(int syncid);
+extern int unix64_sync_unlink(int syncid);
 
 /**
  * @brief Closes a synchronization point.
@@ -150,7 +153,7 @@ EXTERN int unix64_sync_unlink(int syncid);
  * @returns Upon successful completion, zero is returned. Upon
  * failure, a negative error code is returned instead.
  */
-EXTERN int unix64_sync_close(int syncid);
+extern int unix64_sync_close(int syncid);
 
 /**
  * @brief Waits on a synchronization point.
@@ -163,7 +166,7 @@ EXTERN int unix64_sync_close(int syncid);
  * @returns Upon successful completion, zero is returned. Upon
  * failure, a negative error code is returned instead.
  */
-EXTERN int unix64_sync_wait(int syncid);
+extern int unix64_sync_wait(int syncid);
 
 /**
  * @brief Waits on a synchronization point.
@@ -173,7 +176,7 @@ EXTERN int unix64_sync_wait(int syncid);
  * @returns Upon successful completion, zero is returned. Upon
  * failure, a negative error code is returned instead.
  */
-EXTERN int unix64_sync_signal(int syncid);
+extern int unix64_sync_signal(int syncid);
 
 #endif /* !__NANVIX_IKC_USES_ONLY_MAILBOX */
 

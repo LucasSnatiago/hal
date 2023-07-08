@@ -33,93 +33,96 @@
  */
 /**@{*/
 
-#include <nanvix/hlib.h>
-#include <stdlib.h>
+/* Must come first. */
+#define __NEED_CC
+
+#include <nanvix/cc.h>
+#include <posix/stddef.h>
 
 /**
  * @brief recover the cache line size
  */
-EXTERN size_t linux64_core_dcache_line_size_get(void);
+extern size_t linux64_core_dcache_line_size_get(void);
 
 /**
  * @brief recover the cache line size log2
  */
-EXTERN size_t linux64_core_dcache_line_size_log2_get(void);
+extern size_t linux64_core_dcache_line_size_log2_get(void);
 
 /**
  * @brief recover the cache line size
  */
-EXTERN size_t linux64_core_dcache_size_get(void);
+extern size_t linux64_core_dcache_size_get(void);
 
 /**
  * @brief Get the cache line size log2
  */
-EXTERN size_t linux64_core_dcache_size_log2_get(void);
+extern size_t linux64_core_dcache_size_log2_get(void);
 
 /**
  * @brief Invalidates the data cache of the underlying core.
  */
-EXTERN void linux64_core_dcache_invalidate(void);
+extern void linux64_core_dcache_invalidate(void);
 
 /**
  * @brief Flushes changes of the data cache into memory
  */
-EXTERN void linux64_core_dcache_flush(void);
+extern void linux64_core_dcache_flush(void);
 
 /**
  * @brief Wait for ongoing flush operations in the data cache to finish
  */
-EXTERN void linux64_core_dcache_fence(void);
+extern void linux64_core_dcache_fence(void);
 
 /**
  * @brief Prefetches a line of the data cache
  */
-EXTERN void linux64_core_dcache_line_prefetch(void);
+extern void linux64_core_dcache_line_prefetch(void);
 
 /**
  * @brief Invalidates a line of the data cache
  */
-EXTERN void linux64_core_dcache_line_invalidate(void);
+extern void linux64_core_dcache_line_invalidate(void);
 
 /**
  * @brief Dump information on data cache.
  */
-EXTERN void linux64_core_dcache_dump_info(void);
+extern void linux64_core_dcache_dump_info(void);
 
 /**
  * @brief Dump statistics on data cache.
  */
-EXTERN void linux64_core_dcache_dump_stats(void);
+extern void linux64_core_dcache_dump_stats(void);
 
 /**
  * @brief Enables the data cache
  */
-EXTERN void linux64_core_dcache_setup(void);
+extern void linux64_core_dcache_setup(void);
 
 /**
  * @brief Invalidates the instruction cache
  */
-EXTERN void linux64_core_icache_invalidate(void);
+extern void linux64_core_icache_invalidate(void);
 
 /**
  * @brief Prefetches a line of the instruction cache
  */
-EXTERN void linux64_core_icache_line_prefetch(void);
+extern void linux64_core_icache_line_prefetch(void);
 
 /**
  * @brief Invalidates a line of the instruction cache
  */
-EXTERN void linux64_core_icache_line_invalidate(void);
+extern void linux64_core_icache_line_invalidate(void);
 
 /**
  * @brief Dump statistics on instruction cache.
  */
-EXTERN void linux64_core_icache_dump_stats(void);
+extern void linux64_core_icache_dump_stats(void);
 
 /**
  * @brief Enables the instruction cache
  */
-EXTERN void linux64_core_icache_setup(void);
+extern void linux64_core_icache_setup(void);
 
 /**@}*/
 

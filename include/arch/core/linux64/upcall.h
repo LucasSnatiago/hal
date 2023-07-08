@@ -27,6 +27,7 @@
 
 /* Must come first. */
 #define __NEED_CORE_TYPES
+#define __NEED_CC
 
 /**
  * @addtogroup linux64-core-upcall Upcall
@@ -37,6 +38,7 @@
 /**@{*/
 
 #include <arch/core/linux64/types.h>
+#include <nanvix/cc.h>
 
 /**
  * @brief System call number for upcall_ret().
@@ -78,7 +80,7 @@ static inline void linux64_upcall_ret(void)
 /**
  * @see linux64_upcall_forge()
  */
-EXTERN void upcall_forge(struct context *ctx, void (*fn)(void *), void *arg,
+extern void upcall_forge(struct context *ctx, void (*fn)(void *), void *arg,
                          word_t argsize);
 
 /**

@@ -25,6 +25,8 @@
 #include <arch/core/linux64/int.h>
 #include <nanvix/const.h>
 #include <nanvix/hal/core/interrupt.h>
+#include <nanvix/hlib.h>
+#include <stdlib.h>
 
 /**
  * @brief Current level.

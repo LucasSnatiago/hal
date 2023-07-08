@@ -32,6 +32,9 @@
 /* Cluster Interface Implementation */
 #include <arch/cluster/linux64-cluster/_linux64-cluster.h>
 
+/* Must come first. */
+#define __NEED_CC
+
 /**
  * @addtogroup linux64-cluster Linux64 Cluster
  * @ingroup clusters
@@ -40,7 +43,7 @@
  */
 /**@{*/
 
-#include <nanvix/const.h>
+#include <nanvix/cc.h>
 #include <arch/cluster/linux64-cluster/memory.h>
 #include <arch/cluster/linux64-cluster/timer.h>
 #include <arch/cluster/linux64-cluster/cores.h>
@@ -50,12 +53,12 @@
 /**
  * @brief Powers on the underlying cluster.
  */
-EXTERN int linux64_cluster_boot(void);
+extern int linux64_cluster_boot(void);
 
 /**
  * @brief Initializes the the underlying cluster.
  */
-EXTERN NORETURN void linux64_cluster_setup(void);
+extern NORETURN void linux64_cluster_setup(void);
 
 #endif /* __NANVIX_HAL */
 
